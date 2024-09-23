@@ -1,7 +1,7 @@
 "use client"
 
 import { authController } from "@/lib/control/auth-controller";
-import { dataGovController } from "@/lib/control/data-gov-controller";
+import { dataGovController } from "@/lib/control/dataset-controller";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
