@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { MasterControllerProvider } from "@/context/master-controller-context";
 
 
 // Font files can be colocated inside of `app`
@@ -69,7 +70,9 @@ export default function RootLayout({
       <body
         className={`${sfProDisplayFont.className} antialiased`}
       >
-        {children}
+        <MasterControllerProvider>
+          {children}
+        </MasterControllerProvider>
       </body>
     </html>
   );

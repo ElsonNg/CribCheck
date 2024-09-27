@@ -2,16 +2,19 @@
 
 import Image from "next/image";
 import GoogleIcon from "@/app/images/google-icon.png";
-import { authController } from "@/lib/control/auth-controller";
 import { useRouter } from "next/navigation";
+import MasterController from "@/lib/control/master-controller";
+import { useMasterController } from "@/context/master-controller-context";
 
 
 export default function GoogleLoginButton() {
-
+    
+    const masterController = useMasterController();
     const router = useRouter();
     
     async function handleSignInWithGoogle() {
-        await authController.signInWithGoogle();
+        const authController = masterController.getAuthController();
+        await authController.loginWithGoogle();
         router.push("/app");
     }
 

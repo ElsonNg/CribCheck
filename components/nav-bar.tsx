@@ -1,7 +1,6 @@
 "use client"
 
-import { authController } from "@/lib/control/auth-controller";
-import { dataGovController } from "@/lib/control/dataset-controller";
+import { useMasterController } from "@/context/master-controller-context";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
@@ -9,24 +8,16 @@ import { useTransition } from "react";
 
 export default function NavBar() {
 
-    const authUser = authController.getCurrentUser();
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
 
+    const masterController = useMasterController();
+    const authController = masterController.getAuthController();
+    const authUser = authController.getCurrentUser();
+
     async function handleLogout() {
-        await authController.signOut();
+        await authController.logout();
         router.refresh();
-    }
-
-    function handleTest() {
-        startTransition(() => {
-            fetchGeoJson();
-        });
-    }
-
-    async function fetchGeoJson() {
-        const r = await dataGovController.fetchGeoJSON("d_61eefab99958fd70e6aab17320a71f1c");
-        console.log(r);
     }
 
     return (
@@ -40,9 +31,6 @@ export default function NavBar() {
                 <Link href="#" className="hover:text-gray-400 transition duration-300">
                     Home
                 </Link>
-                <button disabled={isPending} onClick={handleTest}>
-                    Test
-                </button>
                 {!authUser ? (
                     <Link href="/" className="hover:text-gray-400 transition duration-300">
                         Login
