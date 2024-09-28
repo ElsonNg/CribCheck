@@ -1,0 +1,12 @@
+{
+    "entryPoints": ["lib"], // Adjust to your source directory
+    "out": "docs",          // Output folder for the generated docs
+    "entryPointStrategy": "expand",
+    "exclude": ["**/*.test.ts", "**/*.spec.ts"], // Exclude test files
+    "tsconfig": "tsconfig.json", // Path to your TypeScript config file
+    "name": "CribCheck Project Documentation", // Name of your project
+    "includeVersion": true,  // Include the project version in the docs
+    "readme": "README.md",   // Path to a readme file (optional)
+    "excludeExternals": true, // Exclude external dependencies from the docs
+    "excludePrivate": true   // Exclude private members from the docs
+  }
