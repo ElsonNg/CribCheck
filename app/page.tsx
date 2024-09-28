@@ -1,7 +1,7 @@
 //import Image from "next/image";
 
 import Footer from "@/components/footer";
-import GoogleLoginButton from "@/components/login/googe-login-button";
+import GoogleLoginButton from "@/components/login/google-login-button";
 import Link from "next/link";
 
 export default function HomePage() {
