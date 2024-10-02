@@ -1,4 +1,4 @@
-import { CriteriaEntity } from '@/lib/entities//criteria-entity';
+import { CriteriaEntity, CriteriaType } from '@/lib/entities/criteria-entity';
 
 /**
  * `CriteriaController` manages user-defined criteria, including the creation,
@@ -14,52 +14,41 @@ import { CriteriaEntity } from '@/lib/entities//criteria-entity';
 
 class CriteriaController {
 
-    /**
-     * Initializes an empty array to hold the criteria selected by the user.
-     * 
-     * This method sets up the storage structure for user-selected criteria, 
-     * allowing for subsequent additions of the criteria.
-     * 
-     */
-
-    private selectedCriteria: CriteriaEntity[] = [];
 
     /**
-     * Adds user-selected criteria to the `selectedCriteria` array.
+     * Adds user-selected criteria to the `CriteriaType` array.
      *
-     * This method appends the criterias that are selected by the user
-     * to the `selectedCriteria` array.
+     * This method appends the criteria selected by the user
+     * to the `CriteriaType` array.
+     * 
+     * Any criteria not selected by the user will not be added to the `CriteriaType` array
      *
-     * Only the user-selected preferences, indicated by a `true` Boolean value, 
-     * will be added to the `selectedCriteria` array.
-     */
-
-
-    addCriteria(criteria: CriteriaEntity) {
-        const hasTrueProximity = criteria.proximityToSchools ||
-            criteria.proximityToSportsFacilities ||
-            criteria.proximityToTransportation ||
-            criteria.proximityToShoppingMall ||
-            criteria.proximityToSuperMarket ||
-            criteria.proximityToParks;
-
-        if (hasTrueProximity) {
-            this.selectedCriteria.push(criteria);
-        } else {
-            console.log("Criteria not added: No proximity flags are set to true.");
-        }
-    }
-
-    /**
-     * Rank the selected criteria by number
+     * For each selected criterion, the user provides a ranking number, which is stored
+     * in the `number` array.
+     *
+     * The `CriteriaType` and `number` arrays are then mapped into `criteriaRankingMap`.
+     *
+     * A new `criteriaEntity` is created, and a unique `criteriaId` is auto-generated (Id not declared yet).
      * 
-     * This method allows user for rank the selected criteria numerically
      * 
      */
 
-    rankCriteria(criteriaOrder: CriteriaEntity[]) {
-    }
 
+    createCriteria(
+        criteriaId: string,
+        selectedCriteria: CriteriaType[],
+        rankings: number[]
+    ): CriteriaEntity{
+
+        const criteriaRankingMap = new Map<CriteriaType, number>();
+
+
+        selectedCriteria.forEach((criteria, index) => {
+            criteriaRankingMap.set(criteria, rankings[index]);
+        });
+
+        return new CriteriaEntity(criteriaId, criteriaRankingMap);
+    }
 
 
     // ==== Database required ========//

@@ -1,29 +1,21 @@
+// Define an enum for criteria types
+export enum CriteriaType {
+    proximityToSchools,
+    proximityToSportsFacilities,
+    proximityToTransportation,
+    proximityToShoppingMall,
+    proximityToSuperMarket,
+    proximityToParks,
+}
+
+
 export class CriteriaEntity {
     criteriaId: string;
-    proximityToSchools: boolean;
-    proximityToSportsFacilities: boolean;
-    proximityToTransportation: boolean;
-    proximityToShoppingMall: boolean;
-    proximityToSuperMarket: boolean;
-    proximityToParks: boolean;
+    criteriaRankingMap: Map<CriteriaType, number>;
 
-    constructor(criteriaId: string,
-        proximityToSchools: boolean,
-        proximityToSportsFacilities: boolean,
-        proximityToTransportation: boolean,
-        proximityToShoppingMall: boolean,
-        proximityToSuperMarket: boolean,
-        proximityToParks: boolean,
-
-
-    ) {
+    constructor(criteriaId: string, criteriaRankingMap: Map<CriteriaType, number>) {
         this.criteriaId = criteriaId;
-        this.proximityToSchools = proximityToSchools;
-        this.proximityToSportsFacilities = proximityToSportsFacilities;
-        this.proximityToTransportation = proximityToTransportation;
-        this.proximityToShoppingMall = proximityToShoppingMall;
-        this.proximityToSuperMarket = proximityToSuperMarket;
-        this.proximityToParks = proximityToParks;
+        this.criteriaRankingMap = criteriaRankingMap;
 
     }
 }
