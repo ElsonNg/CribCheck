@@ -2,29 +2,25 @@
  * @class GovtDatasetService
  * 
  * This class provides datasets from data.gov.sg
- * It extends the 'DatasetService' abstract class and implements its 'fetchData' and 'parseData' methods.
+ * It extends the 'DatasetService' abstract class and implements its 'fetchData' methods.
  * 
- * This service fetches and parses the JSON file from data.gov.sg and returns relevant information required for algorithm
  * 
  */
 
 import DatasetService from "@/lib/boundary/dataset-service";
 
 
-class GovtDatasetService extends DatasetService {
+class GovtDatasetService extends DatasetService <Record<string,any>> {
     
     constructor(datasetId: string){
         super("https://data.gov.sg/api/action/datastore_search?resource_id=");
         this.url.concat(datasetId);
     }
 
-    async fetchData(url:string): Promise<Record<string, any>>{
+    async fetchData(): Promise<Record<string, any> | null>{
         //to implement
     }
 
-    async parseData(data: Record<string, any>): any{
-        //to implement
-    }
 }
 
 
