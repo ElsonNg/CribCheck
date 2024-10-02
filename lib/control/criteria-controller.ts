@@ -32,23 +32,40 @@ class CriteriaController {
      * 
      * 
      */
+    private currentCriteria : CriteriaEntity;
 
-
-    createCriteria(
-        criteriaId: string,
-        selectedCriteria: CriteriaType[],
-        rankings: number[]
-    ): CriteriaEntity{
-
-        const criteriaRankingMap = new Map<CriteriaType, number>();
-
-
-        selectedCriteria.forEach((criteria, index) => {
-            criteriaRankingMap.set(criteria, rankings[index]);
-        });
-
-        return new CriteriaEntity(criteriaId, criteriaRankingMap);
+    constructor() {
+        this.currentCriteria = new CriteriaEntity();
     }
+
+
+    selectCriterion(criteriaType: CriteriaType, ranking: number) {
+        this.currentCriteria.selectCriterion(criteriaType, ranking);
+    }
+
+    deselectCriteron(criteriaType: CriteriaType) {
+        this.currentCriteria.deselectCriterion(criteriaType);
+    }
+
+    loadCriteria(criteriaId : string, criteriaRankingMap: Map<CriteriaType, number>) : CriteriaEntity {
+        this.currentCriteria.setAll(criteriaId, criteriaRankingMap);
+        return this.currentCriteria;
+    }
+
+    // setCriteria(
+    //     selectedCriteria: CriteriaType[],
+    //     rankings: number[]
+    // ): CriteriaEntity{
+        
+    //     const criteriaRankingMap = this.currentCriteria.getCriteriaRankingMap();
+
+    //     criteriaRankingMap.clear();
+    //     selectedCriteria.forEach((criteria, index) => {
+    //         criteriaRankingMap.set(criteria, rankings[index]);
+    //     });
+
+    //     return this.currentCriteria;
+    // }
 
 
     // ==== Database required ========//
