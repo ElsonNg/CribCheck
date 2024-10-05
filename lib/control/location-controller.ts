@@ -4,7 +4,8 @@ import Location from '@/lib/entities/location-entity';
 /**
  * The `LocationController` class manages location-related operations by interacting
  * with the `GoogleLocationService`. It provides methods to fetch the current location,
- * retrieve location details by coordinates, and calculate the distance between two locations.
+ * retrieve location details by coordinates, calculate the distance between two locations,
+ * and search for locations by a query string.
  * 
  * @class LocationController
  */
@@ -51,6 +52,16 @@ class LocationController {
      */
     async calculateDistance(from: Location, to: Location): Promise<number> {
         return this.locationService.calculateDistance(from, to);
+    }
+
+    /**
+     * Searches for locations by a query string.
+     *
+     * @param query - The search string or keyword to find locations.
+     * @returns {Promise<Location[] | null>} A promise that resolves to an array of matching locations or `null` if no matches are found.
+     */
+    async searchLocation(query: string): Promise<Location[] | null> {
+        return this.locationService.searchLocation(query);
     }
 }
 

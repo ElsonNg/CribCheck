@@ -9,6 +9,9 @@ import Location from "@/lib/entities/location-entity";
  * @class GoogleLocationService
  */
 class GoogleLocationService extends LocationService<Location> {
+    searchLocation(query: string): Location[] | PromiseLike<Location[] | null> | null {
+        throw new Error('Method not implemented.');
+    }
     private apiKey: string;
 
     /**
