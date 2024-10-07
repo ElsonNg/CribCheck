@@ -10,7 +10,7 @@
  * - 'fetchData': fetching the data using the given URL
  * - 'parseData' 
  */
-abstract class DatasetService {
+abstract class DatasetService <T> {
     /** 
      * Protected property to store the URL for data fetching.
      */
@@ -31,13 +31,6 @@ abstract class DatasetService {
      */
     abstract fetchData(url:string): Promise<Record<string, any>>; // Expecting JSON data
 
-    /**
-     * Parses the fetched JSON data into a usable format.
-     * This method must be implemented by subclasses.
-     * @param data - The raw JSON data to be parsed.
-     * @returns The parsed data in a specific format.
-     */
-    abstract parseData(data: Record<string, any>): any; // Accepting JSON object
 }
 
 // Exporting the abstract class for use in other modules.
