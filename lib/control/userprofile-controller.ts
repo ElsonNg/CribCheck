@@ -1,5 +1,6 @@
 import DBService from '@/lib/boundary/db-service';
 import UserProfile from '@/lib/entities/user-profile-entity';
+import Presets from '../entities/presets-entity';
 
 /**
  * The `UserProfileController` class is responsible for managing user profiles by interacting with a `DBService` implementation. 
@@ -12,14 +13,14 @@ import UserProfile from '@/lib/entities/user-profile-entity';
 
 
 class UserProfileController {
-    private dbService: DBService<any>;
+    private dbService: DBService<Record<string, unknown>>;
 
     /**
      * Creates an instance of `UserProfileController` and sets the `DBService` used to handle database operations.
      * 
      * @param {DBService<any>} dbService - The `DBService` instance responsible for performing data retrieval and storage actions.
      */
-    constructor(dbService: DBService<any>) {
+    constructor(dbService: DBService<Record<string, unknown>>) {
         this.dbService = dbService;
     }
 
@@ -29,8 +30,37 @@ class UserProfileController {
      * @param {any} userProfileData - The user profile data to be mapped.
      * @returns {UserProfile} The adapted internal user profile entity.
      */
-    private mapToUserProfileEntity(userProfileData: any): UserProfile {
-        return new UserProfile(userProfileData.userId, userProfileData.name, userProfileData.email, userProfileData.presets);
+    private mapToUserProfileEntity(userProfileData: Record<string, unknown>): UserProfile {
+        const userId = userProfileData.userId as string;
+        const name = userProfileData.name as string;
+        const email = userProfileData.email as string;
+        const presetData = userProfileData.presets as Record<string, unknown>;
+        const presets = new Presets(presetData.presetID as number, presetData.maritalStatus as string, presetData.familyStatus as string, presetData.purchasePurpose as string);
+        return new UserProfile(userId, name, email, presets);
+    }
+    
+    
+    /**
+     * Maps a `UserProfile` entity back to raw JSON data.
+     * 
+     * This method converts the internal `UserProfile` entity into a plain JavaScript object 
+     * that can be stored in the database.
+     * 
+     * @param {UserProfile} userProfile - The user profile entity to be converted.
+     * @returns {Record<string, unknown>} The raw user profile data to be stored.
+     */
+    private mapToRawUserProfile(userProfile: UserProfile): Record<string, unknown> {
+        return {
+            userId: userProfile.getuserId(),
+            name: userProfile.getName(),
+            email: userProfile.getEmail(),
+            presets: {
+                presetID: userProfile.getPresets().getPresetID(),
+                maritalStatus: userProfile.getPresets().getMaritalStatus(),
+                familyStatus: userProfile.getPresets().getFamilyStatus(),
+                purchasePurpose: userProfile.getPresets().getPurchasePurpose(),
+            }
+        };
     }
 
     /**
@@ -57,7 +87,7 @@ class UserProfileController {
      */
     async saveUserProfile(userProfile: UserProfile): Promise<void> {
         const userId = userProfile.getuserId();  // Get the userId from the UserProfile entity
-        await this.dbService.saveUserProfile(userProfile, userId);  // Pass the UserProfile entity and userId directly
+        await this.dbService.saveUserProfile(this.mapToRawUserProfile(userProfile), userId);  // Pass the UserProfile entity and userId directly
     }
 }
 

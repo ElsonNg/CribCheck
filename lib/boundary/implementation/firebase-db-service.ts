@@ -11,7 +11,7 @@ import DBService from "@/lib/boundary/db-service";
 import { getApp, getApps, FirebaseApp, initializeApp } from "firebase/app";
 import { getFirestore, Firestore, doc, getDoc, setDoc } from "firebase/firestore";
 
-class FirebaseDBService extends DBService<any> {
+class FirebaseDBService extends DBService<Record<string, unknown>> {
 
     private app: FirebaseApp;
     private db: Firestore;
@@ -46,21 +46,21 @@ class FirebaseDBService extends DBService<any> {
      * the profile is retrieved 
      * 
      * @param {string} userId - unique identifier of the user
-     * @returns {Promise<any>} a promise that resolves to the user profile data
+     * @returns {Promise<Record<string,unknown> | null>} a promise that resolves to the user profile data if found or 'null' if no profile exists.
      */
-    async loadUserProfile(userId: string): Promise<any> {
-        try{
-            const userDoc = doc (this.db, "users", userId);
+    async loadUserProfile(userId: string): Promise<Record<string, unknown> | null> {
+        try {
+            const userDoc = doc(this.db, "users", userId);
             const userSnap = await getDoc(userDoc);
 
             if (userSnap.exists()) {
                 return userSnap.data();
-            } 
+            }
             else {
                 console.error(`No user profile found for userId: ${userId}`);
                 return null;
             }
-        } 
+        }
         catch (error) {
             console.error("Error loading user profile: ", error);
             throw error;
@@ -73,18 +73,19 @@ class FirebaseDBService extends DBService<any> {
      * 
      * @param {any} userProfileData - the user profile data to be saved or updated
      * @param {string} userId - the unique identifier of the user
-     * @returns {Promise<void>} a promise that resolves when the operation is complete
+     * @returns {Promise<Record<string,unknown> | null>} a promise that resolves when the operation is complete or 'null' if it fails.
      */
-    async saveUserProfile(userProfileData: any, userId: string): Promise<void> {
-        try{
+    async saveUserProfile(userProfileData: Record<string, unknown>, userId: string): Promise<Record<string, unknown> | null> {
+        try {
             const userDoc = doc(this.db, "users", userId);
             await setDoc(userDoc, userProfileData);
-        } 
+            return userProfileData;
+        }
         catch (error) {
             console.error("Error saving user profile: ", error);
             throw error;
         }
-        }
+    }
 
 
 }
