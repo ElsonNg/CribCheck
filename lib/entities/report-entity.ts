@@ -1,5 +1,6 @@
 
 
+
 class ReportEntity {
 
     proximitySchool: number;
