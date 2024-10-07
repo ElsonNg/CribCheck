@@ -43,4 +43,3 @@ abstract class LocationService<T> {
 }
 
 export default LocationService;
-
