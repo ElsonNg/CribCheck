@@ -1,6 +1,7 @@
 import FirebaseAuthService from "@/lib/boundary/implementation/firebase-auth-service";
 import AuthController from "@/lib/control/auth-controller";
 import ReportController from "@/lib/control/report-controller";
+import GovtDatasetService from "../boundary/implementation/govt-dataset-service";
 
 
 
@@ -32,7 +33,10 @@ class MasterController {
 
         // Injecting `FirebaseAuthService` via Dependency Injection into `AuthController`.
         this.authController = new AuthController(new FirebaseAuthService());
-        this.reportController = new ReportController();
+
+        
+        const hawkerCentresDatasetId = "d_4a086da0a5553be1d89383cd90d07ecd";
+        this.reportController = new ReportController(new GovtDatasetService(hawkerCentresDatasetId));
 
         this.currentState = ScreenState.SelectingLocation;
     }

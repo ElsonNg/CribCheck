@@ -29,7 +29,7 @@ abstract class DatasetService <T> {
      * This method must be implemented by subclasses.
      * @returns A promise that resolves with the fetched JSON data.
      */
-    abstract fetchData(url:string): Promise<Record<string, any>>; // Expecting JSON data
+    abstract fetchData(): Promise<T | null>; // Expecting JSON data
 
 }
 
