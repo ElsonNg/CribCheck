@@ -21,7 +21,7 @@ export default function NavBar() {
     }
 
     return (
-        <nav className="w-full max-w-7xl mx-auto px-6 py-6 flex flex-row justify-between items-center">
+        <nav className="w-full mx-auto px-6 py-6 flex flex-row justify-between items-center">
             <Link href="/app">
                 <h1 className="text-3xl font-bold">
                     <span role="img" aria-label="home">🏠</span> CribCheck
