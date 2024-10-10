@@ -5,22 +5,22 @@
  * 
  * @class Location
  */
-class Location {
+class LocationEntity {
 
     /**
      * The latitude of the location.
      */
-    public latitude: number;
+    private latitude: number;
 
     /**
      * The longitude of the location.
      */
-    public longitude: number;
+    private longitude: number;
 
     /**
      * Optional: The address or name of the location.
      */
-    public address?: string;
+    private address?: string;
 
     /**
      * Creates a new instance of `Location`.
@@ -34,6 +34,43 @@ class Location {
         this.longitude = longitude;
         this.address = address;
     }
+
+    public getLatitude(): number {
+        return this.latitude;
+    }
+
+    public getLongitude(): number {
+        return this.longitude;
+    }
+
+    public getAddress(): string {
+        return this.address ?? 'None';
+    }
+
+    private static toRadians(degrees: number) : number {
+        return (degrees * Math.PI) / 180;
+    }
+
+    public distanceToKilometres(other: LocationEntity): number {
+        const R = 6371; // Radius of the Earth in kilometers
+        const lat1 = LocationEntity.toRadians(this.latitude);
+        const lat2 = LocationEntity.toRadians(other.latitude);
+        const deltaLat = LocationEntity.toRadians(other.latitude - this.latitude);
+        const deltaLon = LocationEntity.toRadians(other.longitude - this.longitude);
+
+        const a =
+            Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+            Math.cos(lat1) * Math.cos(lat2) * Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
+
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        const distance = R * c; // Distance in kilometers
+        return distance;
+    }
+
+    public distanceToMetres(other: LocationEntity): number {
+        return this.distanceToKilometres(other) * 1000;
+    }
 }
 
-export default Location;
+export default LocationEntity;

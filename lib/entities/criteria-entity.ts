@@ -9,7 +9,7 @@ export enum CriteriaType {
 }
 
 
-export class CriteriaEntity {
+export default class CriteriaEntity {
 
 
     private criteriaId: string;

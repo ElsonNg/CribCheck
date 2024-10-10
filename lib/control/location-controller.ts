@@ -1,5 +1,5 @@
 import GoogleLocationService from '@/lib/boundary/implementation/google-location-service';
-import Location from '@/lib/entities/location-entity';
+import LocationEntity from '@/lib/entities/location-entity';
 
 /**
  * The `LocationController` class manages location-related operations by interacting
@@ -26,9 +26,9 @@ class LocationController {
     /**
      * Fetches the current location of the user/device.
      *
-     * @returns {Promise<Location | null>} A promise that resolves to the current location entity or `null` if the location cannot be fetched.
+     * @returns {Promise<LocationEntity | null>} A promise that resolves to the current location entity or `null` if the location cannot be fetched.
      */
-    async getCurrentLocation(): Promise<Location | null> {
+    async getCurrentLocation(): Promise<LocationEntity | null> {
         return this.locationService.getCurrentLocation();
     }
 
@@ -37,9 +37,9 @@ class LocationController {
      * 
      * @param latitude - The latitude of the location.
      * @param longitude - The longitude of the location.
-     * @returns {Promise<Location | null>} A promise that resolves to the location entity with details, or `null` if not found.
+     * @returns {Promise<LocationEntity | null>} A promise that resolves to the location entity with details, or `null` if not found.
      */
-    async getLocationByCoordinates(latitude: number, longitude: number): Promise<Location | null> {
+    async getLocationByCoordinates(latitude: number, longitude: number): Promise<LocationEntity | null> {
         return this.locationService.getLocationByCoordinates(latitude, longitude);
     }
 
@@ -50,7 +50,7 @@ class LocationController {
      * @param to - The destination location entity.
      * @returns {Promise<number>} A promise that resolves to the distance between the two locations in kilometers.
      */
-    async calculateDistance(from: Location, to: Location): Promise<number> {
+    async calculateDistance(from: LocationEntity, to: LocationEntity): Promise<number> {
         return this.locationService.calculateDistance(from, to);
     }
 
@@ -58,9 +58,9 @@ class LocationController {
      * Searches for locations by a query string.
      *
      * @param query - The search string or keyword to find locations.
-     * @returns {Promise<Location[] | null>} A promise that resolves to an array of matching locations or `null` if no matches are found.
+     * @returns {Promise<LocationEntity[] | null>} A promise that resolves to an array of matching locations or `null` if no matches are found.
      */
-    async searchLocation(query: string): Promise<Location[] | null> {
+    async searchLocation(query: string): Promise<LocationEntity[] | null> {
         return this.locationService.searchLocation(query);
     }
 }

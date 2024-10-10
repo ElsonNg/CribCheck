@@ -1,4 +1,4 @@
-import { CriteriaEntity, CriteriaType } from '@/lib/entities/criteria-entity';
+import CriteriaEntity , {CriteriaType } from '@/lib/entities/criteria-entity';
 
 /**
  * `CriteriaController` manages user-defined criteria, including the creation,

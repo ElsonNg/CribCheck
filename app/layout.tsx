@@ -68,7 +68,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${sfProDisplayFont.className} antialiased`}
+        className={`${sfProDisplayFont.className} antialiased bg-[#F9F9F9]`}
       >
         <MasterControllerProvider>
           {children}
