@@ -1,6 +1,6 @@
 
 interface ReportCriteriaRatingProps {
-    label: String;
+    label: string;
     stars: number;
 }
 

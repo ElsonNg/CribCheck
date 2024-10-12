@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@vis.gl/react-google-maps": "^1.3.0",
+    "@react-google-maps/api": "^2.20.3",
     "clsx": "^2.1.1",
     "firebase": "^10.13.2",
     "next": "14.2.13",
@@ -18,8 +18,7 @@
     "react-firebase-hooks": "^5.1.1",
     "react-spinners": "^0.14.1",
     "sharp": "^0.33.5",
-    "tailwind-merge": "^2.5.3",
-    "use-places-autocomplete": "^4.0.1"
+    "tailwind-merge": "^2.5.3"
   },
   "devDependencies": {
     "@types/node": "^20",
