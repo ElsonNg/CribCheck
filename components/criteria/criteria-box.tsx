@@ -1,63 +1,54 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import CriteriaCard from "@/components/criteria/preset-cards";
-import CheckIcon from "@/app/images/checkicon.png";
-import CheckIconActive from "@/app/images/checkicon-active.png"; // Image for the active state
+import { PresetCriteriaType } from "@/lib/entities/criteria-entity";
 import { useMasterController } from "@/context/master-controller-context";
+import CheckIcon from "@/app/images/checkicon.png";
+import CheckIconActive from "@/app/images/checkicon-active.png";
+
+
+const criteriaOptions: PresetCriteriaType[] = ["Singles", "Young Couple", "Family"];
 
 export default function CriteriaBox() {
-
     const masterController = useMasterController();
+    const [selectedOption, setSelectedOption] = useState<PresetCriteriaType | "new" | null>(null);
 
-    function handleNext(){
+    const handleNext = () => {
         masterController.goToNextState();
-    }
-
-    const [isSelected, setIsSelected] = useState(false);
-    const buttonRef = useRef<HTMLButtonElement>(null); // Create a ref for the button
-
-    const handleClick = () => {
-        setIsSelected(!isSelected);
     };
 
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (buttonRef.current && !buttonRef.current.contains(event.target as Node)) {
-                setIsSelected(false);
-            }
-        };
+    const handleCriteriaClick = (criteria: PresetCriteriaType) => {
+        setSelectedOption((prev) => (prev === criteria ? null : criteria)); // Toggle selection
+    };
 
-        document.addEventListener("mousedown", handleClickOutside);
-
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, []);
+    const handleNewPresetClick = () => {
+        setSelectedOption((prev) => (prev === "new" ? null : "new")); // Toggle "new" selection
+    };
 
     return (
         <div className="flex flex-col p-6 gap-4 bg-white drop-shadow-md rounded-lg">
             <div className="w-full grid gap-4 grid-cols-3">
-                <button className="focus:outline-none hover:ring-4 hover:ring-blue-500 focus:ring-4 focus:ring-blue-500 active:bg-blue-100 rounded-lg">
-                    <CriteriaCard type="Singles" />
-                </button>
-                <button className="focus:outline-none hover:ring-4 hover:ring-blue-500 focus:ring-4 focus:ring-blue-500 active:bg-blue-100 rounded-lg">
-                    <CriteriaCard type="Young Couple" />
-                </button>
-                <button className="focus:outline-none hover:ring-4 hover:ring-blue-500 focus:ring-4 focus:ring-blue-500 active:bg-blue-100 rounded-lg">
-                    <CriteriaCard type="Family" />
-                </button>
+                {criteriaOptions.map((type) => (
+                    <button
+                        key={type}
+                        className={`focus:outline-none rounded-lg ${selectedOption === type ? "ring-4 ring-blue-500" : ""}`}
+                        onClick={() => handleCriteriaClick(type)}
+                    >
+                        <CriteriaCard type={type} />
+                    </button>
+                ))}
             </div>
 
             <p className="font-semibold text-2xl text-center">or</p>
 
             <div className="flex flex-row justify-center">
                 <button
-                    ref={buttonRef} 
-                    className={`px-4 py-2 flex items-center gap-4 rounded-lg bg-[#EEEEEE] focus:outline-none ${isSelected ? "focus:ring-4 focus:ring-green-500" : ""}`}
-                    onClick={handleClick}
+                    className={`px-4 py-2 flex items-center gap-4 rounded-lg bg-[#EEEEEE] ${selectedOption === "new" ? "ring-4 ring-green-500" : ""}`}
+                    onClick={handleNewPresetClick}
+                    type="button"
                 >
                     <span>
                         <img
-                            src={isSelected ? CheckIconActive.src : CheckIcon.src}
+                            src={selectedOption === "new" ? CheckIconActive.src : CheckIcon.src}
                             alt="Check Icon"
                         />
                     </span>
@@ -66,8 +57,11 @@ export default function CriteriaBox() {
             </div>
 
             <div className="flex flex-col gap-8">
-                <button type="button" onClick={handleNext}
-                    className="group text-white bg-[#5A76FF] border-gray-400 border-2 rounded py-2 px-4 flex flex-row items-center justify-center gap-2 self-end">
+                <button 
+                    type="button" 
+                    onClick={handleNext}
+                    className="group text-white bg-[#5A76FF] border-gray-400 border-2 rounded py-2 px-4 flex flex-row items-center justify-center gap-2 self-end"
+                >
                     Continue
                 </button>
             </div>

@@ -8,6 +8,8 @@ export enum CriteriaType {
     proximityToParks,
 }
 
+export type PresetCriteriaType = "Singles" | "Young Couple" | "Family";
+
 
 export default class CriteriaEntity {
 
