@@ -25,38 +25,6 @@ export default class GoogleLocationService extends LocationService<LocationEntit
 
     constructor() {
         super();
-        this.initialiseLibrary();
-    }
-
-    private initialiseLibrary(): Promise<void> {
-
-        // Exit if it's running on the server side
-        if (typeof window === 'undefined') {
-            return Promise.resolve(); 
-        }
-
-        return new Promise((resolve, reject) => {
-
-            if (document.querySelector(`script[src*="maps.googleapis.com"]`)) {
-                resolve(); // Script is already loaded
-                return;
-            }
-
-            console.log("load google maps");
-
-
-            // Inject Google Maps script dynamically
-            const script = document.createElement("script");
-            script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_PLACES_MAP_API}&libraries=places,geocoding`;
-            script.defer = true;
-            script.async = true;
-            script.onload = async () => {
-                await this.initializeServices();
-                resolve();
-            };
-            script.onerror = () => reject(new Error("Failed to load Google Maps script"));
-            document.head.appendChild(script);
-        });
     }
 
     /**
@@ -64,11 +32,17 @@ export default class GoogleLocationService extends LocationService<LocationEntit
      *  Assumes that the Google Maps script is loaded in the layout file.
      *
      */
-    private async initializeServices() {
+    private initializeServices() {
+
+        if (!window.google || !window.google.maps) {
+            throw new Error("Google Maps API is not loaded yet.");
+        }
+
         try {
-            // AutocompleteService and Geocoder initialization
+
             this.autocompleteService = new google.maps.places.AutocompleteService();
             this.geocoder = new google.maps.Geocoder();
+
         } catch (error) {
             throw new Error("Failed to initialize Google Maps services: " + error);
         }
@@ -136,6 +110,10 @@ export default class GoogleLocationService extends LocationService<LocationEntit
     async getLocationByCoordinates(latitude: number, longitude: number): Promise<LocationEntity | null> {
         try {
 
+            if (!this.geocoder) {
+                this.initializeServices();
+            }
+
             return new Promise((resolve, reject) => {
                 this.geocoder?.geocode({ location: { lat: latitude, lng: longitude } }, (results, status) => {
                     if (status === google.maps.GeocoderStatus.OK && results && results[0]) {
@@ -165,6 +143,9 @@ export default class GoogleLocationService extends LocationService<LocationEntit
     async getLocationByPrediction(prediction: LocationPredictionEntity): Promise<LocationEntity | null> {
         try {
 
+            if (!this.autocompleteService) {
+                this.initializeServices();
+            }
 
             const placeDetailsRequest = {
                 placeId: prediction.placeId,
@@ -203,6 +184,11 @@ export default class GoogleLocationService extends LocationService<LocationEntit
      */
     async queryLocationAutoComplete(query: string): Promise<LocationPredictionEntity[] | null> {
         try {
+
+            if (!this.autocompleteService) {
+                this.initializeServices();
+            }
+
 
             return new Promise((resolve, reject) => {
                 this.autocompleteService?.getPlacePredictions({

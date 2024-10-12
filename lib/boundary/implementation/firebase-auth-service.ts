@@ -9,7 +9,7 @@
  */
 
 import AuthService from "@/lib/boundary/auth-service";
-import { FirebaseApp, FirebaseOptions, getApp, getApps, initializeApp } from "firebase/app";
+import { FirebaseApp, FirebaseError, FirebaseOptions, getApp, getApps, initializeApp } from "firebase/app";
 import { Auth, getAuth, User as FirebaseUser, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
 class FirebaseAuthService extends AuthService<FirebaseUser> {
@@ -60,6 +60,14 @@ class FirebaseAuthService extends AuthService<FirebaseUser> {
             return user;
 
         } catch (error) {
+            
+            const firebaseError = error as FirebaseError;
+
+            if (firebaseError.code === 'auth/popup-closed-by-user') {
+                console.warn("Google sign-in was canceled by the user.");
+                return null;
+            }
+            
             console.error("Error signing in with Google: ", error);
             return null;
         }

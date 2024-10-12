@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { MasterControllerProvider } from "@/context/master-controller-context";
+import Script from "next/script";
 
 
 // Font files can be colocated inside of `app`
@@ -68,13 +69,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+
     <html lang="en">
+
       <body
         className={`${sfProDisplayFont.className} antialiased bg-[#F9F9F9]`}
       >
         <MasterControllerProvider>
           {children}
         </MasterControllerProvider>
+        <Script
+          src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_PLACES_MAP_API}&libraries=places,geocoding`}
+          strategy="beforeInteractive"
+        />
       </body>
 
     </html>
