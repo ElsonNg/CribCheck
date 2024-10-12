@@ -60,6 +60,8 @@ export const metadata: Metadata = {
   }
 };
 
+
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -74,6 +76,7 @@ export default function RootLayout({
           {children}
         </MasterControllerProvider>
       </body>
+
     </html>
   );
 }

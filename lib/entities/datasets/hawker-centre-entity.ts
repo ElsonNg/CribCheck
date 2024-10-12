@@ -1,4 +1,4 @@
-import LocationEntity from "@/lib/entities/location-entity";
+import LocationEntity from "@/lib/entities/location/location-entity";
 
 class HawkerCentreEntity {
 

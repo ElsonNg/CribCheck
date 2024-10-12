@@ -1,5 +1,6 @@
-import GoogleLocationService from '@/lib/boundary/implementation/google-location-service';
-import LocationEntity from '@/lib/entities/location-entity';
+import LocationEntity from '@/lib/entities/location/location-entity';
+import LocationPredictionEntity from '@/lib/entities/location/location-prediction-entity';
+import LocationService from '@/lib/boundary/location-service';
 
 /**
  * The `LocationController` class manages location-related operations by interacting
@@ -11,7 +12,7 @@ import LocationEntity from '@/lib/entities/location-entity';
  */
 class LocationController {
 
-    private locationService: GoogleLocationService;
+    private locationService: LocationService<LocationEntity, LocationPredictionEntity>;
 
     /**
      * Creates an instance of `LocationController` and sets the `LocationService` used to
@@ -19,9 +20,10 @@ class LocationController {
      * 
      * @param locationService - The `GoogleLocationService` instance responsible for performing location-based actions.
      */
-    constructor(locationService: GoogleLocationService) {
+    constructor(locationService: LocationService<LocationEntity, LocationPredictionEntity>) {
         this.locationService = locationService;
     }
+
 
     /**
      * Fetches the current location of the user/device.
@@ -44,24 +46,29 @@ class LocationController {
     }
 
     /**
-     * Calculates the distance between two locations.
+     * Retrieves a location entity based on a prediction object.
      *
-     * @param from - The origin location entity.
-     * @param to - The destination location entity.
-     * @returns {Promise<number>} A promise that resolves to the distance between the two locations in kilometers.
+     * This method handles a location prediction, often from an autocomplete
+     * suggestion, and retrieves the full location details via the service.
+     * 
+     * @param prediction - The location prediction entity containing the placeId.
+     * @returns {Promise<LocationEntity | null>} A promise that resolves to the location entity with full details, or `null` if not found.
      */
-    async calculateDistance(from: LocationEntity, to: LocationEntity): Promise<number> {
-        return this.locationService.calculateDistance(from, to);
+    async getLocationByPrediction(prediction: LocationPredictionEntity): Promise<LocationEntity | null> {
+        return this.locationService.getLocationByPrediction(prediction);
     }
 
-    /**
+   /**
      * Searches for locations by a query string.
+     *
+     * This method performs a location search using the autocomplete feature by passing
+     * the search query to the service, which returns matching predictions.
      *
      * @param query - The search string or keyword to find locations.
      * @returns {Promise<LocationEntity[] | null>} A promise that resolves to an array of matching locations or `null` if no matches are found.
      */
-    async searchLocation(query: string): Promise<LocationEntity[] | null> {
-        return this.locationService.searchLocation(query);
+    async queryLocationAutoComplete(query: string): Promise<LocationPredictionEntity[] | null> {
+        return this.locationService.queryLocationAutoComplete(query);
     }
 }
 

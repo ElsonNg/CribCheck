@@ -1,7 +1,9 @@
 import FirebaseAuthService from "@/lib/boundary/implementation/firebase-auth-service";
 import AuthController from "@/lib/control/auth-controller";
 import ReportController from "@/lib/control/report-controller";
-import GovtDatasetService from "../boundary/implementation/govt-dataset-service";
+import GovtDatasetService from "@/lib/boundary/implementation/govt-dataset-service";
+import LocationController from "@/lib/control/location-controller";
+import GoogleLocationService from "@/lib/boundary/implementation/google-location-service";
 
 /**
  * Enum representing the possible screen states in the application.
@@ -26,6 +28,8 @@ class MasterController {
 
     private authController: AuthController;
     private reportController: ReportController;
+    private locationController: LocationController;
+    
     private currentState: ScreenState;
     private onStateChangeCallback?: (state: ScreenState) => void;
 
@@ -40,6 +44,9 @@ class MasterController {
         // Initialize the `ReportController` with the required government dataset service.
         const hawkerCentresDatasetId = "d_4a086da0a5553be1d89383cd90d07ecd";
         this.reportController = new ReportController(new GovtDatasetService(hawkerCentresDatasetId));
+
+        // Initialize the `LocationController` with the required location service.
+        this.locationController = new LocationController(new GoogleLocationService());
 
         // Set the initial state of the screen flow.
         this.currentState = ScreenState.SelectingLocation;
@@ -61,6 +68,16 @@ class MasterController {
      */
     public getReportController(): ReportController {
         return this.reportController;
+    }
+
+    
+    /**
+     * Retrieves the `LocationController` instance.
+     *
+     * @returns {LocationController} The `LocationController` instance used for location-related operations.
+     */
+    public getLocationController(): LocationController {
+        return this.locationController;
     }
 
     /**

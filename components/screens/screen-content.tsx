@@ -1,7 +1,6 @@
 "use client"
 
 import { useMasterController } from "@/context/master-controller-context";
-import ReportGenerating from "../report/report-generating";
 import { ScreenState } from "@/lib/control/master-controller";
 import SelectLocationScreen from "./select-location-screen";
 import SelectCriteriaScreen from "./select-criteria-screen";

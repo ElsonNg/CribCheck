@@ -3,7 +3,7 @@ import CriteriaEntity from '@/lib/entities/criteria-entity';
 import ReportEntity from '@/lib/entities/report-entity';
 import { GeoJsonData } from '@/lib/boundary/implementation/govt-dataset-service';
 import HawkerCentreEntity from '../entities/datasets/hawker-centre-entity';
-import LocationEntity from '@/lib/entities/location-entity';
+import LocationEntity from '@/lib/entities/location/location-entity';
 /**
  * The 'ReportController' class is responsible for managing all the datasets required for generating 
  * report score via our algorithm by interacting with 'GovtDatasetService' and '<insert other dataset>'

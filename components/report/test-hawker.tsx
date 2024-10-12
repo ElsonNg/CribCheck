@@ -1,7 +1,7 @@
 "use client"
 import { useMasterController } from "@/context/master-controller-context";
 import HawkerCentreEntity from "@/lib/entities/datasets/hawker-centre-entity";
-import LocationEntity from "@/lib/entities/location-entity";
+import LocationEntity from "@/lib/entities/location/location-entity";
 import { useEffect, useState } from "react"
 
 
