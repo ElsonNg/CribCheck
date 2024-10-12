@@ -14,8 +14,9 @@ export default function GoogleLoginButton() {
     
     async function handleSignInWithGoogle() {
         const authController = masterController.getAuthController();
-        await authController.loginWithGoogle();
-        router.push("/app");
+        const user = await authController.loginWithGoogle();
+        if(user)
+            router.push("/app");
     }
 
     return (<button
