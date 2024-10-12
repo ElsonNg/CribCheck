@@ -1,4 +1,4 @@
-import CriteriaEntity , {CriteriaType } from '@/lib/entities/criteria-entity';
+import CriteriaEntity , {CriteriaType, PresetCriteriaType} from '@/lib/entities/criteria-entity';
 
 /**
  * `CriteriaController` manages user-defined criteria, including the creation,
@@ -36,6 +36,20 @@ class CriteriaController {
 
     constructor() {
         this.currentCriteria = new CriteriaEntity();
+    }
+
+    setPresetCriteria(presetType: PresetCriteriaType): CriteriaEntity {
+        
+        switch (presetType) {
+            case "Singles":
+                break;
+            case "Young Couple":
+                break;
+            case "Family":
+                break;
+
+            }
+        return this.currentCriteria;
     }
 
 
