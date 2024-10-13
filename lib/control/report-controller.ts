@@ -1,9 +1,11 @@
 import DatasetService from '@/lib/boundary/dataset-service';
-import CriteriaEntity from '@/lib/entities/criteria-entity';
-import ReportEntity from '@/lib/entities/report-entity';
+import CriteriaEntity, { CriteriaType } from '@/lib/entities/criteria-entity';
 import { GeoJsonData } from '@/lib/boundary/implementation/govt-dataset-service';
-import HawkerCentreEntity from '../entities/datasets/hawker-centre-entity';
+import HawkerCentreEntity from '@/lib/entities/datasets/hawker-centre-entity';
 import LocationEntity from '@/lib/entities/location/location-entity';
+import { ProximityScorer } from '@/lib/strategy/proximity-scorer';
+import { LinearDistanceScoringStrategy } from '@/lib/strategy/linear-distance-scoring-strategy';
+import { ScoringResult } from '@/lib/strategy/scoring-strategy';
 /**
  * The 'ReportController' class is responsible for managing all the datasets required for generating 
  * report score via our algorithm by interacting with 'GovtDatasetService' and '<insert other dataset>'
@@ -11,33 +13,136 @@ import LocationEntity from '@/lib/entities/location/location-entity';
 
 class ReportController {
 
-    //private transportDataset: DatasetService<Record<string, unknown>>;
+
+    private selectedLocation: LocationEntity | null;
+    private selectedCriteria: CriteriaEntity | null;
+
+    // Datasets
     private hawkerCentresDataset: DatasetService<GeoJsonData>;
-    private static NEARBY_RADIUS_KM : number = 0.5;
 
-    constructor(hawkerCentresDataset: DatasetService<GeoJsonData>) {
+    // Scoring strategies
+    private proximityScorer: ProximityScorer;
+
+
+    private cribFitRating: number;
+
+
+
+    constructor(hawkerCentresDataset: DatasetService<GeoJsonData>,
+        transportDataset: DatasetService<GeoJsonData>,
+        schoolTransportDataset: DatasetService<GeoJsonData>,
+        supermarketTransportDataset: DatasetService<GeoJsonData>,
+        clinicTransportDataset: DatasetService<GeoJsonData>
+    ) {
+
         this.hawkerCentresDataset = hawkerCentresDataset;
+
+        // TODO: Create private variables and assign the dataset services
+        // TODO: Nick (Step 3) 
+        // TODO: Joyce (Step 3)
+        // TODO: Jody (Step 3)
+        // TODO: Angel (Step 3)
+
+        this.selectedLocation = null;
+        this.selectedCriteria = null;
+
+        this.cribFitRating = 0;
+
+        this.proximityScorer = new ProximityScorer();
+        this.proximityScorer.addCriteriaStrategy(CriteriaType.proximityToHawkerCentres, new LinearDistanceScoringStrategy(2.0), 0.5, true);
+        this.proximityScorer.addCriteriaStrategy(CriteriaType.proximityToMRT, new LinearDistanceScoringStrategy(2.0), 0.5, true);
+
+        // TODO: Add the scoring strategy for the criteria type you are working on. If unsure, use LinearDistanceScoringStrategy
+        // TODO: Nick (Step 4) 
+        // TODO: Joyce (Step 4)
+        // TODO: Jody (Step 4)
+        // TODO: Angel (Step 4)
+        
     }
 
-    async fetchRelevantData() {
+    async generateReport(): Promise<boolean> {
 
-        const hawkerData = await this.hawkerCentresDataset.fetchData();
-        const currentLocation = new LocationEntity(1.287654, 103.845274);
+        try {
 
-        if(hawkerData)
-        {
-            const hawkerCentres : HawkerCentreEntity[] = await this.getNearbyHawkerCentres(currentLocation, hawkerData);
-            return hawkerCentres;
+            if (this.selectedCriteria == null || this.selectedCriteria === undefined) {
+                throw new Error("No criteria selected for report generation!");
+            } else if (this.selectedLocation == null || this.selectedLocation === undefined) {
+                throw new Error("No location selected for report generation!");
+            }
+
+
+            // Disable all strategies and only enable those relevant to the selected criteria
+            this.proximityScorer.disableAllStrategies();
+
+            const criteriaRankings = this.selectedCriteria.getCriteriaRankingMap();
+
+
+            // Iterate through all the criteria and fetch the relevant data
+            const promises = criteriaRankings.entries().map(async ([criteriaType, ranking]) => {
+
+                const weightage = this.selectedCriteria!.getWeightage(criteriaType);
+
+                switch (criteriaType) {
+
+                    case CriteriaType.proximityToHawkerCentres:
+                        // Fetch the data from hawker centres dataset
+                        const data = await this.hawkerCentresDataset.fetchData();
+                        if (!data) {
+                            throw new Error("Hawker centres dataset is not available!");
+                        }
+
+                        // Create hawker entities from the data
+                        const hawkerCentres = await this.getHawkerCentres(data);
+
+                        // Populate the data into our proximity scorer, tagging it with the criteria type and weightage
+                        this.proximityScorer.enableStrategy(criteriaType, weightage, hawkerCentres);
+                        break;
+
+
+                    case CriteriaType.proximityToMRT:
+                        // TODO: Nick (Step 5) - Fetch the data from the dataset, create MRT entities from the data, and populate the data into our proximity scorer
+                        break;
+
+                    case CriteriaType.proximityToSchool:
+                        // TODO: Joyce (Step 5) - Fetch the data from the dataset, create School entities from the data, and populate the data into our proximity scorer
+                        break;
+
+                    case CriteriaType.proximityToSupermarket:
+                        // TODO: Jody (Step 5) - Fetch the data from the dataset, create Supermarket entities from the data, and populate the data into our proximity scorer
+                        break;
+
+                    case CriteriaType.proximityToClinic:
+                        // TODO: Angel (Step 5) - Fetch the data from the dataset, create Clinic entities from the data, and populate the data into our proximity scorer
+                        break;
+
+                    default:
+                        break;
+                }
+
+            });
+
+            const results = await Promise.all(promises);
+            this.cribFitRating = this.proximityScorer.calculateCompositeScore(this.selectedLocation);
+
+            console.log("CribFit Rating: " + this.cribFitRating);
+            return true;
+
+        } catch (error) {
+            console.error(error);
+            return false;
         }
-        return hawkerData;
     }
 
-    async getNearbyHawkerCentres(queryLocation: LocationEntity, data: GeoJsonData) : Promise<HawkerCentreEntity[]> {
+    getCribFitRating(): number {
+        return this.cribFitRating;
+    }
 
-        const hawkerCentres : HawkerCentreEntity[] = [];
+
+    async getHawkerCentres(data: GeoJsonData) {
+        const hawkerCentres: HawkerCentreEntity[] = [];
         const parser = new DOMParser();
 
-
+        // Extract all hawker centres in dataset that are less than 2KM
         data?.features.forEach((feature) => {
 
             const doc = parser.parseFromString(feature.properties.Description, 'text/html');
@@ -64,24 +169,53 @@ class ReportController {
             }
         });
 
-        const nearbyHawkerCentres = hawkerCentres.filter((centre) => queryLocation.distanceToKilometres(centre.getLocation()) <= ReportController.NEARBY_RADIUS_KM);
-        return nearbyHawkerCentres;
+        return hawkerCentres;
     }
 
 
-
-
-    /**
-     * Parses the fetched JSON data into a usable format.
-     * Filters out the relevant information within
-     * maps relevant data to ReportEntity class
-     * @param data - The raw JSON data to be parsed.
-     * @returns The parsed data in a specific format.
-     */
-    async parseData(criteria: CriteriaEntity): Promise<ReportEntity> {
-        //to implement
-        return new ReportEntity();
+    // TODO: Nick (Step 6) - Create MRT entities
+    async getMRTStations(data: GeoJsonData) {
+      
     }
+
+
+    // TODO: Joyce (Step 6) - Create School entities
+    async getSchools(data: GeoJsonData) {
+
+
+    }
+
+    // TODO: Jody (Step 6) - Create Supermarkets entities
+    async getSupermarkets(data: GeoJsonData) {
+
+    }
+
+    // TODO: Angel (Step 6) - Create Clinic entities
+    async getClinics(data: GeoJsonData) {
+
+    }
+
+    public getScoringResults(): Map<CriteriaType, ScoringResult> {
+        return this.proximityScorer.getResults();
+    }
+
+
+    public setSelectedLocation(location: LocationEntity) {
+        this.selectedLocation = location;
+    }
+
+    public setSelectedCriteria(criteria: CriteriaEntity) {
+        this.selectedCriteria = criteria;
+    }
+
+    public getSelectedLocation(): LocationEntity | null {
+        return this.selectedLocation;
+    }
+
+    public getSelectedCriteria(): CriteriaEntity | null {
+        return this.selectedCriteria;
+    }
+
 
 
 }

@@ -4,6 +4,7 @@ import { useEffect, useState, useRef, } from "react";
 import { GoogleMap, Marker,} from "@react-google-maps/api";
 import LocationPredictionEntity from "@/lib/entities/location/location-prediction-entity";
 import { useMasterController } from "@/context/master-controller-context";
+import LocationEntity from "@/lib/entities/location/location-entity";
 
 interface LatLng {
     lat: number;
@@ -12,7 +13,9 @@ interface LatLng {
 
 export default function SearchLocation() {
 
-
+    const masterController = useMasterController();
+    const locationController = masterController.getLocationController();
+    const reportController = masterController.getReportController();
 
     const [mapCenter, setMapCenter] = useState<LatLng>({
         lat: 1.348502964206701,
@@ -26,8 +29,11 @@ export default function SearchLocation() {
     const [searchValue, setSearchValue] = useState<string>("");
     const mapRef = useRef<google.maps.Map | null>(null);
 
-    const masterController = useMasterController();
-    const locationController = masterController.getLocationController();
+
+    function setLocation(location: LocationEntity) {
+        reportController.setSelectedLocation(location);
+        setMarkerPosition({ lat: location.latitude, lng: location.longitude });
+    }
 
     // Handle location autocomplete search
     async function handleSearchChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -49,8 +55,8 @@ export default function SearchLocation() {
 
         const location = await locationController.getLocationByPrediction(prediction);
         if (location) {
+            setLocation(location);
             setMapCenter({ lat: location.latitude, lng: location.longitude });
-            setMarkerPosition({ lat: location.latitude, lng: location.longitude });
         }
     };
 
@@ -63,6 +69,7 @@ export default function SearchLocation() {
                 setMarkerPosition({ lat: newCenter.lat, lng: newCenter.lng }); // Update the marker's lat/lng to the center of the map
                 const location = await locationController.getLocationByCoordinates(newCenter.lat, newCenter.lng);
                 if (location) {
+                    setLocation(location);
                     setSearchValue(location.address || ""); // Update the search bar with the address
                 }
             }
@@ -95,7 +102,6 @@ export default function SearchLocation() {
 
     return (
         <div className="relative w-full h-[calc(58vh-30%)]">
-            
             {/* Input field for location search */}
             <input
                 value={searchValue}
@@ -129,6 +135,15 @@ export default function SearchLocation() {
                 mapContainerStyle={{ width: "100%", height: "100%" }}
                 options={{
                     streetViewControl: false,
+                    restriction: {
+                        latLngBounds: {
+                            north: 1.54,   
+                            south: 1.16,   
+                            east: 104.2, 
+                            west: 103.45,  
+                        },
+                        strictBounds: true,  
+                    }
                 }}
             >
                 {/* Marker is fixed to the center of the map */}

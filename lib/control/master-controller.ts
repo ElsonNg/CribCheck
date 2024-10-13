@@ -4,6 +4,7 @@ import ReportController from "@/lib/control/report-controller";
 import GovtDatasetService from "@/lib/boundary/implementation/govt-dataset-service";
 import LocationController from "@/lib/control/location-controller";
 import GoogleLocationService from "@/lib/boundary/implementation/google-location-service";
+import CriteriaController from "./criteria-controller";
 
 /**
  * Enum representing the possible screen states in the application.
@@ -29,7 +30,8 @@ class MasterController {
     private authController: AuthController;
     private reportController: ReportController;
     private locationController: LocationController;
-    
+    private criteriaController: CriteriaController;
+
     private currentState: ScreenState;
     private onStateChangeCallback?: (state: ScreenState) => void;
 
@@ -43,10 +45,30 @@ class MasterController {
 
         // Initialize the `ReportController` with the required government dataset service.
         const hawkerCentresDatasetId = "d_4a086da0a5553be1d89383cd90d07ecd";
-        this.reportController = new ReportController(new GovtDatasetService(hawkerCentresDatasetId));
+
+        // TODO: Initialize the dataset with the correct id
+        // TODO: Nick (Step 2) 
+        // TODO: Joyce (Step 2)
+        // TODO: Jody (Step 2)
+        // TODO: Angel (Step 2)
+        const transportDatasetId = "";
+        const schoolTransportDatasetId = "";
+        const supermarketTransportDatasetId = "";
+        const clinicTransportDatasetId = "";
+
+        this.reportController = new ReportController(new GovtDatasetService(hawkerCentresDatasetId),
+            new GovtDatasetService(transportDatasetId),
+            new GovtDatasetService(schoolTransportDatasetId),
+            new GovtDatasetService(supermarketTransportDatasetId),
+            new GovtDatasetService(clinicTransportDatasetId));
+
+
 
         // Initialize the `LocationController` with the required location service.
         this.locationController = new LocationController(new GoogleLocationService());
+
+        // Initialize the 'CriteriaController'
+        this.criteriaController = new CriteriaController();
 
         // Set the initial state of the screen flow.
         this.currentState = ScreenState.SelectingLocation;
@@ -70,7 +92,7 @@ class MasterController {
         return this.reportController;
     }
 
-    
+
     /**
      * Retrieves the `LocationController` instance.
      *
@@ -78,6 +100,15 @@ class MasterController {
      */
     public getLocationController(): LocationController {
         return this.locationController;
+    }
+
+    /**
+     * Retrieves the `CriteriaController` instance.
+     *
+     * @returns {CriteriaController} The `CriteriaController` instance used for selecting/creating criteria
+     */
+    public getCriteriaController(): CriteriaController {
+        return this.criteriaController;
     }
 
     /**
