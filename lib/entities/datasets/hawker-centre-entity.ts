@@ -1,17 +1,12 @@
 import LocationEntity from "@/lib/entities/location/location-entity";
 
-class HawkerCentreEntity {
+class HawkerCentreEntity extends LocationEntity {
 
-    private location : LocationEntity;
     private name : string;
 
     constructor(name : string, location: LocationEntity) {
+        super(location.latitude, location.longitude);
         this.name = name;
-        this.location = location;
-    }
-
-    public getLocation() : LocationEntity {
-        return this.location;
     }
 
     public getName() : string {

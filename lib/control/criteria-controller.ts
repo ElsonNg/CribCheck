@@ -38,31 +38,51 @@ class CriteriaController {
         this.currentCriteria = new CriteriaEntity();
     }
 
-    setPresetCriteria(presetType: PresetCriteriaType): CriteriaEntity {
+    public setPresetCriteria(presetType: PresetCriteriaType): CriteriaEntity {
         
+        // TODO: Nick - Add the criteria and number of stars
+        // TODO: Joyce - Add the criteria and number of stars
+        // TODO: Jody  - Add the criteria and number of stars  
+        // TODO: Angel - Add the criteria and number of stars
+        
+
         switch (presetType) {
             case "Singles":
+                this.currentCriteria.selectCriterion(CriteriaType.proximityToHawkerCentres, 5);
+                this.currentCriteria.selectCriterion(CriteriaType.proximityToMRT, 3);
                 break;
             case "Young Couple":
+                this.currentCriteria.selectCriterion(CriteriaType.proximityToHawkerCentres, 3);
+                this.currentCriteria.selectCriterion(CriteriaType.proximityToMRT, 5);
                 break;
             case "Family":
+                this.currentCriteria.selectCriterion(CriteriaType.proximityToHawkerCentres, 5);
+                this.currentCriteria.selectCriterion(CriteriaType.proximityToMRT, 5);
                 break;
-
             }
+
         return this.currentCriteria;
     }
 
 
-    selectCriterion(criteriaType: CriteriaType, ranking: number) {
+    public selectCriterion(criteriaType: CriteriaType, ranking: number) {
         this.currentCriteria.selectCriterion(criteriaType, ranking);
     }
 
-    deselectCriteron(criteriaType: CriteriaType) {
+    public deselectCriteron(criteriaType: CriteriaType) {
         this.currentCriteria.deselectCriterion(criteriaType);
     }
 
-    loadCriteria(criteriaId : string, criteriaRankingMap: Map<CriteriaType, number>) : CriteriaEntity {
+    public loadCriteria(criteriaId : string, criteriaRankingMap: Map<CriteriaType, number>) : CriteriaEntity {
         this.currentCriteria.setAll(criteriaId, criteriaRankingMap);
+        return this.currentCriteria;
+    }
+
+    public clearCriteria() {
+        this.currentCriteria.clear();
+    }
+
+    public getCriteriaEntity() : CriteriaEntity {
         return this.currentCriteria;
     }
 

@@ -18,7 +18,7 @@ export default function SearchLocationWrapper() {
             <div className="flex-grow"></div>
             <div className="flex flex-col gap-8">
                 <button type="button" onClick={handleNext}
-                    className="group text-white bg-[#5A76FF] border-gray-400 border-2 rounded py-2 px-4 flex flex-row items-center justify-center gap-2 self-end">
+                    className="group text-white bg-[#5A76FF] rounded py-2 px-4 flex flex-row items-center justify-center gap-2 self-end">
                     Continue
                 </button>
             </div>

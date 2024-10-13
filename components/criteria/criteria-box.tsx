@@ -10,19 +10,40 @@ const criteriaOptions: PresetCriteriaType[] = ["Singles", "Young Couple", "Famil
 
 export default function CriteriaBox() {
     const masterController = useMasterController();
+    const criteriaController = masterController.getCriteriaController();
+    const reportController = masterController.getReportController();
     const [selectedOption, setSelectedOption] = useState<PresetCriteriaType | "new" | null>(null);
 
-    const handleNext = () => {
+
+    // Only allow user to progress if a criteria (preset or new) is selected
+    function handleContinue() {
+        if (!selectedOption) return;
+        reportController.setSelectedCriteria(criteriaController.getCriteriaEntity());
         masterController.goToNextState();
     };
 
-    const handleCriteriaClick = (criteria: PresetCriteriaType) => {
-        setSelectedOption((prev) => (prev === criteria ? null : criteria)); // Toggle selection
+    function handleCriteriaClick(criteria: PresetCriteriaType) {
+
+        // Remove any previous criteria set
+        if (selectedOption === criteria) {
+            criteriaController.clearCriteria();
+            setSelectedOption(null);
+            // Select a preset criteria
+        } else {
+            criteriaController.setPresetCriteria(criteria);
+            setSelectedOption(criteria);
+        }
     };
 
-    const handleNewPresetClick = () => {
+    function handleNewPresetClick() {
+
+        // Remove any previous criteria set
+        if (selectedOption !== null) {
+            criteriaController.clearCriteria();
+        }
         setSelectedOption((prev) => (prev === "new" ? null : "new")); // Toggle "new" selection
     };
+
 
     return (
         <div className="flex flex-col p-6 gap-4 bg-white drop-shadow-md rounded-lg">
@@ -57,10 +78,12 @@ export default function CriteriaBox() {
             </div>
 
             <div className="flex flex-col gap-8">
-                <button 
-                    type="button" 
-                    onClick={handleNext}
-                    className="group text-white bg-[#5A76FF] border-gray-400 border-2 rounded py-2 px-4 flex flex-row items-center justify-center gap-2 self-end"
+                <button
+                    type="button"
+                    onClick={handleContinue}
+                    disabled={!selectedOption}
+                    className="group text-white bg-[#5A76FF] rounded py-2 px-4 flex flex-row items-center justify-center gap-2 self-end
+                    disabled:opacity-60"
                 >
                     Continue
                 </button>
