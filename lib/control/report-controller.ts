@@ -2,6 +2,7 @@ import DatasetService from '@/lib/boundary/dataset-service';
 import CriteriaEntity, { CriteriaType } from '@/lib/entities/criteria-entity';
 import { GeoJsonData } from '@/lib/boundary/implementation/govt-dataset-service';
 import HawkerCentreEntity from '@/lib/entities/datasets/hawker-centre-entity';
+import MRTStationEntity from '@/lib/entities/datasets/mrt-station-entity';
 import LocationEntity from '@/lib/entities/location/location-entity';
 import { ProximityScorer } from '@/lib/strategy/proximity-scorer';
 import { LinearDistanceScoringStrategy } from '@/lib/strategy/linear-distance-scoring-strategy';
@@ -19,6 +20,7 @@ class ReportController {
 
     // Datasets
     private hawkerCentresDataset: DatasetService<GeoJsonData>;
+    private transportDataset: DatasetService<GeoJsonData>;
 
     // Scoring strategies
     private proximityScorer: ProximityScorer;
@@ -39,6 +41,8 @@ class ReportController {
 
         // TODO: Create private variables and assign the dataset services
         // TODO: Nick (Step 3) 
+        this.transportDataset = transportDataset;
+
         // TODO: Joyce (Step 3)
         // TODO: Jody (Step 3)
         // TODO: Angel (Step 3)
@@ -50,10 +54,11 @@ class ReportController {
 
         this.proximityScorer = new ProximityScorer();
         this.proximityScorer.addCriteriaStrategy(CriteriaType.proximityToHawkerCentres, new LinearDistanceScoringStrategy(2.0), 0.5, true);
-        this.proximityScorer.addCriteriaStrategy(CriteriaType.proximityToMRT, new LinearDistanceScoringStrategy(2.0), 0.5, true);
-
+        
         // TODO: Add the scoring strategy for the criteria type you are working on. If unsure, use LinearDistanceScoringStrategy
         // TODO: Nick (Step 4) 
+        this.proximityScorer.addCriteriaStrategy(CriteriaType.proximityToMRT, new LinearDistanceScoringStrategy(0.8), 0.5, true);
+
         // TODO: Joyce (Step 4)
         // TODO: Jody (Step 4)
         // TODO: Angel (Step 4)
@@ -101,6 +106,14 @@ class ReportController {
 
                     case CriteriaType.proximityToMRT:
                         // TODO: Nick (Step 5) - Fetch the data from the dataset, create MRT entities from the data, and populate the data into our proximity scorer
+                        const transportData = await this.transportDataset.fetchData();
+                        if(!transportData){
+                            throw new Error("Public transport dataset is not available.");
+                        }
+
+                        const mrtStations = await this.getMRTStations(transportData);
+
+                        this.proximityScorer.enableStrategy(criteriaType, weightage, mrtStations);
                         break;
 
                     case CriteriaType.proximityToSchool:
@@ -175,7 +188,39 @@ class ReportController {
 
     // TODO: Nick (Step 6) - Create MRT entities
     async getMRTStations(data: GeoJsonData) {
-      
+        const mrtStations: MRTStationEntity[] = [];
+        const parser = new DOMParser();
+
+        data?.features.forEach((feature) => {
+
+            const doc = parser.parseFromString(feature.properties.Description, 'text/html');
+
+            const thElements = doc.querySelectorAll('th');
+
+            let name = '';
+            thElements.forEach((th) => {
+                if (th.textContent === "STATION_NA") {
+                    // If it matches, find the next sibling <td> and extract its text content
+                    const nameElement = th.nextElementSibling;
+                    if (nameElement) {
+                        name = nameElement.textContent || '';
+                    }
+                }
+
+            });
+
+            // Extract the coordinates (location) from the GeoJSON geometry
+            const coordinates = feature.geometry.coordinates;
+            if (coordinates && coordinates.length >= 2) {
+                const isDuplicate = mrtStations.some(station => station.getName() === name);
+                
+                if(!isDuplicate){
+                    mrtStations.push(new MRTStationEntity(name, new LocationEntity(coordinates[1], coordinates[0])))
+                }
+            }
+        });
+
+        return mrtStations;
     }
 
 
