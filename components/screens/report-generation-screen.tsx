@@ -14,22 +14,19 @@ export default function ReportGenerationScreen() {
     const reportController = masterController.getReportController();
 
 
-
-
-
-
-    async function handleStartGenerateReport() {
-        await reportController.generateReport();
-        if (masterController.getCurrentState() == ScreenState.GeneratingReport) {
-            masterController.goToNextState();
-        }
-    }
-
     useEffect(() => {
         if (hasStarted.current) return;
+
+        async function handleStartGenerateReport() {
+            await reportController.generateReport();
+            if (masterController.getCurrentState() == ScreenState.GeneratingReport) {
+                masterController.goToNextState();
+            }
+        }
+
         handleStartGenerateReport();
         hasStarted.current = true;
-    }, []);
+    }, [masterController, reportController]);
 
     return (<div className="w-[80%] p-12 flex flex-col justify-start items-start gap-4">
         <h1 className="font-bold text-3xl">Generating Your CribFit Report</h1>

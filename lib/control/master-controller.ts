@@ -47,10 +47,10 @@ class MasterController {
         const hawkerCentresDatasetId = "d_4a086da0a5553be1d89383cd90d07ecd";
 
         // TODO: Initialize the dataset with the correct id
-        // TODO: Nick (Step 1) 
-        // TODO: Joyce (Step 1)
-        // TODO: Jody (Step 1)
-        // TODO: Angel (Step 1)
+        // TODO: Nick (Step 2) 
+        // TODO: Joyce (Step 2)
+        // TODO: Jody (Step 2)
+        // TODO: Angel (Step 2)
         const transportDatasetId = "";
         const schoolTransportDatasetId = "";
         const supermarketTransportDatasetId = "";

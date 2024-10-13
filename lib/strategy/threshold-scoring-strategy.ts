@@ -12,7 +12,7 @@ export class ThresholdScoringStrategy implements ScoringStrategy {
 
     calculateScore(queryLocation: LocationEntity, nearbyLocations: LocationEntity[]): ScoringResult {
         let totalScore = 0;
-        let validLocations: LocationEntity[] = [];
+        const validLocations: LocationEntity[] = [];
 
         nearbyLocations.forEach((location) => {
             const distance = queryLocation.distanceToKilometres(location);

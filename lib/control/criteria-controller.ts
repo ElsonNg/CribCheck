@@ -40,10 +40,10 @@ class CriteriaController {
 
     public setPresetCriteria(presetType: PresetCriteriaType): CriteriaEntity {
         
-        // TODO: Nick - Add the criteria and number of stars
-        // TODO: Joyce - Add the criteria and number of stars
-        // TODO: Jody  - Add the criteria and number of stars  
-        // TODO: Angel - Add the criteria and number of stars
+        // TODO: Nick (Step 1) - Add the criteria and number of stars
+        // TODO: Joyce (Step 1)- Add the criteria and number of stars
+        // TODO: Jody (Step 1)- Add the criteria and number of stars  
+        // TODO: Angel (Step 1)- Add the criteria and number of stars
         
 
         switch (presetType) {

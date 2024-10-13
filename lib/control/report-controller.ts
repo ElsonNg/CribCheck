@@ -38,10 +38,10 @@ class ReportController {
         this.hawkerCentresDataset = hawkerCentresDataset;
 
         // TODO: Create private variables and assign the dataset services
-        // TODO: Nick (Step 2) 
-        // TODO: Joyce (Step 2)
-        // TODO: Jody (Step 2)
-        // TODO: Angel (Step 2)
+        // TODO: Nick (Step 3) 
+        // TODO: Joyce (Step 3)
+        // TODO: Jody (Step 3)
+        // TODO: Angel (Step 3)
 
         this.selectedLocation = null;
         this.selectedCriteria = null;
@@ -53,10 +53,10 @@ class ReportController {
         this.proximityScorer.addCriteriaStrategy(CriteriaType.proximityToMRT, new LinearDistanceScoringStrategy(2.0), 0.5, true);
 
         // TODO: Add the scoring strategy for the criteria type you are working on. If unsure, use LinearDistanceScoringStrategy
-        // TODO: Nick (Step 3) 
-        // TODO: Joyce (Step 3)
-        // TODO: Jody (Step 3)
-        // TODO: Angel (Step 3)
+        // TODO: Nick (Step 4) 
+        // TODO: Joyce (Step 4)
+        // TODO: Jody (Step 4)
+        // TODO: Angel (Step 4)
         
     }
 
@@ -92,27 +92,27 @@ class ReportController {
                         }
 
                         // Create hawker entities from the data
-                        const nearbyHawkerCentres = await this.getHawkerCentres(data);
+                        const hawkerCentres = await this.getHawkerCentres(data);
 
                         // Populate the data into our proximity scorer, tagging it with the criteria type and weightage
-                        this.proximityScorer.enableStrategy(criteriaType, weightage, nearbyHawkerCentres);
+                        this.proximityScorer.enableStrategy(criteriaType, weightage, hawkerCentres);
                         break;
 
 
                     case CriteriaType.proximityToMRT:
-                        // TODO: Nick (Step 4) - Fetch the data from the dataset, create MRT entities from the data, and populate the data into our proximity scorer
+                        // TODO: Nick (Step 5) - Fetch the data from the dataset, create MRT entities from the data, and populate the data into our proximity scorer
                         break;
 
                     case CriteriaType.proximityToSchool:
-                        // TODO: Joyce (Step 4) - Fetch the data from the dataset, create School entities from the data, and populate the data into our proximity scorer
+                        // TODO: Joyce (Step 5) - Fetch the data from the dataset, create School entities from the data, and populate the data into our proximity scorer
                         break;
 
                     case CriteriaType.proximityToSupermarket:
-                        // TODO: Jody (Step 4) - Fetch the data from the dataset, create Supermarket entities from the data, and populate the data into our proximity scorer
+                        // TODO: Jody (Step 5) - Fetch the data from the dataset, create Supermarket entities from the data, and populate the data into our proximity scorer
                         break;
 
                     case CriteriaType.proximityToClinic:
-                        // TODO: Angel (Step 4) - Fetch the data from the dataset, create Clinic entities from the data, and populate the data into our proximity scorer
+                        // TODO: Angel (Step 5) - Fetch the data from the dataset, create Clinic entities from the data, and populate the data into our proximity scorer
                         break;
 
                     default:
@@ -169,30 +169,28 @@ class ReportController {
             }
         });
 
-
-        //const nearbyHawkerCentres = hawkerCentres.filter((centre) => queryLocation.distanceToKilometres(centre.getLocation()) <= ReportController.NEARBY_RADIUS_KM);
         return hawkerCentres;
     }
 
 
-    // TODO: Nick (Step 5) - Create MRT entities
+    // TODO: Nick (Step 6) - Create MRT entities
     async getMRTStations(data: GeoJsonData) {
-
+      
     }
 
 
-    // TODO: Joyce (Step 5) - Create School entities
+    // TODO: Joyce (Step 6) - Create School entities
     async getSchools(data: GeoJsonData) {
 
 
     }
 
-    // TODO: Jody (Step 5) - Create Supermarkets entities
+    // TODO: Jody (Step 6) - Create Supermarkets entities
     async getSupermarkets(data: GeoJsonData) {
 
     }
 
-    // TODO: Angel (Step 5) - Create Clinic entities
+    // TODO: Angel (Step 6) - Create Clinic entities
     async getClinics(data: GeoJsonData) {
 
     }
