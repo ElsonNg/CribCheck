@@ -8,6 +8,7 @@ import { ProximityScorer } from '@/lib/strategy/proximity-scorer';
 import { LinearDistanceScoringStrategy } from '@/lib/strategy/linear-distance-scoring-strategy';
 import { ScoringResult } from '@/lib/strategy/scoring-strategy';
 import ClinicEntity from '../entities/clinic-entity';
+import SchoolEntity from '../entities/datasets/school-entity';
 /**
  * The 'ReportController' class is responsible for managing all the datasets required for generating 
  * report score via our algorithm by interacting with 'GovtDatasetService' and '<insert other dataset>'
@@ -23,6 +24,7 @@ class ReportController {
     private hawkerCentresDataset: DatasetService<GeoJsonData>;
     private transportDataset: DatasetService<GeoJsonData>;
     private clinicDataset: DatasetService<GeoJsonData>;
+    private schoolDataset: DatasetService<GeoJsonData>;
 
     // Scoring strategies
     private proximityScorer: ProximityScorer;
@@ -46,6 +48,7 @@ class ReportController {
         this.transportDataset = transportDataset;
 
         // TODO: Joyce (Step 3)
+        this.schoolDataset = schoolDataset;
         // TODO: Jody (Step 3)
         // TODO: Angel (Step 3)
         this.clinicDataset = clinicDataset;
@@ -64,6 +67,7 @@ class ReportController {
         this.proximityScorer.addCriteriaStrategy(CriteriaType.proximityToMRT, new LinearDistanceScoringStrategy(0.8), 0.5, true);
 
         // TODO: Joyce (Step 4)
+        this.proximityScorer.addCriteriaStrategy(CriteriaType.proximityToSchool, new LinearDistanceScoringStrategy(0.8), 0.5, true);
         // TODO: Jody (Step 4)
         // TODO: Angel (Step 4)
         this.proximityScorer.addCriteriaStrategy(CriteriaType.proximityToClinic, new LinearDistanceScoringStrategy(0.8), 0.5, true);
@@ -124,6 +128,15 @@ class ReportController {
 
                     case CriteriaType.proximityToSchool:
                         // TODO: Joyce (Step 5) - Fetch the data from the dataset, create School entities from the data, and populate the data into our proximity scorer
+                        const schoolData = await this.schoolDataset.fetchData();
+                        if (!schoolData) {
+                            throw new Error("School dataset is not available!");
+                        }
+
+                        const school = await this.getSchools(schoolData);
+
+
+                        this.proximityScorer.enableStrategy(criteriaType, weightage, school);
                         break;
 
                     case CriteriaType.proximityToSupermarket:
@@ -243,7 +256,36 @@ class ReportController {
 
     // TODO: Joyce (Step 6) - Create School entities
     async getSchools(data: GeoJsonData) {
+        const school: SchoolEntity[] = [];
+        const parser = new DOMParser();
 
+        data?.features.forEach((feature) => {
+
+            const doc = parser.parseFromString(feature.properties.Description, 'text/html');
+
+            const thElements = doc.querySelectorAll('th');
+
+            let name = '';
+            thElements.forEach((th) => {
+                if (th.textContent === "CENTRE_NAME") {
+                    // If it matches, find the next sibling <td> and extract its text content
+                    const nameElement = th.nextElementSibling;
+                    if (nameElement) {
+                        name = nameElement.textContent || '';
+                    }
+                }
+
+            });
+
+            // Extract the coordinates (location) from the GeoJSON geometry
+            const coordinates = feature.geometry.coordinates;
+            if (coordinates && coordinates.length >= 2) {
+                school.push(new SchoolEntity(name, new LocationEntity(coordinates[1], coordinates[0])))
+
+            }
+        });
+
+        return school;
 
     }
 

@@ -51,7 +51,7 @@ class MasterController {
         // TODO: Jody (Step 2)
         // TODO: Angel (Step 2)
         const transportDatasetId = "d_b39d3a0871985372d7e1637193335da5";
-        const schoolTransportDatasetId = "";
+        const schoolTransportDatasetId = "d_61eefab99958fd70e6aab17320a71f1c";
         const supermarketTransportDatasetId = "";
         const clinicTransportDatasetId = "d_548c33ea2d99e29ec63a7cc9edcccedc";
 
