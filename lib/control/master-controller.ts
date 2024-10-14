@@ -53,7 +53,7 @@ class MasterController {
         const transportDatasetId = "d_b39d3a0871985372d7e1637193335da5";
         const schoolTransportDatasetId = "";
         const supermarketTransportDatasetId = "";
-        const clinicTransportDatasetId = "";
+        const clinicTransportDatasetId = "d_548c33ea2d99e29ec63a7cc9edcccedc";
 
         this.reportController = new ReportController(new GovtDatasetService(hawkerCentresDatasetId),
             new GovtDatasetService(transportDatasetId),
