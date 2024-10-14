@@ -50,16 +50,19 @@ class CriteriaController {
                 this.currentCriteria.selectCriterion(CriteriaType.proximityToHawkerCentres, 5);
                 this.currentCriteria.selectCriterion(CriteriaType.proximityToMRT, 3);
                 this.currentCriteria.selectCriterion(CriteriaType.proximityToClinic, 4);
+                this.currentCriteria.selectCriterion(CriteriaType.proximityToSchool, 1);
                 break;
             case "Young Couple":
                 this.currentCriteria.selectCriterion(CriteriaType.proximityToHawkerCentres, 3);
                 this.currentCriteria.selectCriterion(CriteriaType.proximityToMRT, 5);
                 this.currentCriteria.selectCriterion(CriteriaType.proximityToClinic, 4);
+                this.currentCriteria.selectCriterion(CriteriaType.proximityToSchool, 3);
                 break;
             case "Family":
                 this.currentCriteria.selectCriterion(CriteriaType.proximityToHawkerCentres, 5);
                 this.currentCriteria.selectCriterion(CriteriaType.proximityToMRT, 5);
                 this.currentCriteria.selectCriterion(CriteriaType.proximityToClinic, 4);
+                this.currentCriteria.selectCriterion(CriteriaType.proximityToSchool, 4);
                 break;
             }
 
