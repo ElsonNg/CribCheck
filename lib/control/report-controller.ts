@@ -16,7 +16,7 @@ import SchoolEntity from '../entities/datasets/school-entity';
 
 class ReportController {
 
-
+    private selectedLocationOther : LocationEntity | null;
     private selectedLocation: LocationEntity | null;
     private selectedCriteria: CriteriaEntity | null;
 
@@ -54,6 +54,7 @@ class ReportController {
         this.clinicDataset = clinicDataset;
 
 
+        this.selectedLocationOther = null;
         this.selectedLocation = null;
         this.selectedCriteria = null;
 
@@ -336,6 +337,10 @@ class ReportController {
         this.selectedLocation = location;
     }
 
+    public setSelectedLocationOther(location: LocationEntity) {
+        this.selectedLocationOther = location;
+    }
+
     public setSelectedCriteria(criteria: CriteriaEntity) {
         this.selectedCriteria = criteria;
     }
@@ -344,10 +349,15 @@ class ReportController {
         return this.selectedLocation;
     }
 
+    public getSelectedLocationOther() : LocationEntity | null {
+        return this.selectedLocationOther;
+    }
+
     public getSelectedCriteria(): CriteriaEntity | null {
         return this.selectedCriteria;
     }
 
+ 
 
 
 }
