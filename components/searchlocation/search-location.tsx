@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState, useRef, } from "react";
-import { GoogleMap, Marker,} from "@react-google-maps/api";
+import { GoogleMap, Marker, } from "@react-google-maps/api";
 import LocationPredictionEntity from "@/lib/entities/location/location-prediction-entity";
 import { useMasterController } from "@/context/master-controller-context";
 import LocationEntity from "@/lib/entities/location/location-entity";
+import { ScreenState } from "@/lib/control/master-controller";
 
 interface LatLng {
     lat: number;
@@ -31,7 +32,12 @@ export default function SearchLocation() {
 
 
     function setLocation(location: LocationEntity) {
-        reportController.setSelectedLocation(location);
+
+        if (masterController.getCurrentState() === ScreenState.SelectingLocation) {
+            reportController.setSelectedLocation(location);
+        }else if(masterController.getCurrentState() === ScreenState.ViewReport) {
+            reportController.setSelectedLocationOther(location);
+        }
         setMarkerPosition({ lat: location.latitude, lng: location.longitude });
     }
 
@@ -101,7 +107,7 @@ export default function SearchLocation() {
     }, [locationController]);
 
     return (
-        <div className="relative w-full h-[calc(58vh-30%)]">
+        <div className="grow relative w-full h-full flex flex-col">
             {/* Input field for location search */}
             <input
                 value={searchValue}
@@ -111,7 +117,7 @@ export default function SearchLocation() {
                 className="w-full h-10 bg-[#FAFAFA] rounded mb-2 px-3 text-lg leading-7 placeholder-[#B9B9B9] border border-[#E0E0E0] focus:outline-none"
             />
             {autocompleteSuggestions && (
-                <ul className="absolute z-20 w-full bg-white border border-gray-300 rounded shadow-lg max-h-60 overflow-x-hidden overflow-y-auto">
+                <ul className="absolute top-12 z-20 w-full bg-white border border-gray-300 rounded shadow-lg max-h-60 overflow-x-hidden overflow-y-auto">
                     {autocompleteSuggestions.map((suggestion) => (
                         <li
                             key={suggestion.placeId}
@@ -125,30 +131,31 @@ export default function SearchLocation() {
             )}
 
             {/* Google Map */}
-            <GoogleMap
-                center={mapCenter} // Keep map centered
-                zoom={zoomLevel}
-                onIdle={handleMapIdle} // Update marker when panning ends
-                onCenterChanged={handleOnMapCentreChanged}
-                onLoad={handleMapLoad} // Set mapRef on map load
-                onZoomChanged={() => setZoomLevel(zoomLevel)} // Update zoom level
-                mapContainerStyle={{ width: "100%", height: "100%" }}
-                options={{
-                    streetViewControl: false,
-                    restriction: {
-                        latLngBounds: {
-                            north: 1.54,   
-                            south: 1.16,   
-                            east: 104.2, 
-                            west: 103.45,  
-                        },
-                        strictBounds: true,  
-                    }
-                }}
-            >
-                {/* Marker is fixed to the center of the map */}
-                <Marker position={markerPosition} />
-            </GoogleMap>
+            <div className="grow w-full aspect-[2]">
+                <GoogleMap
+                    center={mapCenter} // Keep map centered
+                    zoom={zoomLevel}
+                    onIdle={handleMapIdle} // Update marker when panning ends
+                    onCenterChanged={handleOnMapCentreChanged}
+                    onLoad={handleMapLoad} // Set mapRef on map load
+                    onZoomChanged={() => setZoomLevel(zoomLevel)} // Update zoom level
+                    mapContainerStyle={{ width: "100%", height: "100%" }}
+                    options={{
+                        streetViewControl: false,
+                        restriction: {
+                            latLngBounds: {
+                                north: 1.54,
+                                south: 1.16,
+                                east: 104.2,
+                                west: 103.45,
+                            },
+                        }
+                    }}
+                >
+                    {/* Marker is fixed to the center of the map */}
+                    <Marker position={markerPosition} />
+                </GoogleMap>
+            </div>
         </div>
     );
 }
