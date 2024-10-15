@@ -22,6 +22,10 @@ export default function CriteriaBox() {
         masterController.goToNextState();
     };
 
+    function handleBack() {
+        masterController.goToPreviousState();
+    };
+
     function handleCriteriaClick(criteria: PresetCriteriaType) {
 
         // Remove any previous criteria set
@@ -77,7 +81,15 @@ export default function CriteriaBox() {
                 </button>
             </div>
 
-            <div className="flex flex-col gap-8">
+            <div className="flex flex-row justify-between gap-8">
+            <button
+                    type="button"
+                    onClick={handleBack}
+                    className="group text-white bg-[#5A76FF] rounded py-2 px-4 flex flex-row items-center justify-center gap-2 self-end
+                    disabled:opacity-60"
+                >
+                    Back
+                </button>
                 <button
                     type="button"
                     onClick={handleContinue}

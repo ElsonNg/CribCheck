@@ -9,6 +9,5 @@ export default function SelectCriteriaScreen() {
             We have created a few presets that might suit your needs. Alternatively you can create your own preset.
         </p>
         <CriteriaBox/>
-        <TestScreenButtons/>
     </div>)
 }
