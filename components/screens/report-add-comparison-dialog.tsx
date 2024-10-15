@@ -1,5 +1,6 @@
 import { useMasterController } from '@/context/master-controller-context';
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 
 interface DialogProps {
@@ -14,9 +15,7 @@ export default function ReportAddComparisonDialog({ onCancel, onCompare, childre
     const reportController = masterController.getReportController();
 
 
-
-
-    return (
+    return ReactDOM.createPortal(
         <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg shadow-lg w-full max-w-xl p-6 relative">
                 {/* Close Button */}
@@ -55,7 +54,7 @@ export default function ReportAddComparisonDialog({ onCancel, onCompare, childre
                     </button>
                 </div>
             </div>
-        </div>
+        </div>, document.body
     );
 
 }

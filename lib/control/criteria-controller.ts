@@ -47,10 +47,10 @@ class CriteriaController {
 
         switch (presetType) {
             case "Singles":
-                this.currentCriteria.selectCriterion(CriteriaType.proximityToHawkerCentres, 5);
-                this.currentCriteria.selectCriterion(CriteriaType.proximityToMRT, 3);
-                this.currentCriteria.selectCriterion(CriteriaType.proximityToClinic, 4);
-                this.currentCriteria.selectCriterion(CriteriaType.proximityToSchool, 1);
+                this.currentCriteria.selectCriterion(CriteriaType.proximityToHawkerCentres, 4);
+                this.currentCriteria.selectCriterion(CriteriaType.proximityToMRT, 5);
+                this.currentCriteria.selectCriterion(CriteriaType.proximityToClinic, 3);
+                this.currentCriteria.selectCriterion(CriteriaType.proximityToSchool, 5);
                 break;
             case "Young Couple":
                 this.currentCriteria.selectCriterion(CriteriaType.proximityToHawkerCentres, 3);

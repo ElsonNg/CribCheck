@@ -10,6 +10,5 @@ export default function SelectLocationScreen() {
             <p className="font-medium">For a start, choose a location.</p>
         </div>
         <SearchLocationWrapper/>
-        <TestScreenButtons/>
     </div>)
 }

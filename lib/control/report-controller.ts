@@ -9,6 +9,7 @@ import { LinearDistanceScoringStrategy } from '@/lib/strategy/linear-distance-sc
 import { ScoringResult } from '@/lib/strategy/scoring-strategy';
 import ClinicEntity from '../entities/clinic-entity';
 import SchoolEntity from '../entities/datasets/school-entity';
+import { ThresholdScoringStrategy } from '../strategy/threshold-scoring-strategy';
 /**
  * The 'ReportController' class is responsible for managing all the datasets required for generating 
  * report score via our algorithm by interacting with 'GovtDatasetService' and '<insert other dataset>'
@@ -16,7 +17,7 @@ import SchoolEntity from '../entities/datasets/school-entity';
 
 class ReportController {
 
-    private selectedLocationOther : LocationEntity | null;
+    private selectedLocationOther: LocationEntity | null;
     private selectedLocation: LocationEntity | null;
     private selectedCriteria: CriteriaEntity | null;
 
@@ -32,6 +33,9 @@ class ReportController {
 
     private cribFitRating: number;
 
+    private initialResult : Map<CriteriaType, ScoringResult> | null;
+    private otherResult : Map<CriteriaType, ScoringResult> | null;
+
 
 
     constructor(hawkerCentresDataset: DatasetService<GeoJsonData>,
@@ -44,36 +48,29 @@ class ReportController {
         this.hawkerCentresDataset = hawkerCentresDataset;
 
         // TODO: Create private variables and assign the dataset services
-        // TODO: Nick (Step 3) 
-        this.transportDataset = transportDataset;
-
-        // TODO: Joyce (Step 3)
-        this.schoolDataset = schoolDataset;
         // TODO: Jody (Step 3)
-        // TODO: Angel (Step 3)
+        this.transportDataset = transportDataset;
+        this.schoolDataset = schoolDataset;
         this.clinicDataset = clinicDataset;
 
 
         this.selectedLocationOther = null;
         this.selectedLocation = null;
         this.selectedCriteria = null;
-
+        this.initialResult = null;
+        this.otherResult = null;
+        
         this.cribFitRating = 0;
 
         this.proximityScorer = new ProximityScorer();
-        this.proximityScorer.addCriteriaStrategy(CriteriaType.proximityToHawkerCentres, new LinearDistanceScoringStrategy(2.0), 0.5, true);
-        
+        this.proximityScorer.addCriteriaStrategy(CriteriaType.proximityToHawkerCentres, new ThresholdScoringStrategy([0.3, 0.5, 1, 2], [100, 90, 80, 50]), 0.5, true);
+
         // TODO: Add the scoring strategy for the criteria type you are working on. If unsure, use LinearDistanceScoringStrategy
-        // TODO: Nick (Step 4) 
-        this.proximityScorer.addCriteriaStrategy(CriteriaType.proximityToMRT, new LinearDistanceScoringStrategy(0.8), 0.5, true);
+        this.proximityScorer.addCriteriaStrategy(CriteriaType.proximityToMRT, new ThresholdScoringStrategy([0.5, 0.8, 1, 2], [100, 90, 80, 50]), 0.5, true);
+        this.proximityScorer.addCriteriaStrategy(CriteriaType.proximityToSchool, new ThresholdScoringStrategy([1, 2, 5], [100, 90, 80, 50]), 0.5, true);
+        this.proximityScorer.addCriteriaStrategy(CriteriaType.proximityToClinic, new ThresholdScoringStrategy([0.3, 0.5, 1], [100, 90, 80, 50]), 0.5, true);
 
-        // TODO: Joyce (Step 4)
-        this.proximityScorer.addCriteriaStrategy(CriteriaType.proximityToSchool, new LinearDistanceScoringStrategy(0.8), 0.5, true);
-        // TODO: Jody (Step 4)
-        // TODO: Angel (Step 4)
-        this.proximityScorer.addCriteriaStrategy(CriteriaType.proximityToClinic, new LinearDistanceScoringStrategy(0.8), 0.5, true);
 
-        
     }
 
     async generateReport(): Promise<boolean> {
@@ -116,27 +113,22 @@ class ReportController {
 
 
                     case CriteriaType.proximityToMRT:
-                        // TODO: Nick (Step 5) - Fetch the data from the dataset, create MRT entities from the data, and populate the data into our proximity scorer
                         const transportData = await this.transportDataset.fetchData();
-                        if(!transportData){
+                        if (!transportData) {
                             throw new Error("Public transport dataset is not available.");
                         }
 
                         const mrtStations = await this.getMRTStations(transportData);
-
                         this.proximityScorer.enableStrategy(criteriaType, weightage, mrtStations);
                         break;
 
                     case CriteriaType.proximityToSchool:
-                        // TODO: Joyce (Step 5) - Fetch the data from the dataset, create School entities from the data, and populate the data into our proximity scorer
                         const schoolData = await this.schoolDataset.fetchData();
                         if (!schoolData) {
                             throw new Error("School dataset is not available!");
                         }
 
                         const school = await this.getSchools(schoolData);
-
-
                         this.proximityScorer.enableStrategy(criteriaType, weightage, school);
                         break;
 
@@ -145,7 +137,6 @@ class ReportController {
                         break;
 
                     case CriteriaType.proximityToClinic:
-                        // TODO: Angel (Step 5) - Fetch the data from the dataset, create Clinic entities from the data, and populate the data into our proximity scorer
                         // Fetch the data from clinic dataset
                         const clinicData = await this.clinicDataset.fetchData();
                         if (!clinicData) {
@@ -165,10 +156,18 @@ class ReportController {
 
             });
 
-            const results = await Promise.all(promises);
+            await Promise.all(promises);
             this.cribFitRating = this.proximityScorer.calculateCompositeScore(this.selectedLocation);
 
-            console.log("CribFit Rating: " + this.cribFitRating);
+            const results = this.proximityScorer.getResults();
+
+            if(this.initialResult === null) {
+                this.initialResult = results;
+            }else{
+                this.otherResult = results;
+            }
+
+
             return true;
 
         } catch (error) {
@@ -244,8 +243,8 @@ class ReportController {
             const coordinates = feature.geometry.coordinates;
             if (coordinates && coordinates.length >= 2) {
                 const isDuplicate = mrtStations.some(station => station.getName() === name);
-                
-                if(!isDuplicate){
+
+                if (!isDuplicate) {
                     mrtStations.push(new MRTStationEntity(name, new LocationEntity(coordinates[1], coordinates[0])))
                 }
             }
@@ -349,7 +348,7 @@ class ReportController {
         return this.selectedLocation;
     }
 
-    public getSelectedLocationOther() : LocationEntity | null {
+    public getSelectedLocationOther(): LocationEntity | null {
         return this.selectedLocationOther;
     }
 
@@ -357,8 +356,13 @@ class ReportController {
         return this.selectedCriteria;
     }
 
- 
+    public getInitialResult() : Map<CriteriaType, ScoringResult> | null {
+        return this.initialResult;
+    }
 
+    public getOtherResult() : Map<CriteriaType, ScoringResult> | null {
+        return this.otherResult;
+    }
 
 }
 
