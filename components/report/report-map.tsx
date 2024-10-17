@@ -1,5 +1,5 @@
 import { useMasterController } from "@/context/master-controller-context";
-import ClinicEntity from "@/lib/entities/clinic-entity";
+import ClinicEntity from "@/lib/entities/datasets/clinic-entity";
 import { CriteriaType } from "@/lib/entities/criteria-entity";
 import HawkerCentreEntity from "@/lib/entities/datasets/hawker-centre-entity";
 import MRTStationEntity from "@/lib/entities/datasets/mrt-station-entity";

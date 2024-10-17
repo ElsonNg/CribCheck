@@ -5,13 +5,14 @@ import ReportAddComparisonDialog from "./report-add-comparison-dialog";
 import SearchLocation from "../searchlocation/search-location";
 import { CriteriaType } from "@/lib/entities/criteria-entity";
 import { IoRestaurant } from "react-icons/io5";
-import { FaTrain } from "react-icons/fa6";
+import { FaBasketShopping, FaTrain } from "react-icons/fa6";
 import { FaClinicMedical } from "react-icons/fa";
 import { MdSchool } from "react-icons/md";
 import MRTStationEntity from "@/lib/entities/datasets/mrt-station-entity";
-import ClinicEntity from "@/lib/entities/clinic-entity";
+import ClinicEntity from "@/lib/entities/datasets/clinic-entity";
 import HawkerCentreEntity from "@/lib/entities/datasets/hawker-centre-entity";
 import SchoolEntity from "@/lib/entities/datasets/school-entity";
+import SupermarketEntity from "@/lib/entities/datasets/supermarket-entity";
 
 
 export default function ReportResults() {
@@ -27,6 +28,7 @@ export default function ReportResults() {
     const nearbyMRT = initialResult ? initialResult.get(CriteriaType.proximityToMRT)?.getValidLocations().filter((l) => queriedLocation!.distanceToKilometres(l) <= 0.800) : [];
     const nearbyClinics = initialResult ? initialResult.get(CriteriaType.proximityToClinic)?.getValidLocations().filter((l) => queriedLocation!.distanceToKilometres(l) <= 0.500) : [];
     const nearbySchools = initialResult ? initialResult.get(CriteriaType.proximityToSchool)?.getValidLocations().filter((l) => queriedLocation!.distanceToKilometres(l) <= 1.00) : [];
+    const nearbySupermarkets = initialResult ? initialResult.get(CriteriaType.proximityToSupermarket)?.getValidLocations().filter((l) => queriedLocation!.distanceToKilometres(l) <= 1.00) : [];
 
     function handleCancelComparison() {
         setShowAddComparisonDialog(false);
@@ -102,6 +104,17 @@ export default function ReportResults() {
                             <span className="text-lg font-bold">Near to Schools (1km)</span>
                             <span className="text-md font-medium">{nearbySchools.length} location(s)</span>
                             <span className="text-md font-medium">{nearbySchools.map((l) => (l as SchoolEntity).getName()).join(", ")}</span>
+
+                        </div>
+                    </div>)
+                }
+                {nearbySupermarkets && nearbySupermarkets.length > 0
+                    && (<div className="px-6 py-4 flex flex-row justify-start items-center gap-8 bg-[#EEEEEE] rounded-md">
+                        <FaBasketShopping size={32} className="basis-[10%]" />
+                        <div className="basis-[90%] flex flex-col justify-center items-start gap-0.5">
+                            <span className="text-lg font-bold">Near to Supermarkets (1km)</span>
+                            <span className="text-md font-medium">{nearbySupermarkets.length} location(s)</span>
+                            <span className="text-md font-medium">{nearbySupermarkets.map((l) => (l as SupermarketEntity).getName()).join(", ")}</span>
 
                         </div>
                     </div>)
