@@ -45,11 +45,9 @@ export class ProximityScorer {
      *
      * @param criteriaType - The criteria type (e.g., proximityToHawkerCentres).
      * @param strategy - The strategy to use for scoring.
-     * @param weight - The initial weight for the strategy (0-1).
-     * @param enabled - Whether the strategy is initially enabled.
      */
-    public addCriteriaStrategy(criteriaType: CriteriaType, strategy: ScoringStrategy, weight: number, enabled: boolean) {
-        this.strategyMap.set(criteriaType, { strategy, weight, locations: [], enabled });
+    public addCriteriaStrategy(criteriaType: CriteriaType, strategy: ScoringStrategy) {
+        this.strategyMap.set(criteriaType, { strategy, weight: 1.0, locations: [], enabled: true });
     }
 
     /**

@@ -78,8 +78,8 @@ class CriteriaController {
         this.currentCriteria.deselectCriterion(criteriaType);
     }
 
-    public loadCriteria(criteriaId : string, criteriaRankingMap: Map<CriteriaType, number>) : CriteriaEntity {
-        this.currentCriteria.setAll(criteriaId, criteriaRankingMap);
+    public loadCriteria(criteriaRankingMap: Map<CriteriaType, number>) : CriteriaEntity {
+        this.currentCriteria.setAll(criteriaRankingMap);
         return this.currentCriteria;
     }
 

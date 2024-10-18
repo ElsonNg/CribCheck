@@ -49,6 +49,10 @@ class LocationEntity {
         return this.longitude;
     }
 
+    public equals(other: LocationEntity) : boolean {
+        return (this.address !== null && other.address !== null && this.address === other.address) || (this.latitude === other.latitude && this.longitude === other.longitude);
+    }
+
     /**
      * Get the address of the location. If no address is set, returns 'None'.
      * 
@@ -98,6 +102,14 @@ class LocationEntity {
      */
     public distanceToMetres(other: LocationEntity): number {
         return this.distanceToKilometres(other) * 1000;
+    }
+
+    public toJSON() : Record<string, unknown> {
+        return {
+            latitude: this.latitude,
+            longitude: this.longitude,
+            ...(this.address ? {address: this.address} : {}),
+        };
     }
 }
 

@@ -22,16 +22,13 @@ export type PresetCriteriaType = "Singles" | "Young Couple" | "Family";
 export default class CriteriaEntity {
 
 
-    private criteriaId: string;
     private criteriaRankingMap: Map<CriteriaType, number>;
 
     constructor() {
-        this.criteriaId = "";
         this.criteriaRankingMap = new Map<CriteriaType, number>();
     }
 
-    public setAll(criteriaId: string, criteriaRankingMap: Map<CriteriaType, number>) {
-        this.criteriaId = criteriaId;
+    public setAll(criteriaRankingMap: Map<CriteriaType, number>) {
         this.criteriaRankingMap = criteriaRankingMap;
     }
 
@@ -44,13 +41,6 @@ export default class CriteriaEntity {
         return this.criteriaRankingMap;
     }
 
-    public getCriteriaId(): string {
-        return this.criteriaId;
-    }
-
-    public setCriteriaId(criteriaId: string) {
-        this.criteriaId = criteriaId;
-    }
 
     public selectCriterion(criteriaType: CriteriaType, stars: number) {
         this.criteriaRankingMap.set(criteriaType, stars);
@@ -63,14 +53,30 @@ export default class CriteriaEntity {
     }
 
     public getWeightage(criteriaType: CriteriaType): number {
-        
+
         const total = this.criteriaRankingMap.values().reduce((a, b) => a + b, 0);
         const ranking = this.criteriaRankingMap.get(criteriaType);
-        
-        if(ranking && total > 0)
+
+        if (ranking && total > 0)
             return ranking / total;
         else
             return 0;
+    }
+
+    public toJSON(): Record<string, unknown> {
+        return {
+            criteriaRankingMap: Array.from(this.criteriaRankingMap.entries()).reduce((obj, [key, value]) => {
+                obj[key] = value;
+                return obj;
+            }, {} as Record<string, number>)
+        };
+    }
+
+    public fromJSON(json: Record<string, number>) {
+        this.criteriaRankingMap = new Map<CriteriaType, number>();
+        Object.entries(json).forEach(([key, value]) => {
+            this.criteriaRankingMap.set(key as CriteriaType, value as number);
+        });
     }
 }
 

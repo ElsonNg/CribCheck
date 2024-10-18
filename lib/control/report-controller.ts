@@ -11,6 +11,7 @@ import ClinicEntity from '../entities/datasets/clinic-entity';
 import SchoolEntity from '../entities/datasets/school-entity';
 import { ThresholdScoringStrategy } from '../strategy/threshold-scoring-strategy';
 import SupermarketEntity from '../entities/datasets/supermarket-entity';
+import { DecayThresholdScoringStrategy } from '../strategy/decay-threshold-scoring-strategy';
 /**
  * The 'ReportController' class is responsible for managing all the datasets required for generating 
  * report score via our algorithm by interacting with 'GovtDatasetService' and '<insert other dataset>'
@@ -63,11 +64,18 @@ class ReportController {
         this.cribFitRating = 0;
 
         this.proximityScorer = new ProximityScorer();
-        this.proximityScorer.addCriteriaStrategy(CriteriaType.proximityToHawkerCentres, new ThresholdScoringStrategy([0.3, 0.5, 1, 2], [100, 90, 80, 50]), 0.5, true);
-        this.proximityScorer.addCriteriaStrategy(CriteriaType.proximityToMRT, new ThresholdScoringStrategy([0.5, 0.8, 1, 2], [100, 90, 80, 50]), 0.5, true);
-        this.proximityScorer.addCriteriaStrategy(CriteriaType.proximityToSchool, new ThresholdScoringStrategy([1, 2, 5], [100, 90, 80, 50]), 0.5, true);
-        this.proximityScorer.addCriteriaStrategy(CriteriaType.proximityToClinic, new ThresholdScoringStrategy([1, 2, 5], [100, 90, 80, 50]), 0.5, true);
-        this.proximityScorer.addCriteriaStrategy(CriteriaType.proximityToSupermarket, new ThresholdScoringStrategy([0.3, 0.5, 1], [100, 90, 80, 50]), 0.5, true);
+        this.proximityScorer.addCriteriaStrategy(CriteriaType.proximityToHawkerCentres, new DecayThresholdScoringStrategy(5, [0.3, 0.5, 1, 2], [100, 90, 75, 50], [0.6, 0.2, 0.1, 0.05, 0.05]));
+        this.proximityScorer.addCriteriaStrategy(CriteriaType.proximityToMRT, new DecayThresholdScoringStrategy(3, [0.3, 0.5, 1, 2], [100, 90, 75, 50], [0.7, 0.2, 0.1]));
+        this.proximityScorer.addCriteriaStrategy(CriteriaType.proximityToSupermarket, new DecayThresholdScoringStrategy(2, [0.3, 0.5, 1, 2], [100, 90, 75, 50], [0.6, 0.4]));
+        this.proximityScorer.addCriteriaStrategy(CriteriaType.proximityToSchool, new DecayThresholdScoringStrategy(5, [1, 2, 5], [100, 75, 50], [0.6, 0.2, 0.1, 0.05, 0.05]));
+        this.proximityScorer.addCriteriaStrategy(CriteriaType.proximityToClinic, new DecayThresholdScoringStrategy(2, [1, 2, 5], [100, 75, 50], [0.6, 0.4]));
+
+
+        // this.proximityScorer.addCriteriaStrategy(CriteriaType.proximityToHawkerCentres, new ThresholdScoringStrategy([0.3, 0.5, 1, 2], [100, 90, 80, 50]));
+        // this.proximityScorer.addCriteriaStrategy(CriteriaType.proximityToMRT, new ThresholdScoringStrategy([0.5, 0.8, 1, 2], [100, 90, 80, 50]));
+        // this.proximityScorer.addCriteriaStrategy(CriteriaType.proximityToSchool, new ThresholdScoringStrategy([1, 2, 5], [100, 90, 80, 50]));
+        // this.proximityScorer.addCriteriaStrategy(CriteriaType.proximityToClinic, new ThresholdScoringStrategy([1, 2, 5], [100, 90, 80, 50]));
+        // this.proximityScorer.addCriteriaStrategy(CriteriaType.proximityToSupermarket, new ThresholdScoringStrategy([0.3, 0.5, 1], [100, 90, 80, 50]));
 
 
     }
@@ -217,7 +225,11 @@ class ReportController {
             // Extract the coordinates (location) from the GeoJSON geometry
             const coordinates = feature.geometry.coordinates;
             if (coordinates && coordinates.length >= 2) {
-                hawkerCentres.push(new HawkerCentreEntity(name, new LocationEntity(coordinates[1], coordinates[0])))
+                const loc = new LocationEntity(coordinates[1], coordinates[0]);
+                const isDuplicate = hawkerCentres.some(s => s.equals(loc));
+                if (!isDuplicate) {
+                    hawkerCentres.push(new HawkerCentreEntity(name, loc));
+                }
             }
         });
 
@@ -287,7 +299,12 @@ class ReportController {
             // Extract the coordinates (location) from the GeoJSON geometry
             const coordinates = feature.geometry.coordinates;
             if (coordinates && coordinates.length >= 2) {
-                school.push(new SchoolEntity(name, new LocationEntity(coordinates[1], coordinates[0])))
+
+                const loc = new LocationEntity(coordinates[1], coordinates[0]);
+                const isDuplicate = school.some(s => s.equals(loc));
+                if (!isDuplicate) {
+                    school.push(new SchoolEntity(name, loc));
+                }
 
             }
         });
@@ -321,7 +338,10 @@ class ReportController {
             // Extract the coordinates (location) from the GeoJSON geometry
             const coordinates = feature.geometry.coordinates;
             if (coordinates && coordinates.length >= 2) {
-                supermarkets.push(new SupermarketEntity(name, new LocationEntity(coordinates[1], coordinates[0])))
+                const loc = new LocationEntity(coordinates[1], coordinates[0]);
+                const isDuplicate = supermarkets.some(s => s.equals(loc));
+                if (!isDuplicate)
+                    supermarkets.push(new SupermarketEntity(name, loc));
             }
         });
 
@@ -353,7 +373,10 @@ class ReportController {
             // Extract the coordinates (location) from the GeoJSON geometry
             const coordinates = feature.geometry.coordinates;
             if (coordinates && coordinates.length >= 2) {
-                clinic.push(new ClinicEntity(name, new LocationEntity(coordinates[1], coordinates[0])))
+                const loc = new LocationEntity(coordinates[1], coordinates[0]);
+                const isDuplicate = clinic.some(s => s.equals(loc));
+                if (!isDuplicate)
+                    clinic.push(new ClinicEntity(name, loc));
             }
         });
 

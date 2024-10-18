@@ -50,7 +50,7 @@ class FirebaseDBService extends DBService<Record<string, unknown>> {
      */
     async loadUserProfile(userId: string): Promise<Record<string, unknown> | null> {
         try {
-            const userDoc = doc(this.db, "users", userId);
+            const userDoc = doc(this.db, "profiles", userId);
             const userSnap = await getDoc(userDoc);
 
             if (userSnap.exists()) {
@@ -77,7 +77,7 @@ class FirebaseDBService extends DBService<Record<string, unknown>> {
      */
     async saveUserProfile(userProfileData: Record<string, unknown>, userId: string): Promise<Record<string, unknown> | null> {
         try {
-            const userDoc = doc(this.db, "users", userId);
+            const userDoc = doc(this.db, "profiles", userId);
             await setDoc(userDoc, userProfileData);
             return userProfileData;
         }

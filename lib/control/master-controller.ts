@@ -5,6 +5,8 @@ import GovtDatasetService from "@/lib/boundary/implementation/govt-dataset-servi
 import LocationController from "@/lib/control/location-controller";
 import GoogleLocationService from "@/lib/boundary/implementation/google-location-service";
 import CriteriaController from "./criteria-controller";
+import UserProfileController from "./userprofile-controller";
+import FirebaseDBService from "../boundary/implementation/firebase-db-service";
 
 /**
  * Enum representing the possible screen states in the application.
@@ -31,6 +33,7 @@ class MasterController {
     private reportController: ReportController;
     private locationController: LocationController;
     private criteriaController: CriteriaController;
+    private profileController : UserProfileController;
 
     private currentState: ScreenState;
     private onStateChangeCallback?: (state: ScreenState) => void;
@@ -64,6 +67,9 @@ class MasterController {
 
         // Initialize the 'CriteriaController'
         this.criteriaController = new CriteriaController();
+
+        // Initialize the 'UserProfileController'
+        this.profileController = new UserProfileController(new FirebaseDBService());
 
         // Set the initial state of the screen flow.
         this.currentState = ScreenState.SelectingLocation;
@@ -104,6 +110,10 @@ class MasterController {
      */
     public getCriteriaController(): CriteriaController {
         return this.criteriaController;
+    }
+
+    public getProfileController(): UserProfileController {
+        return this.profileController;
     }
 
     /**
