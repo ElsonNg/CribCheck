@@ -12,7 +12,11 @@ interface LatLng {
     lng: number;
 };
 
-export default function SearchLocation() {
+interface LocationSearchProps {
+    onChange?: (location: LocationEntity) => void;
+}
+
+export default function SearchLocation({onChange} : LocationSearchProps) {
 
     const masterController = useMasterController();
     const authController = masterController.getAuthController();
@@ -46,6 +50,9 @@ export default function SearchLocation() {
         } else if (masterController.getCurrentState() === ScreenState.ViewReport) {
             reportController.setSelectedLocationOther(location);
         }
+
+        if(onChange)
+            onChange(location);
         setMarkerPosition({ lat: location.latitude, lng: location.longitude });
     }
 
@@ -133,7 +140,7 @@ export default function SearchLocation() {
             setSavedSuggestions(suggestions);
         });
 
-    }, [locationController, authController, profileController]);
+    }, [locationController, authController, profileController, userProfile]);
 
     return (
         <div className="grow relative w-full h-full flex flex-col">

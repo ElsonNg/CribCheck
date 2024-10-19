@@ -69,6 +69,14 @@ class CriteriaController {
         return this.currentCriteria;
     }
 
+    public setDefaultNew() {
+        this.currentCriteria.selectCriterion(CriteriaType.proximityToHawkerCentres, 1);
+        this.currentCriteria.selectCriterion(CriteriaType.proximityToMRT, 1);
+        this.currentCriteria.selectCriterion(CriteriaType.proximityToClinic, 1);
+        this.currentCriteria.selectCriterion(CriteriaType.proximityToSchool, 1);
+        this.currentCriteria.selectCriterion(CriteriaType.proximityToSupermarket, 1);
+    }
+
 
     public selectCriterion(criteriaType: CriteriaType, ranking: number) {
         this.currentCriteria.selectCriterion(criteriaType, ranking);

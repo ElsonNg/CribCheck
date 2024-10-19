@@ -71,12 +71,12 @@ export class ProximityScorer {
                 // Store results for later use
                 this.results.set(criteriaType, result);
 
-                console.log("==============================");
-                console.log("Criteria Type: " + criteriaType);
-                console.log("Result Score: " + result.getScore());
-                console.log("Weight: " + scoringParams.weight);
-                console.log("Component Score: " + result.getScore() * scoringParams.weight);
-                console.log("==============================");
+                // console.log("==============================");
+                // console.log("Criteria Type: " + criteriaType);
+                // console.log("Result Score: " + result.getScore());
+                // console.log("Weight: " + scoringParams.weight);
+                // console.log("Component Score: " + result.getScore() * scoringParams.weight);
+                // console.log("==============================");
 
                 // Apply the weight and add to the total weighted score
                 totalWeightedScore += result.getScore() * scoringParams.weight;

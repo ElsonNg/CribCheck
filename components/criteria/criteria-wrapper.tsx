@@ -4,21 +4,22 @@ import { PresetCriteriaType } from "@/lib/entities/criteria-entity";
 import { useMasterController } from "@/context/master-controller-context";
 import CheckIcon from "@/app/images/checkicon.png";
 import CheckIconActive from "@/app/images/checkicon-active.png";
-
+import Image from "next/image";
+import CriteriaCreateForm from "./criteria-create-form";
 
 const criteriaOptions: PresetCriteriaType[] = ["Singles", "Young Couple", "Family"];
 
-export default function CriteriaBox() {
+export default function CriteriaWrapper() {
     const masterController = useMasterController();
     const criteriaController = masterController.getCriteriaController();
     const reportController = masterController.getReportController();
     const [selectedOption, setSelectedOption] = useState<PresetCriteriaType | "new" | null>(null);
 
-
     // Only allow user to progress if a criteria (preset or new) is selected
     function handleContinue() {
         if (!selectedOption) return;
         reportController.setSelectedCriteria(criteriaController.getCriteriaEntity());
+        console.log(criteriaController.getCriteriaEntity());
         masterController.goToNextState();
     };
 
@@ -44,6 +45,7 @@ export default function CriteriaBox() {
         // Remove any previous criteria set
         if (selectedOption !== null) {
             criteriaController.clearCriteria();
+            criteriaController.setDefaultNew();
         }
         setSelectedOption((prev) => (prev === "new" ? null : "new")); // Toggle "new" selection
     };
@@ -72,17 +74,22 @@ export default function CriteriaBox() {
                     type="button"
                 >
                     <span>
-                        <img
+                        <Image
                             src={selectedOption === "new" ? CheckIconActive.src : CheckIcon.src}
                             alt="Check Icon"
+                            width={32} height={32}
+                            layout="responsive"
                         />
                     </span>
                     I want to create a new preset
                 </button>
             </div>
 
+            {selectedOption === "new" && <CriteriaCreateForm className="mt-6" />}
+
+
             <div className="flex flex-row justify-between gap-8">
-            <button
+                <button
                     type="button"
                     onClick={handleBack}
                     className="group text-white bg-[#5A76FF] rounded py-2 px-4 flex flex-row items-center justify-center gap-2 self-end
