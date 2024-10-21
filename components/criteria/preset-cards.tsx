@@ -5,6 +5,7 @@ import YoungCouple from "@/app/images/youngcouple.png";
 import Family from "@/app/images/family.png";
 import { PresetCriteriaType } from "@/lib/entities/criteria-entity";
 import Image from "next/image";
+import { GoHistory } from "react-icons/go";
 
 
 interface CriteriaProps {
@@ -16,12 +17,15 @@ export default function CriteriaCard({ type }: CriteriaProps) {
         "Singles": Singles.src,
         "Young Couple": YoungCouple.src,
         "Family": Family.src,
-    };
+        "Saved": Family.src,
+    };  
 
     return (
-        <Card className="bg-[#EEEEEE] flex flex-col justify-center gap-2">
+        <Card className="bg-[#EEEEEE] flex flex-col justify-center items-center gap-2">
             <h3 className="font-semibold text-2xl text-center">{type}</h3>
-            <Image src={imageMap[type]} alt={type} className="object-contain h-32 w-32 block m-auto" width={500} height={500} />
+            {type == "Saved" ? <div className="object-contain h-32 w-32 flex flex-col justify-center items-center" ><GoHistory size={64}/></div>
+                : <Image src={imageMap[type]} alt={type} className="object-contain h-32 w-32 block m-auto" width={500} height={500} />}
+
         </Card>
     );
 }

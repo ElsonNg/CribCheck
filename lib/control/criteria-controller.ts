@@ -40,6 +40,8 @@ class CriteriaController {
 
     public setPresetCriteria(presetType: PresetCriteriaType): CriteriaEntity {
         
+        this.currentCriteria.setCustom(false);
+        this.currentCriteria.setName(presetType as string + " Criteria");
 
         switch (presetType) {
             case "Singles":
@@ -70,6 +72,8 @@ class CriteriaController {
     }
 
     public setDefaultNew() {
+        this.currentCriteria.setCustom(true);
+        this.currentCriteria.setName("My Preset");
         this.currentCriteria.selectCriterion(CriteriaType.proximityToHawkerCentres, 1);
         this.currentCriteria.selectCriterion(CriteriaType.proximityToMRT, 1);
         this.currentCriteria.selectCriterion(CriteriaType.proximityToClinic, 1);
@@ -98,6 +102,7 @@ class CriteriaController {
     public getCriteriaEntity() : CriteriaEntity {
         return this.currentCriteria;
     }
+
 
     // setCriteria(
     //     selectedCriteria: CriteriaType[],

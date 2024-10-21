@@ -72,6 +72,17 @@ class UserProfileController {
         return await this.saveUserProfile(authUser);
     }
 
+    public async savePreset(authUser: AuthUserEntity, preset: CriteriaEntity) : Promise<boolean> {
+        this.userProfile.addPreset(preset);
+        return await this.saveUserProfile(authUser);
+    }
+
+    public async removeSavedPreset(authUser: AuthUserEntity, preset: CriteriaEntity) : Promise<boolean> {
+        this.userProfile.removePreset(preset);
+        return await this.saveUserProfile(authUser);
+    }
+
+
     public getProfile(): UserProfileEntity {
         return this.userProfile;
     }

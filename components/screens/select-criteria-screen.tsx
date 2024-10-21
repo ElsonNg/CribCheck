@@ -1,3 +1,5 @@
+"use client"
+
 import CriteriaWrapper from "@/components/criteria/criteria-wrapper"
 
 export default function SelectCriteriaScreen() {

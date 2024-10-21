@@ -82,6 +82,18 @@ class UserProfileEntity {
         return this.presets;
     }
 
+    public hasPreset(preset: CriteriaEntity) {
+        return this.presets.some((p) => p.equals(preset));
+    }
+
+    public addPreset(preset: CriteriaEntity) {
+        this.presets = [...this.presets, preset];
+    }
+
+    public removePreset(preset: CriteriaEntity) {
+        this.presets = this.presets.filter((p) => !p.equals(preset));
+    }
+
 
     public getLocations(): LocationEntity[] {
         return this.locations;
@@ -118,15 +130,18 @@ class UserProfileEntity {
     }
 
     public fromJSON(data: Record<string, unknown>) {
+
         this.userId = data.userId as string ?? "";
         this.name = data.name as string ?? "";
         this.email = data.email as string ?? "";
 
-        this.presets = (data.presets as [] ?? []).map((p) => {
+        this.presets = (data.presets as [] ?? []).map((p : Record<string, number>) => {
             const criteria = new CriteriaEntity()
             criteria.fromJSON(p);
+            criteria.setName("Saved");
             return criteria;
         });
+
 
         this.locations = (data.locations as [] ?? []).map((p : Record<string, unknown>) => {
             const lat = p.latitude as number;

@@ -16,20 +16,25 @@ export const CriteriaLabels: { [key in CriteriaType]: string } = {
     [CriteriaType.proximityToClinic]: 'Proximity to Clinics',
 };
 
-export type PresetCriteriaType = "Singles" | "Young Couple" | "Family";
+export type PresetCriteriaType = "Singles" | "Young Couple" | "Family" | "Saved";
 
 
 export default class CriteriaEntity {
 
-
+    private name : string;
+    private custom : boolean;
     private criteriaRankingMap: Map<CriteriaType, number>;
 
     constructor() {
         this.criteriaRankingMap = new Map<CriteriaType, number>();
+        this.custom = true;
+        this.name = "";
     }
 
     public setAll(criteriaRankingMap: Map<CriteriaType, number>) {
-        this.criteriaRankingMap = criteriaRankingMap;
+        criteriaRankingMap.forEach((v,k) => {
+            this.criteriaRankingMap.set(k, v);
+        });
     }
 
     public clear() {
@@ -50,6 +55,22 @@ export default class CriteriaEntity {
         if (this.criteriaRankingMap.has(criteriaType)) {
             this.criteriaRankingMap.delete(criteriaType);
         }
+    }
+
+    public setCustom(custom: boolean) {
+        this.custom = custom;
+    }
+
+    public getCustom() {
+        return this.custom;
+    }
+
+    public setName(name: string) {
+        this.name = name;
+    }
+
+    public getName() {
+        return this.name;
     }
 
     public getWeightage(criteriaType: CriteriaType): number {
@@ -74,9 +95,17 @@ export default class CriteriaEntity {
 
     public fromJSON(json: Record<string, number>) {
         this.criteriaRankingMap = new Map<CriteriaType, number>();
-        Object.entries(json).forEach(([key, value]) => {
+        Object.entries(json['criteriaRankingMap']).forEach(([key, value]) => {
             this.criteriaRankingMap.set(key as CriteriaType, value as number);
         });
+    }
+
+    public equals(other: CriteriaEntity) {
+        this.criteriaRankingMap.forEach((v,k) => {
+            if(!other.criteriaRankingMap.has(k) || other.criteriaRankingMap.get(k) != v)
+                return false;
+        });
+        return true;
     }
 }
 

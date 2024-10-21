@@ -6,7 +6,7 @@ import SearchLocation from "../searchlocation/search-location";
 import { CriteriaType } from "@/lib/entities/criteria-entity";
 import { IoRestaurant } from "react-icons/io5";
 import { FaBasketShopping, FaTrain } from "react-icons/fa6";
-import { FaClinicMedical } from "react-icons/fa";
+import { FaClinicMedical, FaHeart } from "react-icons/fa";
 import { MdSchool } from "react-icons/md";
 import MRTStationEntity from "@/lib/entities/datasets/mrt-station-entity";
 import ClinicEntity from "@/lib/entities/datasets/clinic-entity";
@@ -14,6 +14,7 @@ import HawkerCentreEntity from "@/lib/entities/datasets/hawker-centre-entity";
 import SchoolEntity from "@/lib/entities/datasets/school-entity";
 import SupermarketEntity from "@/lib/entities/datasets/supermarket-entity";
 import { CiHeart } from "react-icons/ci";
+import { GoHeart, GoHeartFill } from "react-icons/go";
 
 
 export default function ReportResults() {
@@ -81,7 +82,7 @@ export default function ReportResults() {
                     disabled={isPending}
                     onClick={handleSaveLocation}
                     className="mt-4 text-black bg-gray-50 hover:opacity-90 hover:text-black/60 border rounded py-2 px-3 w-fit flex flex-row items-center justify-center gap-2">
-                    <CiHeart size={24} />
+                    {userProfile.hasLocation(queriedLocation!) ? <GoHeartFill size={16}/> : <GoHeart size={16} />}
                     <span>{queriedLocation && userProfile.hasLocation(queriedLocation) ? "Remove Saved Location" : "Save Location"}</span>
                 </button>)}
             </div>
