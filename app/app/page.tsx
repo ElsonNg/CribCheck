@@ -1,11 +1,11 @@
 import Footer from "@/components/general/footer";
 import NavBar from "@/components/general/nav-bar";
 import ScreenContent from "@/components/screens/screen-content";
-import Script from "next/script";
+import { Suspense } from "react";
 
 
 export default function AppPage() {
-  
+
   return (
     <div className="w-full min-h-screen flex flex-col">
       <div className="grow mx-auto w-full max-w-7xl mb-40">
@@ -19,7 +19,7 @@ export default function AppPage() {
         src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_PLACES_MAP_API}&libraries=places,geocoding`}
         strategy="beforeInteractive"
       /> */}
-    </div>
+    </div >
 
   );
 }

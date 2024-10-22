@@ -4,9 +4,11 @@ import { ScoringResult, ScoringStrategy } from "@/lib/strategy/scoring-strategy"
 
 export class LinearDistanceScoringStrategy implements ScoringStrategy {
 
+    private minDistanceInKM: number;
     private maxDistanceInKM: number;
 
-    constructor(maxDistanceInKM: number) {
+    constructor(minDistanceInKM: number, maxDistanceInKM: number) {
+        this.minDistanceInKM = minDistanceInKM;
         this.maxDistanceInKM = maxDistanceInKM;
     }
 
@@ -19,9 +21,15 @@ export class LinearDistanceScoringStrategy implements ScoringStrategy {
         nearbyLocations.forEach((location) => {
             const distance = queryLocation.distanceToKilometres(location);
 
+
             if (distance <= this.maxDistanceInKM) {
-                // Linear decay: closer locations get higher score, further ones get lower
-                const score = Math.max(0, (this.maxDistanceInKM - distance) / this.maxDistanceInKM) * 100;
+
+                let score;
+                if (distance <= this.minDistanceInKM) {
+                    score = 100;
+                } else {
+                    score = (1 - (distance - this.minDistanceInKM) / (this.maxDistanceInKM - this.minDistanceInKM)) * 100;
+                }
                 totalScore += score;
                 validLocations.push(location);
             }

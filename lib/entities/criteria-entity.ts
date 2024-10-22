@@ -16,23 +16,25 @@ export const CriteriaLabels: { [key in CriteriaType]: string } = {
     [CriteriaType.proximityToClinic]: 'Proximity to Clinics',
 };
 
-export type PresetCriteriaType = "Singles" | "Young Couple" | "Family";
+export type PresetCriteriaType = "Singles" | "Young Couple" | "Family" | "Saved";
 
 
 export default class CriteriaEntity {
 
-
-    private criteriaId: string;
+    private name : string;
+    private custom : boolean;
     private criteriaRankingMap: Map<CriteriaType, number>;
 
     constructor() {
-        this.criteriaId = "";
         this.criteriaRankingMap = new Map<CriteriaType, number>();
+        this.custom = true;
+        this.name = "";
     }
 
-    public setAll(criteriaId: string, criteriaRankingMap: Map<CriteriaType, number>) {
-        this.criteriaId = criteriaId;
-        this.criteriaRankingMap = criteriaRankingMap;
+    public setAll(criteriaRankingMap: Map<CriteriaType, number>) {
+        criteriaRankingMap.forEach((v,k) => {
+            this.criteriaRankingMap.set(k, v);
+        });
     }
 
     public clear() {
@@ -44,13 +46,6 @@ export default class CriteriaEntity {
         return this.criteriaRankingMap;
     }
 
-    public getCriteriaId(): string {
-        return this.criteriaId;
-    }
-
-    public setCriteriaId(criteriaId: string) {
-        this.criteriaId = criteriaId;
-    }
 
     public selectCriterion(criteriaType: CriteriaType, stars: number) {
         this.criteriaRankingMap.set(criteriaType, stars);
@@ -62,15 +57,55 @@ export default class CriteriaEntity {
         }
     }
 
+    public setCustom(custom: boolean) {
+        this.custom = custom;
+    }
+
+    public getCustom() {
+        return this.custom;
+    }
+
+    public setName(name: string) {
+        this.name = name;
+    }
+
+    public getName() {
+        return this.name;
+    }
+
     public getWeightage(criteriaType: CriteriaType): number {
-        
+
         const total = this.criteriaRankingMap.values().reduce((a, b) => a + b, 0);
         const ranking = this.criteriaRankingMap.get(criteriaType);
-        
-        if(ranking && total > 0)
+
+        if (ranking && total > 0)
             return ranking / total;
         else
             return 0;
+    }
+
+    public toJSON(): Record<string, unknown> {
+        return {
+            criteriaRankingMap: Array.from(this.criteriaRankingMap.entries()).reduce((obj, [key, value]) => {
+                obj[key] = value;
+                return obj;
+            }, {} as Record<string, number>)
+        };
+    }
+
+    public fromJSON(json: Record<string, number>) {
+        this.criteriaRankingMap = new Map<CriteriaType, number>();
+        Object.entries(json['criteriaRankingMap']).forEach(([key, value]) => {
+            this.criteriaRankingMap.set(key as CriteriaType, value as number);
+        });
+    }
+
+    public equals(other: CriteriaEntity) {
+        this.criteriaRankingMap.forEach((v,k) => {
+            if(!other.criteriaRankingMap.has(k) || other.criteriaRankingMap.get(k) != v)
+                return false;
+        });
+        return true;
     }
 }
 

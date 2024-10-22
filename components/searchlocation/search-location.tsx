@@ -12,11 +12,19 @@ interface LatLng {
     lng: number;
 };
 
-export default function SearchLocation() {
+interface LocationSearchProps {
+    onChange?: (location: LocationEntity) => void;
+}
+
+export default function SearchLocation({onChange} : LocationSearchProps) {
 
     const masterController = useMasterController();
+    const authController = masterController.getAuthController();
     const locationController = masterController.getLocationController();
     const reportController = masterController.getReportController();
+    const profileController = masterController.getProfileController();
+
+    const userProfile = profileController.getProfile();
 
     const [mapCenter, setMapCenter] = useState<LatLng>({
         lat: 1.348502964206701,
@@ -27,6 +35,10 @@ export default function SearchLocation() {
 
     const [autocompleteSuggestions, setAutocompleteSuggestions] =
         useState<LocationPredictionEntity[] | null>(null);
+
+    const [savedSuggestions, setSavedSuggestions] =
+        useState<LocationPredictionEntity[] | null>(null);
+
     const [searchValue, setSearchValue] = useState<string>("");
     const mapRef = useRef<google.maps.Map | null>(null);
 
@@ -35,9 +47,12 @@ export default function SearchLocation() {
 
         if (masterController.getCurrentState() === ScreenState.SelectingLocation) {
             reportController.setSelectedLocation(location);
-        }else if(masterController.getCurrentState() === ScreenState.ViewReport) {
+        } else if (masterController.getCurrentState() === ScreenState.ViewReport) {
             reportController.setSelectedLocationOther(location);
         }
+
+        if(onChange)
+            onChange(location);
         setMarkerPosition({ lat: location.latitude, lng: location.longitude });
     }
 
@@ -103,8 +118,29 @@ export default function SearchLocation() {
             if (location) {
                 setMapCenter({ lat: location.latitude, lng: location.longitude });
             }
-        })
-    }, [locationController]);
+        });
+
+        async function loadSavedLocations() {
+            const addressNames = userProfile.getLocations().map((location) => location.getAddress());
+            const suggestions: LocationPredictionEntity[] = [];
+
+            if (addressNames.length > 0) {
+                const promises = addressNames.map(async (name) => {
+                    return await locationController.queryLocationAutoComplete(name);
+
+                });
+                const predictions = await Promise.all(promises);
+                predictions.forEach((results) => {
+                    if (results && results.length > 0) suggestions.push(results[0]);
+                });
+            }
+            return suggestions;
+        }
+        loadSavedLocations().then((suggestions) => {
+            setSavedSuggestions(suggestions);
+        });
+
+    }, [locationController, authController, profileController, userProfile]);
 
     return (
         <div className="grow relative w-full h-full flex flex-col">
@@ -116,6 +152,19 @@ export default function SearchLocation() {
                 placeholder="Enter a location or postal code"
                 className="w-full h-10 bg-[#FAFAFA] rounded mb-2 px-3 text-lg leading-7 placeholder-[#B9B9B9] border border-[#E0E0E0] focus:outline-none"
             />
+             {searchValue === "" && savedSuggestions && (
+                <ul className="absolute top-12 z-20 w-full bg-white border border-gray-300 rounded shadow-lg max-h-60 overflow-x-hidden overflow-y-auto">
+                    {savedSuggestions.map((suggestion) => (
+                        <li
+                            key={suggestion.placeId}
+                            onClick={() => handleSelectSuggestion(suggestion)}
+                            className="p-2 cursor-pointer hover:bg-gray-100"
+                        >
+                            {suggestion.description} (Saved)
+                        </li>
+                    ))}
+                </ul>
+            )}
             {autocompleteSuggestions && (
                 <ul className="absolute top-12 z-20 w-full bg-white border border-gray-300 rounded shadow-lg max-h-60 overflow-x-hidden overflow-y-auto">
                     {autocompleteSuggestions.map((suggestion) => (

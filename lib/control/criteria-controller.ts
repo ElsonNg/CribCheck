@@ -40,10 +40,8 @@ class CriteriaController {
 
     public setPresetCriteria(presetType: PresetCriteriaType): CriteriaEntity {
         
-        // TODO: Joyce (Step 1)- Add the criteria and number of stars
-        // TODO: Jody (Step 1)- Add the criteria and number of stars  
-        // TODO: Angel (Step 1)- Add the criteria and number of stars
-        
+        this.currentCriteria.setCustom(false);
+        this.currentCriteria.setName(presetType as string + " Criteria");
 
         switch (presetType) {
             case "Singles":
@@ -51,22 +49,36 @@ class CriteriaController {
                 this.currentCriteria.selectCriterion(CriteriaType.proximityToMRT, 5);
                 this.currentCriteria.selectCriterion(CriteriaType.proximityToClinic, 3);
                 this.currentCriteria.selectCriterion(CriteriaType.proximityToSchool, 5);
+                this.currentCriteria.selectCriterion(CriteriaType.proximityToSupermarket, 2);
                 break;
             case "Young Couple":
                 this.currentCriteria.selectCriterion(CriteriaType.proximityToHawkerCentres, 3);
                 this.currentCriteria.selectCriterion(CriteriaType.proximityToMRT, 5);
                 this.currentCriteria.selectCriterion(CriteriaType.proximityToClinic, 4);
                 this.currentCriteria.selectCriterion(CriteriaType.proximityToSchool, 3);
+                this.currentCriteria.selectCriterion(CriteriaType.proximityToSupermarket, 2);
+
                 break;
             case "Family":
                 this.currentCriteria.selectCriterion(CriteriaType.proximityToHawkerCentres, 5);
                 this.currentCriteria.selectCriterion(CriteriaType.proximityToMRT, 5);
                 this.currentCriteria.selectCriterion(CriteriaType.proximityToClinic, 4);
                 this.currentCriteria.selectCriterion(CriteriaType.proximityToSchool, 4);
+                this.currentCriteria.selectCriterion(CriteriaType.proximityToSupermarket, 5);
                 break;
             }
 
         return this.currentCriteria;
+    }
+
+    public setDefaultNew() {
+        this.currentCriteria.setCustom(true);
+        this.currentCriteria.setName("My Preset");
+        this.currentCriteria.selectCriterion(CriteriaType.proximityToHawkerCentres, 1);
+        this.currentCriteria.selectCriterion(CriteriaType.proximityToMRT, 1);
+        this.currentCriteria.selectCriterion(CriteriaType.proximityToClinic, 1);
+        this.currentCriteria.selectCriterion(CriteriaType.proximityToSchool, 1);
+        this.currentCriteria.selectCriterion(CriteriaType.proximityToSupermarket, 1);
     }
 
 
@@ -78,8 +90,8 @@ class CriteriaController {
         this.currentCriteria.deselectCriterion(criteriaType);
     }
 
-    public loadCriteria(criteriaId : string, criteriaRankingMap: Map<CriteriaType, number>) : CriteriaEntity {
-        this.currentCriteria.setAll(criteriaId, criteriaRankingMap);
+    public loadCriteria(criteriaRankingMap: Map<CriteriaType, number>) : CriteriaEntity {
+        this.currentCriteria.setAll(criteriaRankingMap);
         return this.currentCriteria;
     }
 
@@ -90,6 +102,7 @@ class CriteriaController {
     public getCriteriaEntity() : CriteriaEntity {
         return this.currentCriteria;
     }
+
 
     // setCriteria(
     //     selectedCriteria: CriteriaType[],

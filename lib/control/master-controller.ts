@@ -5,6 +5,8 @@ import GovtDatasetService from "@/lib/boundary/implementation/govt-dataset-servi
 import LocationController from "@/lib/control/location-controller";
 import GoogleLocationService from "@/lib/boundary/implementation/google-location-service";
 import CriteriaController from "./criteria-controller";
+import UserProfileController from "./userprofile-controller";
+import FirebaseDBService from "../boundary/implementation/firebase-db-service";
 
 /**
  * Enum representing the possible screen states in the application.
@@ -31,6 +33,7 @@ class MasterController {
     private reportController: ReportController;
     private locationController: LocationController;
     private criteriaController: CriteriaController;
+    private profileController : UserProfileController;
 
     private currentState: ScreenState;
     private onStateChangeCallback?: (state: ScreenState) => void;
@@ -46,13 +49,9 @@ class MasterController {
         // Initialize the `ReportController` with the required government dataset service.
         const hawkerCentresDatasetId = "d_4a086da0a5553be1d89383cd90d07ecd";
 
-        // TODO: Initialize the dataset with the correct id
-        // TODO: Joyce (Step 2)
-        // TODO: Jody (Step 2)
-        // TODO: Angel (Step 2)
         const transportDatasetId = "d_b39d3a0871985372d7e1637193335da5";
         const schoolTransportDatasetId = "d_61eefab99958fd70e6aab17320a71f1c";
-        const supermarketTransportDatasetId = "";
+        const supermarketTransportDatasetId = "d_cac2c32f01960a3ad7202a99c27268a0";
         const clinicTransportDatasetId = "d_548c33ea2d99e29ec63a7cc9edcccedc";
 
         this.reportController = new ReportController(new GovtDatasetService(hawkerCentresDatasetId),
@@ -68,6 +67,9 @@ class MasterController {
 
         // Initialize the 'CriteriaController'
         this.criteriaController = new CriteriaController();
+
+        // Initialize the 'UserProfileController'
+        this.profileController = new UserProfileController(new FirebaseDBService());
 
         // Set the initial state of the screen flow.
         this.currentState = ScreenState.SelectingLocation;
@@ -108,6 +110,10 @@ class MasterController {
      */
     public getCriteriaController(): CriteriaController {
         return this.criteriaController;
+    }
+
+    public getProfileController(): UserProfileController {
+        return this.profileController;
     }
 
     /**
