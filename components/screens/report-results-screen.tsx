@@ -10,6 +10,7 @@ import { MdKeyboardArrowLeft } from "react-icons/md";
 import { GoHeart, GoHeartFill } from "react-icons/go";
 import { useTransition } from "react";
 import Confetti from "react-confetti-boom";
+import ReportAddComparison from "../report/report-add-comparison";
 
 
 
@@ -93,14 +94,36 @@ export default function ReportResultsScreen() {
                         <ReportMap />
                     </Card>
                     <Card className="col-span-6">
-                        <ReportResults />
+                        <div className="flex flex-col gap-8">
+
+                            <div className="flex flex-row justify-between gap-2">
+                                <h3 className="font-semibold text-2xl">📑 Crib Report</h3>
+                                <ReportAddComparison />
+                            </div>
+
+                            {reportController.getSelectedLocationOther() ? (
+                                <div className="grid grid-cols-2 gap-4">
+                                    <Card className="col-span-1">
+                                        <ReportResults
+                                            queriedLocation={reportController.getSelectedLocation()!}
+                                            cribFitRating={reportController.getCribFitRating()}
+                                            results={reportController.getInitialResult()!} />
+
+                                    </Card>
+                                    <Card className="col-span-1">
+                                        <ReportResults
+                                            queriedLocation={reportController.getSelectedLocationOther()!}
+                                            cribFitRating={reportController.getCribFitRatingOther()}
+                                            results={reportController.getOtherResult()!} />
+
+                                    </Card>
+                                </div>) :
+                                <ReportResults queriedLocation={reportController.getSelectedLocation()!}
+                                    cribFitRating={reportController.getCribFitRating()}
+                                    results={reportController.getInitialResult()!} />}
+                        </div>
                     </Card>
-                    <Card className="col-span-6">
-                        {/* <ReportResults /> */}
-                    </Card>
-                    <Card className="col-span-6 flex flex-col gap-8">
-                        <CriteriaScoreTable scoringResults={scoringResults} />
-                    </Card>
+
                 </div >
                 <div className="text-lg font-medium mx-auto underline cursor-pointer hover:opacity-60" onClick={handleRestart}>
                     Start Over

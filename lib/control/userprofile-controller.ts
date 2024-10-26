@@ -1,43 +1,38 @@
 import DBService from '@/lib/boundary/db-service';
 import UserProfileEntity from '@/lib/entities/user-profile-entity';
-import Presets from '../entities/presets-entity';
 import CriteriaEntity from '../entities/criteria-entity';
 import LocationEntity from '../entities/location/location-entity';
 import AuthUserEntity from '../entities/auth-user-entity';
 
 /**
- * The `UserProfileController` class is responsible for managing user profiles by interacting with a `DBService` implementation. 
- * It retrieves and saves user profiles from and to the database 
+ * `UserProfileController` manages user profile data by interacting with a `DBService` for persistence.
  * 
- * The controller relies on **Dependency Injection (DI)** to receive the `DBService`, allowing flexibility to swap out different database providers.
+ * This controller loads, saves, and updates user profiles, allowing the addition and removal of user-specific
+ * locations and presets. It maps data between the external data source and the application's `UserProfileEntity`.
  * 
  * @class UserProfileController
  */
-
-
 class UserProfileController {
     private dbService: DBService<Record<string, unknown>>;
     private userProfile: UserProfileEntity;
 
     /**
-     * Creates an instance of `UserProfileController` and sets the `DBService` used to handle database operations.
+     * Initializes the `UserProfileController` with a `DBService` instance.
      * 
-     * @param {DBService<any>} dbService - The `DBService` instance responsible for performing data retrieval and storage actions.
+     * @param {DBService<any>} dbService - Database service for performing user profile data operations.
      */
     constructor(dbService: DBService<Record<string, unknown>>) {
         this.dbService = dbService;
         this.userProfile = new UserProfileEntity();
     }
 
-
-
     /**
-     * Loads the user profile from the database using the `DBService`.
+     * Loads a user's profile from the database based on their unique identifier.
      * 
-     * This method interacts with the `DBService` to fetch the user profile and maps the result to the `UserProfile` entity.
+     * If the profile exists, it is loaded into the `userProfile` entity.
      * 
-     * @param {string} userId - The unique identifier of the user whose profile is to be loaded.
-     * @returns {Promise<UserProfileEntity | null>} A promise that resolves to the user profile entity or `null` if no profile is found.
+     * @param {string} userId - The unique user identifier for loading profile data.
+     * @returns {Promise<boolean>} `true` if the profile was successfully loaded, otherwise `false`.
      */
     async loadUserProfile(userId: string): Promise<boolean> {
         const profileData = await this.dbService.loadUserProfile(userId);
@@ -47,42 +42,74 @@ class UserProfileController {
     }
 
     /**
-     * Saves or updates the user profile in the database using the `DBService`.
+     * Saves or updates the current user profile in the database.
      * 
-     * This method converts the `UserProfile` entity back to raw JSON and then interacts with the `DBService` to save the profile.
+     * This method syncs the current `UserProfileEntity` to the database by converting it to JSON.
      * 
-     * @param {UserProfileEntity} userProfile - The user profile entity to be saved or updated.
-     * @returns {Promise<void>} A promise that resolves when the operation is complete.
+     * @param {AuthUserEntity} authUser - The authenticated user whose profile is being saved.
+     * @returns {Promise<boolean>} `true` if the profile was successfully saved, otherwise `false`.
      */
     private async saveUserProfile(authUser: AuthUserEntity): Promise<boolean> {
         this.userProfile.setUserId(authUser.getId());
         this.userProfile.setName(authUser.getName());
         this.userProfile.setEmail(authUser.getEmail());
-        const result = await this.dbService.saveUserProfile(this.userProfile.toJSON(), this.userProfile.getUserId());  // Pass the UserProfile entity and userId directly
+        const result = await this.dbService.saveUserProfile(this.userProfile.toJSON(), this.userProfile.getUserId());
         return result != null;
     }
 
+    /**
+     * Adds a new location to the user profile and saves the updated profile.
+     * 
+     * @param {AuthUserEntity} authUser - The authenticated user.
+     * @param {LocationEntity} location - The location to be added to the user profile.
+     * @returns {Promise<boolean>} `true` if the location was successfully saved, otherwise `false`.
+     */
     public async saveLocation(authUser: AuthUserEntity, location: LocationEntity): Promise<boolean> {
         this.userProfile.addLocation(location);
         return await this.saveUserProfile(authUser);
     }
 
+    /**
+     * Removes a location from the user profile and saves the updated profile.
+     * 
+     * @param {AuthUserEntity} authUser - The authenticated user.
+     * @param {LocationEntity} location - The location to be removed from the user profile.
+     * @returns {Promise<boolean>} `true` if the location was successfully removed, otherwise `false`.
+     */
     public async removeSavedLocation(authUser: AuthUserEntity, location: LocationEntity): Promise<boolean> {
         this.userProfile.removeLocation(location);
         return await this.saveUserProfile(authUser);
     }
 
-    public async savePreset(authUser: AuthUserEntity, preset: CriteriaEntity) : Promise<boolean> {
+    /**
+     * Adds a preset criteria set to the user profile and saves the updated profile.
+     * 
+     * @param {AuthUserEntity} authUser - The authenticated user.
+     * @param {CriteriaEntity} preset - The preset criteria to be added.
+     * @returns {Promise<boolean>} `true` if the preset was successfully saved, otherwise `false`.
+     */
+    public async savePreset(authUser: AuthUserEntity, preset: CriteriaEntity): Promise<boolean> {
         this.userProfile.addPreset(preset);
         return await this.saveUserProfile(authUser);
     }
 
-    public async removeSavedPreset(authUser: AuthUserEntity, preset: CriteriaEntity) : Promise<boolean> {
+    /**
+     * Removes a preset criteria set from the user profile and saves the updated profile.
+     * 
+     * @param {AuthUserEntity} authUser - The authenticated user.
+     * @param {CriteriaEntity} preset - The preset criteria to be removed.
+     * @returns {Promise<boolean>} `true` if the preset was successfully removed, otherwise `false`.
+     */
+    public async removeSavedPreset(authUser: AuthUserEntity, preset: CriteriaEntity): Promise<boolean> {
         this.userProfile.removePreset(preset);
         return await this.saveUserProfile(authUser);
     }
 
-
+    /**
+     * Retrieves the current `UserProfileEntity`.
+     * 
+     * @returns {UserProfileEntity} The loaded user profile entity.
+     */
     public getProfile(): UserProfileEntity {
         return this.userProfile;
     }

@@ -29,7 +29,6 @@ export default function NavBar() {
     
 
     async function handleLogout() {
-        console.log("Log out");
         await authController.logout();
         router.push("/");
     }

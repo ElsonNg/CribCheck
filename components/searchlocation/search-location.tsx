@@ -16,7 +16,7 @@ interface LocationSearchProps {
     onChange?: (location: LocationEntity) => void;
 }
 
-export default function SearchLocation({onChange} : LocationSearchProps) {
+export default function SearchLocation({ onChange }: LocationSearchProps) {
 
     const masterController = useMasterController();
     const authController = masterController.getAuthController();
@@ -45,13 +45,17 @@ export default function SearchLocation({onChange} : LocationSearchProps) {
 
     function setLocation(location: LocationEntity) {
 
+
+        reportController.clearReportResults();
+
         if (masterController.getCurrentState() === ScreenState.SelectingLocation) {
             reportController.setSelectedLocation(location);
+
         } else if (masterController.getCurrentState() === ScreenState.ViewReport) {
             reportController.setSelectedLocationOther(location);
         }
 
-        if(onChange)
+        if (onChange)
             onChange(location);
         setMarkerPosition({ lat: location.latitude, lng: location.longitude });
     }
@@ -152,7 +156,7 @@ export default function SearchLocation({onChange} : LocationSearchProps) {
                 placeholder="Enter a location or postal code"
                 className="w-full h-10 bg-[#FAFAFA] rounded mb-2 px-3 text-lg leading-7 placeholder-[#B9B9B9] border border-[#E0E0E0] focus:outline-none"
             />
-             {searchValue === "" && savedSuggestions && (
+            {searchValue === "" && savedSuggestions && (
                 <ul className="absolute top-12 z-20 w-full bg-white border border-gray-300 rounded shadow-lg max-h-60 overflow-x-hidden overflow-y-auto">
                     {savedSuggestions.map((suggestion) => (
                         <li

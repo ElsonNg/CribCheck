@@ -48,7 +48,6 @@ class MasterController {
 
         // Initialize the `ReportController` with the required government dataset service.
         const hawkerCentresDatasetId = "d_4a086da0a5553be1d89383cd90d07ecd";
-
         const transportDatasetId = "d_b39d3a0871985372d7e1637193335da5";
         const schoolTransportDatasetId = "d_61eefab99958fd70e6aab17320a71f1c";
         const supermarketTransportDatasetId = "d_cac2c32f01960a3ad7202a99c27268a0";

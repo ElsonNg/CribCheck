@@ -22,23 +22,26 @@ export default function ReportMap() {
 
     const masterController = useMasterController();
     const reportController = masterController.getReportController();
-    const results = reportController.getScoringResults();
 
+    const combinedResults = [reportController.getInitialResult(), reportController.getOtherResult()];
     const selectedLocation = reportController.getSelectedLocation();
+    const selectedLocationOther = reportController.getSelectedLocationOther();
 
     const [mapCenter, setMapCenter] = useState<LatLng>(
         { lat: selectedLocation?.latitude ?? 0, lng: selectedLocation?.longitude ?? 0 }
     );
 
+    const [mapCenterOther, setMapCenterOther] = useState<LatLng>(
+        { lat: selectedLocationOther?.latitude ?? 0, lng: selectedLocationOther?.longitude ?? 0 }
+    );
 
-    const [markerPosition, setMarkerPosition] = useState<LatLng>(mapCenter); // Track marker position
     const [zoomLevel, setZoomLevel] = useState<number>(12);
 
 
     function getMarkerIcon(type: CriteriaType) {
 
         let url = "https://raw.githubusercontent.com/ElsonNg/CribCheck/refs/heads/elson/app/images/mrt-logo.png";
-        
+
         if (type === CriteriaType.proximityToHawkerCentres) {
             url = "https://raw.githubusercontent.com/ElsonNg/CribCheck/refs/heads/elson/app/images/restaurant-logo.png";
         } else if (type === CriteriaType.proximityToMRT) {
@@ -47,7 +50,7 @@ export default function ReportMap() {
             url = "https://raw.githubusercontent.com/ElsonNg/CribCheck/refs/heads/elson/app/images/clinic-logo.png";
         } else if (type === CriteriaType.proximityToSchool) {
             url = "https://raw.githubusercontent.com/ElsonNg/CribCheck/refs/heads/elson/app/images/school-logo.png";
-        } else if (type === CriteriaType.proximityToSupermarket) {  
+        } else if (type === CriteriaType.proximityToSupermarket) {
             url = "https://raw.githubusercontent.com/ElsonNg/CribCheck/refs/heads/elson/app/images/supermarket-logo.png";
         }
 
@@ -71,69 +74,107 @@ export default function ReportMap() {
                     disableDoubleClickZoom: true,
                 }}
             >
-                {/* Render markers for each location */}
-                {results.get(CriteriaType.proximityToHawkerCentres) && results.get(CriteriaType.proximityToHawkerCentres)?.getValidLocations().map((location: LocationEntity, i: number) => {
 
-                    const hawkerEntity = location as HawkerCentreEntity;
-                    return (
+                {combinedResults.map((results, i) => {
 
-                        <Marker
-                            key={i}
-                            position={{ lat: hawkerEntity.latitude, lng: hawkerEntity.longitude }}
-                            title={hawkerEntity.getName()}
-                            icon={getMarkerIcon(CriteriaType.proximityToHawkerCentres)}
-                            zIndex={10}
-                        />);
+                    if (!results) return;
+
+                    return (<div key={i}>
+
+                        {/* Render markers for each location */}
+                        {results.get(CriteriaType.proximityToHawkerCentres) && results.get(CriteriaType.proximityToHawkerCentres)?.getValidLocations().map((location: LocationEntity, i: number) => {
+
+                            const hawkerEntity = location as HawkerCentreEntity;
+                            return (
+
+                                <Marker
+                                    key={i}
+                                    position={{ lat: hawkerEntity.latitude, lng: hawkerEntity.longitude }}
+                                    title={hawkerEntity.getName()}
+                                    icon={getMarkerIcon(CriteriaType.proximityToHawkerCentres)}
+                                    zIndex={10}
+                                />);
+                        })}
+
+                        {results.get(CriteriaType.proximityToMRT) && results.get(CriteriaType.proximityToMRT)?.getValidLocations().map((location: LocationEntity, i: number) => {
+
+                            const mrtEntity = location as MRTStationEntity;
+                            return (
+
+                                <Marker
+                                    key={i}
+                                    position={{ lat: mrtEntity.latitude, lng: mrtEntity.longitude }}
+                                    title={mrtEntity.getName()}
+                                    icon={getMarkerIcon(CriteriaType.proximityToMRT)}
+                                    zIndex={10}
+                                />);
+                        })}
+
+
+                        {results.get(CriteriaType.proximityToClinic) && results.get(CriteriaType.proximityToClinic)?.getValidLocations().map((location: LocationEntity, i: number) => {
+
+                            const mrtEntity = location as ClinicEntity;
+                            return (
+
+                                <Marker
+                                    key={i}
+                                    position={{ lat: mrtEntity.latitude, lng: mrtEntity.longitude }}
+                                    title={mrtEntity.getName()}
+                                    icon={getMarkerIcon(CriteriaType.proximityToClinic)}
+                                    zIndex={10}
+                                />);
+                        })}
+
+
+
+
+                    </div>);
+
                 })}
 
-                {results.get(CriteriaType.proximityToMRT) && results.get(CriteriaType.proximityToMRT)?.getValidLocations().map((location: LocationEntity, i: number) => {
 
-                    const mrtEntity = location as MRTStationEntity;
-                    return (
 
+                {selectedLocation && (
+                    <>
                         <Marker
-                            key={i}
-                            position={{ lat: mrtEntity.latitude, lng: mrtEntity.longitude }}
-                            title={mrtEntity.getName()}
-                            icon={getMarkerIcon(CriteriaType.proximityToMRT)}
+                            position={mapCenter}
+                            title="Location"
                             zIndex={10}
-                        />);
-                })}
+                        />
+                        <Circle
+                            center={mapCenter}
+                            radius={2000} // Radius in meters
+                            options={{
+                                strokeColor: "#FFFF00", // Outline color
+                                strokeOpacity: 0.8,
+                                strokeWeight: 2,
+                                fillColor: "#FFFF00", // Fill color
+                                fillOpacity: 0.30,
+                                zIndex: 5,
+                            }}
+                        />
+                    </>)}
 
-
-                {results.get(CriteriaType.proximityToClinic) && results.get(CriteriaType.proximityToClinic)?.getValidLocations().map((location: LocationEntity, i: number) => {
-
-                    const mrtEntity = location as ClinicEntity;
-                    return (
-
+                {selectedLocationOther && (
+                    <>
                         <Marker
-                            key={i}
-                            position={{ lat: mrtEntity.latitude, lng: mrtEntity.longitude }}
-                            title={mrtEntity.getName()}
-                            icon={getMarkerIcon(CriteriaType.proximityToClinic)}
+                            position={mapCenterOther}
+                            title="Location"
                             zIndex={10}
-                        />);
-                })}
-
-
-                <Marker
-                    position={mapCenter}
-                    title="Location"
-                    zIndex={10}
-                />
-
-                <Circle
-                    center={mapCenter}
-                    radius={2000} // Radius in meters
-                    options={{
-                        strokeColor: "#FFFF00", // Outline color
-                        strokeOpacity: 0.8,
-                        strokeWeight: 2,
-                        fillColor: "#FFFF00", // Fill color
-                        fillOpacity: 0.30,
-                        zIndex: 5,
-                    }}
-                />
+                        />
+                        <Circle
+                            center={mapCenterOther}
+                            radius={2000} // Radius in meters
+                            options={{
+                                strokeColor: "#0099ff", // Outline color
+                                strokeOpacity: 0.8,
+                                strokeWeight: 2,
+                                fillColor: "#0099ff", // Fill color
+                                fillOpacity: 0.30,
+                                zIndex: 5,
+                            }}
+                        />
+                    </>)}
             </GoogleMap>
         </div>
     );
