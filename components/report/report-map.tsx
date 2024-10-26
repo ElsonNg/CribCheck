@@ -37,15 +37,16 @@ export default function ReportMap() {
 
     function getMarkerIcon(type: CriteriaType) {
 
-        let url = "http://maps.google.com/mapfiles/ms/icons/green-dot.png";
+        let url = "https://raw.githubusercontent.com/ElsonNg/CribCheck/mrt-logo.png";
+        
         if (type === CriteriaType.proximityToHawkerCentres) {
-            url = "http://maps.google.com/mapfiles/ms/icons/restaurant.png";
+            url = "https://raw.githubusercontent.com/ElsonNg/CribCheck/mrt-logo.png";
         } else if (type === CriteriaType.proximityToMRT) {
-            url = "https://maps.google.com/mapfiles/kml/shapes/rail.png";
+            url = "https://raw.githubusercontent.com/ElsonNg/CribCheck/mrt-logo.png";
         } else if (type == CriteriaType.proximityToClinic) {
-            url = "http://maps.google.com/mapfiles/kml/shapes/parks.png";
+            url = "https://raw.githubusercontent.com/ElsonNg/CribCheck/mrt-logo.png";
         } else if (type === CriteriaType.proximityToSchool) {
-            url = "http://maps.google.com/mapfiles/kml/shapes/atm.png";
+            url = "https://raw.githubusercontent.com/ElsonNg/CribCheck/mrt-logo.png";
         }
 
 

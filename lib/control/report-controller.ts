@@ -114,6 +114,7 @@ class ReportController {
                         // Create hawker entities from the data
                         const hawkerCentres = await this.getHawkerCentres(data);
 
+
                         // Populate the data into our proximity scorer, tagging it with the criteria type and weightage
                         this.proximityScorer.enableStrategy(criteriaType, weightage, hawkerCentres);
                         break;
@@ -174,6 +175,9 @@ class ReportController {
             });
 
             await Promise.all(promises);
+
+
+
             this.cribFitRating = this.proximityScorer.calculateCompositeScore(this.selectedLocation);
 
             const results = this.proximityScorer.getResults();
@@ -201,6 +205,8 @@ class ReportController {
     async getHawkerCentres(data: GeoJsonData) {
         const hawkerCentres: HawkerCentreEntity[] = [];
         const parser = new DOMParser();
+
+        console.log(data);
 
         // Extract all hawker centres in dataset that are less than 2KM
         data?.features.forEach((feature) => {
