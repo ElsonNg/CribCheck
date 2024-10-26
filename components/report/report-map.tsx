@@ -54,7 +54,7 @@ export default function ReportMap() {
 
         return {
             url: url,
-            scaledSize: new google.maps.Size(32, 32),
+            scaledSize: new google.maps.Size(24, 24),
             anchor: new google.maps.Point(25, 30),
         }
     }
@@ -67,7 +67,7 @@ export default function ReportMap() {
                 mapContainerStyle={{ width: "100%", height: "100%" }}
                 options={{
                     streetViewControl: false,
-                    gestureHandling: "none",
+                    // gestureHandling: "none",
                     disableDoubleClickZoom: true,
                 }}
             >
