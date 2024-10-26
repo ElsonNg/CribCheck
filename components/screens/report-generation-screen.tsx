@@ -19,7 +19,7 @@ export default function ReportGenerationScreen() {
 
         async function handleStartGenerateReport() {
             await reportController.generateReport();
-            if (masterController.getCurrentState() == ScreenState.GeneratingReport) {
+            if (masterController.getCurrentState() === ScreenState.GeneratingReport) {
                 masterController.goToNextState();
             }
         }

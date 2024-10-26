@@ -4,11 +4,11 @@ import { useState } from "react";
 import CriteriaCard from "@/components/criteria/preset-cards";
 import { PresetCriteriaType } from "@/lib/entities/criteria-entity";
 import { useMasterController } from "@/context/master-controller-context";
-import CheckIcon from "@/app/images/checkicon.png";
 import CheckIconActive from "@/app/images/checkicon-active.png";
 import Image from "next/image";
 import CriteriaBreakdown from "./criteria-breakdown";
 import { cn } from "@/lib/utils";
+import { FaCheckCircle } from "react-icons/fa";
 
 const criteriaOptions: PresetCriteriaType[] = ["Singles", "Young Couple", "Family"];
 
@@ -95,11 +95,7 @@ export default function CriteriaWrapper() {
                     type="button"
                 >
                     <div className="basis-[10%]">
-                        <Image
-                            src={selectedOption === "new" ? CheckIconActive.src : CheckIcon.src}
-                            alt="Check Icon"
-                            width={32} height={32}
-                        />
+                        <FaCheckCircle color={selectedOption === "new" ? "green" : ""}/>
                     </div>
                     <span className="basis-[90%] whitespace-nowrap">I want to create a new preset</span>
                 </button>

@@ -25,9 +25,13 @@ export default function NavBar() {
         setAuthUser(currentUser);
     }, [authController]);
 
+
+    
+
     async function handleLogout() {
+        console.log("Log out");
         await authController.logout();
-        router.refresh();
+        router.push("/");
     }
 
     function handleHome() {
@@ -45,6 +49,9 @@ export default function NavBar() {
             <div className="flex flex-row gap-6 md:gap-10 text-md">
                 <Link href="#" className="hover:text-gray-400 transition duration-300" onClick={handleHome}>
                     Home
+                </Link>
+                <Link href="/about">
+                    About
                 </Link>
                 {!authUser ? (
                     <Link href="/" className="hover:text-gray-400 transition duration-300">

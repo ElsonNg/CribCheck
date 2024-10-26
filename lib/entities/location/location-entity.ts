@@ -50,7 +50,7 @@ class LocationEntity {
     }
 
     public equals(other: LocationEntity) : boolean {
-        return (this.address !== null && other.address !== null && this.address === other.address) || (this.latitude === other.latitude && this.longitude === other.longitude);
+        return (this.address && other.address && this.address === other.address) || (this.latitude === other.latitude && this.longitude === other.longitude);
     }
 
     /**
