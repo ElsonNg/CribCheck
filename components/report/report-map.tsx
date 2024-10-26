@@ -37,16 +37,16 @@ export default function ReportMap() {
 
     function getMarkerIcon(type: CriteriaType) {
 
-        let url = "https://raw.githubusercontent.com/ElsonNg/CribCheck/mrt-logo.png";
+        let url = "https://raw.githubusercontent.com/ElsonNg/CribCheck/refs/heads/master/app/images/mrt-logo.png";
         
         if (type === CriteriaType.proximityToHawkerCentres) {
-            url = "https://raw.githubusercontent.com/ElsonNg/CribCheck/mrt-logo.png";
+            url = "https://raw.githubusercontent.com/ElsonNg/CribCheck/refs/heads/master/app/images/mrt-logo.png";
         } else if (type === CriteriaType.proximityToMRT) {
-            url = "https://raw.githubusercontent.com/ElsonNg/CribCheck/mrt-logo.png";
+            url = "https://raw.githubusercontent.com/ElsonNg/CribCheck/refs/heads/master/app/images/mrt-logo.png";
         } else if (type == CriteriaType.proximityToClinic) {
-            url = "https://raw.githubusercontent.com/ElsonNg/CribCheck/mrt-logo.png";
+            url = "https://raw.githubusercontent.com/ElsonNg/CribCheck/refs/heads/master/app/images/mrt-logo.png";
         } else if (type === CriteriaType.proximityToSchool) {
-            url = "https://raw.githubusercontent.com/ElsonNg/CribCheck/mrt-logo.png";
+            url = "https://raw.githubusercontent.com/ElsonNg/CribCheck/refs/heads/master/app/images/mrt-logo.png";
         }
 
 

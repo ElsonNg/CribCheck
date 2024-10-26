@@ -6,16 +6,16 @@ import SearchLocation from "../searchlocation/search-location";
 import { CriteriaType } from "@/lib/entities/criteria-entity";
 import { IoRestaurant } from "react-icons/io5";
 import { FaBasketShopping, FaTrain } from "react-icons/fa6";
-import { FaClinicMedical, FaHeart } from "react-icons/fa";
+import { FaClinicMedical, } from "react-icons/fa";
 import { MdSchool } from "react-icons/md";
 import MRTStationEntity from "@/lib/entities/datasets/mrt-station-entity";
 import ClinicEntity from "@/lib/entities/datasets/clinic-entity";
 import HawkerCentreEntity from "@/lib/entities/datasets/hawker-centre-entity";
 import SchoolEntity from "@/lib/entities/datasets/school-entity";
 import SupermarketEntity from "@/lib/entities/datasets/supermarket-entity";
-import { CiHeart } from "react-icons/ci";
 import { GoHeart, GoHeartFill } from "react-icons/go";
-
+import MRTLogo from "@/app/images/mrt-logo.png";
+import Image from "next/image";
 
 export default function ReportResults() {
 
@@ -109,7 +109,8 @@ export default function ReportResults() {
                 }
                 {nearbyMRT && nearbyMRT.length > 0
                     && (<div className="px-6 py-4 flex flex-row justify-start items-center gap-8 bg-[#EEEEEE] rounded-md">
-                        <FaTrain size={32} className="basis-[10%]" />
+                        {/* <FaTrain size={32} className="basis-[10%]" /> */}
+                        <Image src={MRTLogo} alt="MRT Logo" width={32} height={32} />
                         <div className="basis-[90%] flex flex-col justify-center items-start gap-0.5">
                             <span className="text-lg font-bold">Near to MRT Stations (1km)</span>
                             <span className="text-md font-medium">{nearbyMRT.length} location(s)</span>
