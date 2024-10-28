@@ -135,7 +135,7 @@ class ReportController {
             const criteriaRankings = this.selectedCriteria!.getCriteriaRankingMap();
 
             // Asynchronously fetch and score data for each relevant criteria
-            const promises = criteriaRankings.entries().map(async ([criteriaType, ranking]) => {
+            const promises = Array.from(criteriaRankings.entries()).map(async ([criteriaType, ranking]) => {
                 const weightage = this.selectedCriteria!.getWeightage(criteriaType);
 
                 switch (criteriaType) {

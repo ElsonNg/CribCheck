@@ -175,8 +175,6 @@ class MasterController {
                 throw new Error("Invalid state transition");
         }
 
-        console.log("Next State: " + this.currentState);
-
         // Trigger the state change callback with the new state.
         this.onStateChangeCallback(this.currentState);
     }
