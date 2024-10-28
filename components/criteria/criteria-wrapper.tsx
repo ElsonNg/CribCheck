@@ -90,9 +90,9 @@ export default function CriteriaWrapper() {
 
             <p className="font-semibold text-2xl text-center">or</p>
 
-            <div className="mb-8 w-full flex flex-row justify-center">
+            <div className="mb-8 w-full md:w-fit flex flex-row justify-center">
                 <button
-                    className={`px-4 py-3 md:py-2 w-full flex flex-row items-center gap-4 rounded-lg bg-[#EEEEEE] ${selectedOption === "new" ? "ring-4 ring-green-500" : ""}`}
+                    className={`px-4 py-3 md:py-2 w-full md:w-fit flex flex-row items-center gap-4 rounded-lg bg-[#EEEEEE] ${selectedOption === "new" ? "ring-4 ring-green-500" : ""}`}
                     onClick={handleNewPresetClick}
                     type="button"
                 >

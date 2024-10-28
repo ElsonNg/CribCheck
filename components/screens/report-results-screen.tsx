@@ -68,7 +68,7 @@ export default function ReportResultsScreen() {
                     </h1>
 
                 </div>
-                <div className="w-full  p-4 grid grid-cols-6 gap-4 bg-white drop-shadow-md rounded-lg">
+                <div className="w-full p-4 grid grid-cols-6 gap-4 bg-white drop-shadow-md rounded-lg">
                     <Card className="col-span-6 md:col-span-3 flex flex-col gap-6">
                         <div className="w-full flex flex-col md:flex-row justify-between items-center gap-6">
                             <h3 className="font-semibold text-2xl">📋  {criteriaController.getCriteriaEntity().getName()}</h3>
@@ -92,7 +92,7 @@ export default function ReportResultsScreen() {
                     <Card className="col-span-6 md:col-span-3">
                         <ReportMap />
                     </Card>
-                    <Card className="col-span-6 md:col-span-3">
+                    <Card className="col-span-6">
                         <div className="flex flex-col gap-8">
 
                             <div className="flex flex-col md:flex-row justify-between gap-2">
