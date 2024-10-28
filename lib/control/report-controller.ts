@@ -12,8 +12,8 @@ import SupermarketEntity from '@/lib/entities/datasets/supermarket-entity';
 import { DecayThresholdScoringStrategy } from '@/lib/strategy/decay-threshold-scoring-strategy';
 
 /**
- * The 'ReportController' manages report generation by fetching relevant data from datasets like  hawker centers, transport, schools, etc
- * and calculating proximity-based scores for selected locations.
+ * The `ReportController` manages report generation by fetching relevant data from datasets 
+ * (e.g., hawker centers, transport, schools) and calculating proximity-based scores for selected locations.
  */
 class ReportController {
     private selectedLocationOther: LocationEntity | null;
@@ -34,8 +34,14 @@ class ReportController {
     private reportResultOther: Map<CriteriaType, ScoringResult> | null;
 
     /**
-     * Initializes datasets and scoring strategies for criteria such as proximity to hawker centers, MRT, etc.
-     * Implementations of dataset services are injected via DI from MasterController
+     * Initializes datasets and scoring strategies for various proximity-based criteria, 
+     * such as proximity to hawker centers and MRT stations.
+     * 
+     * @param hawkerCentresDataset - The dataset service for hawker centers.
+     * @param transportDataset - The dataset service for public transport stations.
+     * @param schoolDataset - The dataset service for schools.
+     * @param supermarketDataset - The dataset service for supermarkets.
+     * @param clinicDataset - The dataset service for clinics.
      */
     constructor(
         hawkerCentresDataset: DatasetService<GeoJsonData>,
@@ -59,10 +65,9 @@ class ReportController {
         this.cribFitRating = 0;
         this.cribFitRatingOther = 0;
 
-
         this.proximityScorer = new ProximityScorer();
 
-        // Define various scoring strategy implementations based on criteria type
+        // Define scoring strategy implementations for each criteria type
         this.proximityScorer.addCriteriaStrategy(
             CriteriaType.proximityToHawkerCentres,
             new DecayThresholdScoringStrategy(5, [0.3, 0.5, 1, 2], [100, 90, 75, 50], [0.6, 0.2, 0.1, 0.05, 0.05])
@@ -86,8 +91,9 @@ class ReportController {
     }
 
     /**
-     * Generates a report by calculating scores for selected location(s) based on specified criteria.
-     * Returns `true` if successful; otherwise, `false`.
+     * Generates a report by calculating scores for selected locations based on specified criteria.
+     * 
+     * @returns A promise that resolves to `true` if the report generation is successful; otherwise, `false`.
      */
     async generateReport(): Promise<boolean> {
         try {
@@ -119,7 +125,7 @@ class ReportController {
      * @param location - The location entity for which scoring results are generated.
      * @returns A promise that resolves to `true` if the results are generated successfully; otherwise, `false`.
      */
-    async generateResultForLocation(location: LocationEntity): Promise<boolean> {
+    private async generateResultForLocation(location: LocationEntity): Promise<boolean> {
         try {
             if (!location) {
                 throw new Error("No location selected for report generation!");
@@ -197,8 +203,11 @@ class ReportController {
 
     /**
      * Extracts hawker center entities from the GeoJSON dataset.
+     * 
+     * @param data - The GeoJSON data representing hawker centers.
+     * @returns An array of `HawkerCentreEntity` objects.
      */
-    async getHawkerCentres(data: GeoJsonData) {
+    async getHawkerCentres(data: GeoJsonData): Promise<HawkerCentreEntity[]> {
         const hawkerCentres: HawkerCentreEntity[] = [];
         const parser = new DOMParser();
 
@@ -226,8 +235,11 @@ class ReportController {
 
     /**
      * Extracts MRT station entities from the GeoJSON dataset.
+     * 
+     * @param data - The GeoJSON data representing MRT stations.
+     * @returns An array of `MRTStationEntity` objects.
      */
-    async getMRTStations(data: GeoJsonData) {
+    async getMRTStations(data: GeoJsonData): Promise<MRTStationEntity[]> {
         const mrtStations: MRTStationEntity[] = [];
         const parser = new DOMParser();
 
@@ -254,8 +266,11 @@ class ReportController {
 
     /**
      * Extracts school entities from the GeoJSON dataset.
+     * 
+     * @param data - The GeoJSON data representing schools.
+     * @returns An array of `SchoolEntity` objects.
      */
-    async getSchools(data: GeoJsonData) {
+    async getSchools(data: GeoJsonData): Promise<SchoolEntity[]> {
         const schools: SchoolEntity[] = [];
         const parser = new DOMParser();
 
@@ -283,8 +298,11 @@ class ReportController {
 
     /**
      * Extracts supermarket entities from the GeoJSON dataset.
+     * 
+     * @param data - The GeoJSON data representing supermarkets.
+     * @returns An array of `SupermarketEntity` objects.
      */
-    async getSupermarkets(data: GeoJsonData) {
+    async getSupermarkets(data: GeoJsonData): Promise<SupermarketEntity[]> {
         const supermarkets: SupermarketEntity[] = [];
         const parser = new DOMParser();
 
@@ -312,8 +330,11 @@ class ReportController {
 
     /**
      * Extracts clinic entities from the GeoJSON dataset.
+     * 
+     * @param data - The GeoJSON data representing clinics.
+     * @returns An array of `ClinicEntity` objects.
      */
-    async getClinics(data: GeoJsonData) {
+    async getClinics(data: GeoJsonData): Promise<ClinicEntity[]> {
         const clinics: ClinicEntity[] = [];
         const parser = new DOMParser();
 
@@ -340,10 +361,10 @@ class ReportController {
     }
 
     /**
-         * Retrieves the scoring results for the current selected criteria.
-         * 
-         * @returns {Map<CriteriaType, ScoringResult>} The map of criteria types to scoring results.
-         */
+     * Retrieves the scoring results for the current selected criteria.
+     * 
+     * @returns {Map<CriteriaType, ScoringResult>} The map of criteria types to scoring results.
+     */
     public getScoringResults(): Map<CriteriaType, ScoringResult> {
         return this.proximityScorer.getResults();
     }

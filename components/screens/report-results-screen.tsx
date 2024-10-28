@@ -2,7 +2,6 @@ import { useMasterController } from "@/context/master-controller-context";
 import Card from "@/components/general/card";
 import ReportCriteriaRating from "@/components/report/report-criteria-rating";
 import { CriteriaLabels } from "@/lib/entities/criteria-entity";
-import CriteriaScoreTable from "../report/criteria-score-table";
 import { ScreenState } from "@/lib/control/master-controller";
 import ReportMap from "../report/report-map";
 import ReportResults from "../report/report-results";

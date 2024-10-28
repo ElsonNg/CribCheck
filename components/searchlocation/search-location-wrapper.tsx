@@ -2,7 +2,7 @@
 
 import { useMasterController } from "@/context/master-controller-context";
 import SearchLocation from "@/components/searchlocation/search-location";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import LocationEntity from "@/lib/entities/location/location-entity";
 
 

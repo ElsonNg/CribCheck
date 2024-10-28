@@ -1,11 +1,9 @@
 import { useMasterController } from "@/context/master-controller-context";
-import { ScreenState } from "@/lib/control/master-controller";
-import { useState, useTransition } from "react";
-import ReportAddComparisonDialog from "../screens/report-add-comparison-dialog";
-import SearchLocation from "../searchlocation/search-location";
+import { useTransition } from "react";
+
 import { CriteriaType } from "@/lib/entities/criteria-entity";
 import { IoRestaurant } from "react-icons/io5";
-import { FaBasketShopping, FaTrain } from "react-icons/fa6";
+import { FaBasketShopping, } from "react-icons/fa6";
 import { FaClinicMedical, } from "react-icons/fa";
 import { MdSchool } from "react-icons/md";
 import MRTStationEntity from "@/lib/entities/datasets/mrt-station-entity";
@@ -16,7 +14,6 @@ import SupermarketEntity from "@/lib/entities/datasets/supermarket-entity";
 import { GoHeart, GoHeartFill } from "react-icons/go";
 import MRTLogo from "@/app/images/mrt-logo.png";
 import Image from "next/image";
-import ReportAddComparison from "./report-add-comparison";
 import LocationEntity from "@/lib/entities/location/location-entity";
 import { ScoringResult } from "@/lib/strategy/scoring-strategy";
 

@@ -4,11 +4,8 @@ import { CriteriaType } from "@/lib/entities/criteria-entity";
 import HawkerCentreEntity from "@/lib/entities/datasets/hawker-centre-entity";
 import MRTStationEntity from "@/lib/entities/datasets/mrt-station-entity";
 import LocationEntity from "@/lib/entities/location/location-entity";
-import { ScoringResult } from "@/lib/strategy/scoring-strategy";
 import { Circle, GoogleMap, Marker } from "@react-google-maps/api";
-import { useRef, useState } from "react";
-import { FaLocationDot } from "react-icons/fa6";
-import { IoRestaurant } from "react-icons/io5";
+import {  useState } from "react";
 
 interface LatLng {
     lat: number;

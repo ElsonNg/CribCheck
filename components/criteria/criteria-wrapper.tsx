@@ -4,8 +4,6 @@ import { useState } from "react";
 import CriteriaCard from "@/components/criteria/preset-cards";
 import { PresetCriteriaType } from "@/lib/entities/criteria-entity";
 import { useMasterController } from "@/context/master-controller-context";
-import CheckIconActive from "@/app/images/checkicon-active.png";
-import Image from "next/image";
 import CriteriaBreakdown from "./criteria-breakdown";
 import { cn } from "@/lib/utils";
 import { FaCheckCircle } from "react-icons/fa";

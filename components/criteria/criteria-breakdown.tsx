@@ -3,7 +3,7 @@
 import { useMasterController } from "@/context/master-controller-context";
 import { CriteriaType } from "@/lib/entities/criteria-entity"
 import { cn } from "@/lib/utils";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FaClinicMedical, FaSchool, FaShoppingCart, FaStar, FaTrain } from "react-icons/fa";
 import { IoRestaurant } from "react-icons/io5";
 
