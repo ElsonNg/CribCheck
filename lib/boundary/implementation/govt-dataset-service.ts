@@ -68,6 +68,7 @@ class GovtDatasetService extends DatasetService<GeoJsonData> {
             if (!response.ok) {
                 throw new Error('Failed to fetch from API URL!');
             }
+            
 
             // // Parse JSON response to obtain download link
             // const jsonData = await response.json();

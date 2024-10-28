@@ -4,6 +4,9 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest, {params} : {params: {datasetId: string}}) {
     try {
+
+        console.log(`Fetch Dataset ${params.datasetId}`);
+
         const response = await fetch(`https://api-open.data.gov.sg/v1/public/api/datasets/${params.datasetId}/poll-download`, {
             headers: {
                 'Content-Type': 'application/json',
