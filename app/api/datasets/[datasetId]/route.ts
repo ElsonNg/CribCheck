@@ -34,7 +34,7 @@ export async function GET(request: NextRequest, {params} : {params: {datasetId: 
         // Return the data with CORS headers
         return NextResponse.json(downloadedJSONData as GeoJsonData, {
             headers: {
-                'Access-Control-Allow-Origin': 'https://cribcheck.vercel.app', 
+                'Access-Control-Allow-Origin': '*', 
                 'Access-Control-Allow-Methods': 'GET,OPTIONS',
                 'Access-Control-Allow-Headers': 'Content-Type',
             }
