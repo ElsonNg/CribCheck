@@ -7,8 +7,7 @@ const allowedOrigin = 'https://cribcheck.vercel.app';
 export async function GET(request: NextRequest, { params }: { params: { datasetId: string } }) {
     // Validate the origin to allow only the specified domain
     const origin = request.headers.get('origin');
-    console.log(origin);
-    if (origin !== allowedOrigin) {
+    if (origin !== null && origin !== allowedOrigin) {
         return NextResponse.json(
             { error: 'Forbidden' },
             { status: 403, headers: { 'Access-Control-Allow-Origin': allowedOrigin } }
