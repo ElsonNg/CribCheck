@@ -3,7 +3,6 @@
 
 import { useMasterController } from "@/context/master-controller-context";
 import { ScreenState } from "@/lib/control/master-controller";
-import { useEffect } from "react";
 
 
 export default function TestScreenButtons() {

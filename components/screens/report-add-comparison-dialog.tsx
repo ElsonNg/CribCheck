@@ -32,7 +32,7 @@ export default function ReportAddComparisonDialog({ onCancel, onCompare, childre
                 <h2 className="text-2xl font-semibold text-gray-800 mb-4">Choose Another Location</h2>
 
                 <div className="flex flex-row gap-2">
-                    <h3 className="text-lg font-bold">Current Location: {reportController.getSelectedLocation()?.address}</h3>
+                    <h3 className="text-lg font-normal">Current Location: {reportController.getSelectedLocation()?.address}</h3>
                 </div>
 
                 {/* Insert Location Component */}

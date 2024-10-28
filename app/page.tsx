@@ -1,4 +1,3 @@
-//import Image from "next/image";
 
 import Footer from "@/components/general/footer";
 import GoogleLoginButton from "@/components/login/google-login-button";

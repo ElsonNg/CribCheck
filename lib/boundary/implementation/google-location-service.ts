@@ -48,26 +48,6 @@ export default class GoogleLocationService extends LocationService<LocationEntit
         }
     }
 
-    // private async initializeLibraries() {
-    //     if (!this.geocoder) {
-    //         try {
-    //             const geocodingLib = await google.maps.importLibrary("geocoding") as google.maps.GeocodingLibrary;
-    //             this.geocoder = new geocodingLib.Geocoder();
-    //         } catch (error) {
-    //             throw new Error("Failed to initialize geocoding library: " + error);
-    //         }
-    //     }
-
-    //     if (!this.autocompleteService) {
-    //         try {
-    //             const placesLib = await google.maps.importLibrary("places") as google.maps.PlacesLibrary;
-    //             this.autocompleteService = new placesLib.AutocompleteService();
-    //         } catch (error) {
-    //             throw new Error("Failed to initialize places library: " + error);
-    //         }
-    //     }
-    // }
-
     /**
      * Fetches the current geographic location using the browser's Geolocation API.
      *

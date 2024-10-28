@@ -1,47 +1,35 @@
-import CriteriaEntity , {CriteriaType, PresetCriteriaType} from '@/lib/entities/criteria-entity';
+import CriteriaEntity, { CriteriaType, PresetCriteriaType } from '@/lib/entities/criteria-entity';
 
 /**
- * `CriteriaController` manages user-defined criteria, including the creation,
- * updating, ranking, and retrieval of criteria based on user preferences.
+ * `CriteriaController` manages the creation, updating, ranking, and retrieval of user-defined criteria.
  * 
- * `CriteriaEntity` defines the essential fields required for the user to 
- * execute operations within the `CriteriaController`. It acts as a data model 
- * representing the structure of criteria objects.
+ * It facilitates the selection of preset or custom criteria, allowing users to define their preferences
+ * and store them in a `CriteriaEntity`. This controller enables flexible configuration and management
+ * of criteria within the application.
  * 
  * @class CriteriaController
  */
-
-
 class CriteriaController {
-
+    private currentCriteria: CriteriaEntity;
 
     /**
-     * Adds user-selected criteria to the `CriteriaType` array.
-     *
-     * This method appends the criteria selected by the user
-     * to the `CriteriaType` array.
-     * 
-     * Any criteria not selected by the user will not be added to the `CriteriaType` array
-     *
-     * For each selected criterion, the user provides a ranking number, which is stored
-     * in the `number` array.
-     *
-     * The `CriteriaType` and `number` arrays are then mapped into `criteriaRankingMap`.
-     *
-     * A new `criteriaEntity` is created, and a unique `criteriaId` is auto-generated (Id not declared yet).
-     * 
-     * 
+     * Initializes a new `CriteriaController` instance with a blank `CriteriaEntity`.
      */
-    private currentCriteria : CriteriaEntity;
-
     constructor() {
         this.currentCriteria = new CriteriaEntity();
     }
 
+    /**
+     * Configures preset criteria based on the specified type (e.g., Singles, Young Couple, Family).
+     * 
+     * This method loads a predefined set of criteria and rankings associated with the selected preset type.
+     * 
+     * @param presetType - The type of preset criteria to load.
+     * @returns {CriteriaEntity} The configured criteria entity.
+     */
     public setPresetCriteria(presetType: PresetCriteriaType): CriteriaEntity {
-        
         this.currentCriteria.setCustom(false);
-        this.currentCriteria.setName(presetType as string + " Criteria");
+        this.currentCriteria.setName(`${presetType} Criteria`);
 
         switch (presetType) {
             case "Singles":
@@ -57,7 +45,6 @@ class CriteriaController {
                 this.currentCriteria.selectCriterion(CriteriaType.proximityToClinic, 4);
                 this.currentCriteria.selectCriterion(CriteriaType.proximityToSchool, 3);
                 this.currentCriteria.selectCriterion(CriteriaType.proximityToSupermarket, 2);
-
                 break;
             case "Family":
                 this.currentCriteria.selectCriterion(CriteriaType.proximityToHawkerCentres, 5);
@@ -66,11 +53,15 @@ class CriteriaController {
                 this.currentCriteria.selectCriterion(CriteriaType.proximityToSchool, 4);
                 this.currentCriteria.selectCriterion(CriteriaType.proximityToSupermarket, 5);
                 break;
-            }
-
+        }
         return this.currentCriteria;
     }
 
+    /**
+     * Configures a default custom criteria set.
+     * 
+     * This method sets up a default configuration for user-defined criteria, allowing further customization.
+     */
     public setDefaultNew() {
         this.currentCriteria.setCustom(true);
         this.currentCriteria.setName("My Preset");
@@ -81,75 +72,63 @@ class CriteriaController {
         this.currentCriteria.selectCriterion(CriteriaType.proximityToSupermarket, 1);
     }
 
-
+    /**
+     * Selects a criterion and assigns it a ranking.
+     * 
+     * This method allows the user to specify a criterion and assign a numeric ranking based on its priority.
+     * 
+     * @param criteriaType - The type of criterion to select.
+     * @param ranking - The priority ranking of the criterion.
+     */
     public selectCriterion(criteriaType: CriteriaType, ranking: number) {
         this.currentCriteria.selectCriterion(criteriaType, ranking);
     }
 
+    /**
+     * Deselects a previously selected criterion.
+     * 
+     * This removes a criterion from the current criteria set, indicating it is no longer a priority.
+     * 
+     * @param criteriaType - The type of criterion to deselect.
+     */
     public deselectCriteron(criteriaType: CriteriaType) {
         this.currentCriteria.deselectCriterion(criteriaType);
     }
 
-    public loadCriteria(criteriaRankingMap: Map<CriteriaType, number>) : CriteriaEntity {
+    /**
+     * Loads a criteria map into the current criteria entity.
+     * 
+     * This method directly loads a set of criteria and rankings from a predefined map,
+     * useful for restoring criteria settings or bulk updates.
+     * 
+     * @param criteriaRankingMap - A map of criteria types to their associated rankings.
+     * @returns {CriteriaEntity} The updated criteria entity.
+     */
+    public loadCriteria(criteriaRankingMap: Map<CriteriaType, number>): CriteriaEntity {
         this.currentCriteria.setAll(criteriaRankingMap);
         return this.currentCriteria;
     }
 
+    /**
+     * Clears all selected criteria.
+     * 
+     * This removes all selected criteria and rankings from the current criteria entity, 
+     * resetting it to an empty state.
+     */
     public clearCriteria() {
         this.currentCriteria.clear();
     }
 
-    public getCriteriaEntity() : CriteriaEntity {
+    /**
+     * Retrieves the current criteria entity.
+     * 
+     * This allows access to the current configuration of selected criteria and rankings.
+     * 
+     * @returns {CriteriaEntity} The current criteria entity.
+     */
+    public getCriteriaEntity(): CriteriaEntity {
         return this.currentCriteria;
     }
-
-
-    // setCriteria(
-    //     selectedCriteria: CriteriaType[],
-    //     rankings: number[]
-    // ): CriteriaEntity{
-        
-    //     const criteriaRankingMap = this.currentCriteria.getCriteriaRankingMap();
-
-    //     criteriaRankingMap.clear();
-    //     selectedCriteria.forEach((criteria, index) => {
-    //         criteriaRankingMap.set(criteria, rankings[index]);
-    //     });
-
-    //     return this.currentCriteria;
-    // }
-
-
-    // ==== Database required ========//
-    // /**
-    //  * Updates the selected criteria or ranking based on user input.
-    //  * 
-    //  * This method takes the edited criteria provided by the user and searches for the corresponding 
-    //  * existing criteria using their specified index. Once the matching criteria is found, the method 
-    //  * updates the relevant fields with the new values. This allows for modifications to be made 
-    //  * without needing to re-add criteria.
-    //  * 
-    //  * Partial<T> is a utility type that makes all properties of type T optional
-    //  */
-
-    // editCriteria(criteriaId: string, updatedCriteria: Partial<CriteriaEntity>) {
-    // }
-
-    // /**
-    //  * Retrives criteria based on user selection
-    //  * 
-    //  * This method retrieves existing criteria using their specified index.
-    //  * 
-    //  * Returns found criteria or undefined
-    //  */
-
-    // getCriteriaById(criteriaId: string): CriteriaEntity | undefined {
-    //     const criteria = this.selectedCriteria.find(c => c.criteriaId === criteriaId);
-    //     if (!criteria) {
-    //         throw new Error(`Criteria with ID ${criteriaId} not found`);
-    //     }
-    //     return criteria;
-    // }
 
 }
 

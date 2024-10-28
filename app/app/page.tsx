@@ -1,7 +1,6 @@
 import Footer from "@/components/general/footer";
 import NavBar from "@/components/general/nav-bar";
 import ScreenContent from "@/components/screens/screen-content";
-import { Suspense } from "react";
 
 
 export default function AppPage() {
