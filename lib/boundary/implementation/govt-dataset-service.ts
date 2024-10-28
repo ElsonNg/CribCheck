@@ -50,7 +50,7 @@ class GovtDatasetService extends DatasetService<GeoJsonData> {
      * @param {string} datasetId - The ID of the dataset to fetch from data.gov.sg.
      */
     constructor(datasetId: string) {
-        super("https://api-open.data.gov.sg/v1/public/api/datasets/" + datasetId + "/poll-download");
+        super(`api/datasets/${datasetId}`);
     }
 
     /**
