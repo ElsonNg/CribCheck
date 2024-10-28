@@ -338,6 +338,116 @@ class ReportController {
 
         return clinics;
     }
+
+    /**
+         * Retrieves the scoring results for the current selected criteria.
+         * 
+         * @returns {Map<CriteriaType, ScoringResult>} The map of criteria types to scoring results.
+         */
+    public getScoringResults(): Map<CriteriaType, ScoringResult> {
+        return this.proximityScorer.getResults();
+    }
+
+    /**
+     * Sets the selected location for which the report will be generated.
+     * 
+     * @param {LocationEntity} location - The primary location for report generation.
+     */
+    public setSelectedLocation(location: LocationEntity) {
+        this.selectedLocation = location;
+    }
+
+    /**
+     * Sets an alternative location for comparison in the report generation.
+     * 
+     * @param {LocationEntity} location - The secondary location for comparison.
+     */
+    public setSelectedLocationOther(location: LocationEntity) {
+        this.selectedLocationOther = location;
+    }
+
+    /**
+     * Sets the criteria entity used for scoring in report generation.
+     * 
+     * @param {CriteriaEntity} criteria - The criteria used for report scoring.
+     */
+    public setSelectedCriteria(criteria: CriteriaEntity) {
+        this.selectedCriteria = criteria;
+    }
+
+    /**
+     * Retrieves the selected primary location for the report.
+     * 
+     * @returns {LocationEntity | null} The selected primary location, or `null` if none is set.
+     */
+    public getSelectedLocation(): LocationEntity | null {
+        return this.selectedLocation;
+    }
+
+    /**
+     * Retrieves the selected secondary location for comparison.
+     * 
+     * @returns {LocationEntity | null} The selected secondary location, or `null` if none is set.
+     */
+    public getSelectedLocationOther(): LocationEntity | null {
+        return this.selectedLocationOther;
+    }
+
+    /**
+     * Retrieves the selected criteria for scoring the report.
+     * 
+     * @returns {CriteriaEntity | null} The criteria for report scoring, or `null` if none is set.
+     */
+    public getSelectedCriteria(): CriteriaEntity | null {
+        return this.selectedCriteria;
+    }
+
+    /**
+     * Retrieves the initial report result for the primary location.
+     * 
+     * @returns {Map<CriteriaType, ScoringResult> | null} The scoring results for the primary location.
+     */
+    public getInitialResult(): Map<CriteriaType, ScoringResult> | null {
+        return this.reportResult;
+    }
+
+    /**
+     * Retrieves the report result for the secondary location.
+     * 
+     * @returns {Map<CriteriaType, ScoringResult> | null} The scoring results for the secondary location.
+     */
+    public getOtherResult(): Map<CriteriaType, ScoringResult> | null {
+        return this.reportResultOther;
+    }
+
+    /**
+     * Retrieves the final crib fit rating calculated for the primary location.
+     * 
+     * @returns {number} The calculated crib fit rating for the primary location.
+     */
+    public getCribFitRating(): number {
+        return this.cribFitRating;
+    }
+
+    /**
+     * Retrieves the final crib fit rating calculated for the secondary location.
+     * 
+     * @returns {number} The calculated crib fit rating for the secondary location.
+     */
+    public getCribFitRatingOther(): number {
+        return this.cribFitRatingOther;
+    }
+
+    /**
+     * Clears all report results, ratings, and selected secondary location.
+     */
+    public clearReportResults(): void {
+        this.reportResult = null;
+        this.cribFitRating = 0;
+        this.reportResultOther = null;
+        this.cribFitRatingOther = 0;
+        this.selectedLocationOther = null;
+    }
 }
 
 export default ReportController;
