@@ -4,6 +4,7 @@ import { useMasterController } from "@/context/master-controller-context";
 import SearchLocation from "@/components/searchlocation/search-location";
 import { useState } from "react";
 import LocationEntity from "@/lib/entities/location/location-entity";
+import MasterController, { ScreenState } from "@/lib/control/master-controller";
 
 
 export default function SearchLocationWrapper() {
@@ -13,7 +14,8 @@ export default function SearchLocationWrapper() {
 
 
     function handleNext() {
-        masterController.goToNextState();
+        if(masterController.getCurrentState() === ScreenState.SelectingLocation)
+            masterController.goToNextState();
     }
 
     function handleOnChange(location : LocationEntity) {

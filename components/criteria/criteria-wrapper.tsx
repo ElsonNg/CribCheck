@@ -7,6 +7,7 @@ import { useMasterController } from "@/context/master-controller-context";
 import CriteriaBreakdown from "./criteria-breakdown";
 import { cn } from "@/lib/utils";
 import { FaCheckCircle } from "react-icons/fa";
+import MasterController, { ScreenState } from "@/lib/control/master-controller";
 
 const criteriaOptions: PresetCriteriaType[] = ["Singles", "Young Couple", "Family"];
 
@@ -24,11 +25,14 @@ export default function CriteriaWrapper() {
     function handleContinue() {
         if (!selectedOption) return;
         reportController.setSelectedCriteria(criteriaController.getCriteriaEntity());
-        masterController.goToNextState();
+
+        if(masterController.getCurrentState() === ScreenState.SelectingCriteria)
+            masterController.goToNextState();
     };
 
     function handleBack() {
-        masterController.goToPreviousState();
+        if(masterController.getCurrentState() === ScreenState.SelectingCriteria)
+            masterController.goToPreviousState();
     };
 
     function handleCriteriaClick(criteria: PresetCriteriaType) {
