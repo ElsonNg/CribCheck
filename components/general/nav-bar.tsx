@@ -39,13 +39,13 @@ export default function NavBar() {
 
 
     return (
-        <nav className="w-full mx-auto px-6 py-6 flex flex-row justify-between items-center">
+        <nav className="w-full mx-auto px-6 py-6 flex flex-col md:flex-row gap-8 justify-between items-center">
             <Link href="/app">
                 <h1 className="text-3xl font-bold">
                     <span role="img" aria-label="home">🏠</span> CribCheck
                 </h1>
             </Link>
-            <div className="flex flex-row gap-6 md:gap-10 text-md">
+            <div className="flex flex-row gap-6 md:gap-10 text-lg md:text-md">
                 <Link href="#" className="hover:text-gray-400 transition duration-300" onClick={handleHome}>
                     Home
                 </Link>

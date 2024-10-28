@@ -94,7 +94,7 @@ export default function CriteriaBreakdown({ className }: CriteriaCreateFormProps
                 return (
                     <div
                         key={criteriaInfo.type}
-                        className={cn("w-full bg-[#EEEEEE] drop-shadow-sm border-2 rounded-md py-5 px-4 flex flex-row justify-between gap-2",
+                        className={cn("w-full bg-[#EEEEEE] drop-shadow-sm border-2 rounded-md py-5 px-4 flex flex-col md:flex-row justify-between gap-2",
                             criteria.getCustom() ? "drop-shadow-sm" : "drop-shadow-none cursor-not-allowed",
                             {
                             "opacity-40 ": !isSelected, // Highlight if selected
@@ -102,13 +102,13 @@ export default function CriteriaBreakdown({ className }: CriteriaCreateFormProps
                         },)}
                         onClick={() => criteria.getCustom() ? handleSelectCriterion(criteriaInfo.type, 1) : null} // Toggle selection
                     >
-                        <div className="w-full flex flex-row justify-start items-center px-2">
-                            <div className="basis-[10%]">{criteriaInfo.icon}</div>
-                            <span className="basis-[90%] font-semibold">{criteriaInfo.description}</span>
+                        <div className="w-full flex flex-row justify-center md:justify-start items-center px-2">
+                            <div className="basis-[18%] md:basis-[10%]">{criteriaInfo.icon}</div>
+                            <span className="basis-[82%] md:basis-[90%] font-semibold">{criteriaInfo.description}</span>
                         </div>
-                        <div className="flex flex-row justify-end gap-2">
+                        <div className="mt-2 md:mt-0 flex flex-row justify-center md:justify-end gap-2">
                             {Array.from({ length: 5 }).map((_, index) => (
-                                <div key={index} onClick={(e) => criteria.getCustom() ? handeStarsOnClick(e, criteriaInfo.type, index + 1) : null} className={cn("text-2xl", index < stars ? "text-yellow-400" : "text-gray-400")}><FaStar /></div>
+                                <div key={index} onClick={(e) => criteria.getCustom() ? handeStarsOnClick(e, criteriaInfo.type, index + 1) : null} className={cn("text-3xl md:text-2xl", index < stars ? "text-yellow-400" : "text-gray-400")}><FaStar /></div>
                             ))}
                         </div>
                     </div>

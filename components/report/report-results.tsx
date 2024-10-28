@@ -66,7 +66,7 @@ export default function ReportResults({queriedLocation, cribFitRating, results} 
                 {authUser && (<button type="button"
                     disabled={isPending}
                     onClick={handleSaveLocation}
-                    className="mt-4 text-black bg-gray-50 hover:opacity-90 hover:text-black/60 border rounded py-2 px-3 w-fit flex flex-row items-center justify-center gap-2">
+                    className="w-full md:w-fit mt-4 text-black bg-gray-50 hover:opacity-90 hover:text-black/60 border rounded py-2 px-3  flex flex-row items-center justify-center gap-2">
                     {userProfile.hasLocation(queriedLocation!) ? <GoHeartFill size={16} /> : <GoHeart size={16} />}
                     <span>{queriedLocation && userProfile.hasLocation(queriedLocation) ? "Remove Saved Location" : "Save Location"}</span>
                 </button>)}
@@ -82,9 +82,9 @@ export default function ReportResults({queriedLocation, cribFitRating, results} 
 
             {results && (<div className="flex flex-col gap-4">
                 {nearbyHawkers && nearbyHawkers.length > 0
-                    && (<div className="px-6 py-4 flex flex-row justify-start items-center gap-8 bg-[#EEEEEE] rounded-md">
-                        <IoRestaurant size={32} className="basis-[10%]" />
-                        <div className="basis-[90%] flex flex-col justify-center items-start gap-0.5">
+                    && (<div className="px-6 py-4 flex flex-col md:flex-row justify-start items-center gap-8 bg-[#EEEEEE] rounded-md">
+                        <IoRestaurant size={32} className="basis-[20%] md:basis-[10%]" />
+                        <div className="basis-[80%] md:basis-[90%] flex flex-col justify-center items-start gap-0.5">
                             <span className="text-lg font-bold">Near to Hawker Centres (300m)</span>
                             <span className="text-md font-medium">{nearbyHawkers.length} location(s)</span>
                             <span className="text-md font-medium">{nearbyHawkers.map((l) => (l as HawkerCentreEntity).getName() + " (" + l.distanceToMetres(queriedLocation!).toFixed() + "m)").join(", ")}</span>
@@ -93,12 +93,12 @@ export default function ReportResults({queriedLocation, cribFitRating, results} 
                     </div>)
                 }
                 {nearbyMRT && nearbyMRT.length > 0
-                    && (<div className="px-6 py-4 flex flex-row justify-start items-center gap-8 bg-[#EEEEEE] rounded-md">
+                    && (<div className="px-6 py-4 flex flex-col md:flex-row justify-start items-center gap-8 bg-[#EEEEEE] rounded-md">
                         {/* <FaTrain size={32} className="basis-[10%]" /> */}
-                        <div className="basis-[10%] block" >
+                        <div className="basis-[20%] md:basis-[10%] block" >
                             <Image src={MRTLogo} alt="MRT Logo" width={32} height={32} className="m-auto" />
                         </div>
-                        <div className="basis-[90%] flex flex-col justify-center items-start gap-0.5">
+                        <div className="basis-[80%] md:basis-[90%] flex flex-col justify-center items-start gap-0.5">
                             <span className="text-lg font-bold">Near to MRT Stations (1km)</span>
                             <span className="text-md font-medium">{nearbyMRT.length} location(s)</span>
                             <span className="text-md font-medium">{nearbyMRT.map((l) => (l as MRTStationEntity).getName() + " (" + l.distanceToMetres(queriedLocation!).toFixed() + "m)").join(", ")}</span>
@@ -106,9 +106,9 @@ export default function ReportResults({queriedLocation, cribFitRating, results} 
                     </div>)
                 }
                 {nearbyClinics && nearbyClinics.length > 0
-                    && (<div className="px-6 py-4 flex flex-row justify-start items-center gap-8 bg-[#EEEEEE] rounded-md">
-                        <FaClinicMedical size={32} className="basis-[10%]" />
-                        <div className="basis-[90%] flex flex-col justify-center items-start gap-0.5">
+                    && (<div className="px-6 py-4 flex flex-col md:flex-row justify-start items-center gap-8 bg-[#EEEEEE] rounded-md">
+                        <FaClinicMedical size={32} className="basis-[20%] md:basis-[10%]" />
+                        <div className="basis-[80%] md:basis-[90%] flex flex-col justify-center items-start gap-0.5">
                             <span className="text-lg font-bold">Near to Clinics (500m)</span>
                             <span className="text-md font-medium">{nearbyClinics.length} location(s)</span>
                             <span className="text-md font-medium">{nearbyClinics.map((l) => (l as ClinicEntity).getName() + " (" + l.distanceToMetres(queriedLocation!).toFixed() + "m)").join(", ")}</span>
@@ -116,9 +116,9 @@ export default function ReportResults({queriedLocation, cribFitRating, results} 
                     </div>)
                 }
                 {nearbySchools && nearbySchools.length > 0
-                    && (<div className="px-6 py-4 flex flex-row justify-start items-center gap-8 bg-[#EEEEEE] rounded-md">
-                        <MdSchool size={32} className="basis-[10%]" />
-                        <div className="basis-[90%] flex flex-col justify-center items-start gap-0.5">
+                    && (<div className="px-6 py-4 flex flex-col md:flex-row justify-start items-center gap-8 bg-[#EEEEEE] rounded-md">
+                        <MdSchool size={32} className="basis-[20%] md:basis-[10%]" />
+                        <div className="basis-[80%] md:basis-[90%] flex flex-col justify-center items-start gap-0.5">
                             <span className="text-lg font-bold">Near to Schools (1km)</span>
                             <span className="text-md font-medium">{nearbySchools.length} location(s)</span>
                             <span className="text-md font-medium">{nearbySchools.map((l) => (l as SchoolEntity).getName() + " (" + l.distanceToMetres(queriedLocation!).toFixed() + "m)").join(", ")}</span>
@@ -127,9 +127,9 @@ export default function ReportResults({queriedLocation, cribFitRating, results} 
                     </div>)
                 }
                 {nearbySupermarkets && nearbySupermarkets.length > 0
-                    && (<div className="px-6 py-4 flex flex-row justify-start items-center gap-8 bg-[#EEEEEE] rounded-md">
-                        <FaBasketShopping size={32} className="basis-[10%]" />
-                        <div className="basis-[90%] flex flex-col justify-center items-start gap-0.5">
+                    && (<div className="px-6 py-4 flex flex-col md:flex-row justify-start items-center gap-8 bg-[#EEEEEE] rounded-md">
+                        <FaBasketShopping size={32} className="basis-[20%] md:basis-[10%]" />
+                        <div className="basis-[80%] md:basis-[90%] flex flex-col justify-center items-start gap-0.5">
                             <span className="text-lg font-bold">Near to Supermarkets (1km)</span>
                             <span className="text-md font-medium">{nearbySupermarkets.length} location(s)</span>
                             <span className="text-md font-medium">{nearbySupermarkets.map((l) => (l as SupermarketEntity).getName() + " (" + l.distanceToMetres(queriedLocation!).toFixed() + "m)").join(", ")}</span>

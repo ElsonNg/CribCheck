@@ -58,22 +58,22 @@ export default function ReportResultsScreen() {
             <div className="absolute top-0 left-0 z-50 pointer-events-none">
                 <Confetti mode="boom" deg={90} spreadDeg={300} launchSpeed={0.8} shapeSize={12} particleCount={120} colors={['#ff577f', '#ff884b']} />
             </div>
-            <div className="w-[90%] p-12 flex flex-col justify-start items-start gap-6">
-                <div className="flex flex-row justify-start items-center gap-6">
-                    <div className="group flex flex-row justify-start items-center gap-1 cursor-pointer" onClick={handleRestart}>
+            <div className="w-full md:w-[90%] p-4 md:p-12 flex flex-col justify-start items-start gap-6">
+                <div className="w-full flex flex-row justify-center md:justify-start items-center gap-6">
+                    <div className="group hidden md:flex flex-row justify-start items-center gap-1 cursor-pointer" onClick={handleRestart}>
                         <MdKeyboardArrowLeft size={32} color="gray" />
                     </div>
-                    <h1 className="font-bold text-4xl relative">Your Report Is Ready! 🎊🎊
+                    <h1 className="font-bold text-2xl md:text-4xl relative text-center">Your Report Is Ready! 🎊🎊
 
                     </h1>
 
                 </div>
-                <div className="w-full  p-6 grid grid-cols-6 gap-4 bg-white drop-shadow-md rounded-lg">
-                    <Card className="col-span-3 flex flex-col gap-6">
-                        <div className="w-full flex flex-row justify-between items-center">
+                <div className="w-full  p-4 grid grid-cols-6 gap-4 bg-white drop-shadow-md rounded-lg">
+                    <Card className="col-span-6 md:col-span-3 flex flex-col gap-6">
+                        <div className="w-full flex flex-col md:flex-row justify-between items-center gap-6">
                             <h3 className="font-semibold text-2xl">📋  {criteriaController.getCriteriaEntity().getName()}</h3>
                             {authUser && customPreset && (<button type="button" onClick={handleSavePreset}
-                                className="group text-black bg-gray-50 hover:opacity-90 hover:text-black/60 border rounded py-2 px-3 flex flex-row items-center justify-center gap-2 self-end">
+                                className="w-full md:w-fit group text-black bg-gray-50 hover:opacity-90 hover:text-black/60 border rounded py-2 px-3 flex flex-row items-center justify-center gap-2 self-end">
                                 {userProfile.hasPreset(current) ? <GoHeartFill size={16} /> : <GoHeart size={16} />}
                                 <span>{userProfile.hasPreset(current) ? "Remove Saved Preset " : "Save Preset"}</span>
                             </button>)}
@@ -89,13 +89,13 @@ export default function ReportResultsScreen() {
                         </div>
 
                     </Card>
-                    <Card className="col-span-3">
+                    <Card className="col-span-6 md:col-span-3">
                         <ReportMap />
                     </Card>
-                    <Card className="col-span-6">
+                    <Card className="col-span-6 md:col-span-3">
                         <div className="flex flex-col gap-8">
 
-                            <div className="flex flex-row justify-between gap-2">
+                            <div className="flex flex-col md:flex-row justify-between gap-2">
                                 <h3 className="font-semibold text-2xl">📑 Crib Report</h3>
                                 <ReportAddComparison />
                             </div>

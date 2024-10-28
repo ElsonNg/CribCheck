@@ -32,7 +32,7 @@ export default function ReportAddComparison() {
     return (
         <>
             <button type="button" onClick={handleAddComparison}
-                className="group text-white bg-[#5A76FF] rounded py-2 px-4 flex flex-row items-center justify-center gap-2 self-end">
+                className="w-full md:w-fit group text-white bg-[#5A76FF] rounded py-2 px-4 flex flex-row items-center justify-center gap-2 self-end">
                 {reportController.getSelectedLocationOther() ? "Change Comparison" : "Add Comparison"}
             </button>
             {showAddComparisonDialog && (<ReportAddComparisonDialog onCompare={handleFinishComparison}

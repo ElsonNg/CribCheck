@@ -68,7 +68,7 @@ export default function CriteriaWrapper() {
 
     return (
         <div className="flex flex-col p-6 gap-4 bg-white drop-shadow-md rounded-lg">
-            <div className={cn("w-full grid gap-4", userProfile.getPresets().length > 0 ? "grid-cols-4" : "grid-cols-3")}>
+            <div className={cn("w-full grid gap-4", userProfile.getPresets().length > 0 ? "grid-cols-1 md:grid-cols-4" : "grid-cols-1 md:grid-cols-3")}>
                 {criteriaOptions.map((type) => (
                     <button
                         key={type}
@@ -90,7 +90,7 @@ export default function CriteriaWrapper() {
 
             <p className="font-semibold text-2xl text-center">or</p>
 
-            <div className="flex flex-row justify-center">
+            <div className="mb-8 flex flex-row justify-center">
                 <button
                     className={`px-4 py-2 flex flex-row items-center gap-4 rounded-lg bg-[#EEEEEE] ${selectedOption === "new" ? "ring-4 ring-green-500" : ""}`}
                     onClick={handleNewPresetClick}

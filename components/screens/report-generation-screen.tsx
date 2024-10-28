@@ -28,8 +28,8 @@ export default function ReportGenerationScreen() {
         hasStarted.current = true;
     }, [masterController, reportController]);
 
-    return (<div className="w-[80%] p-12 flex flex-col justify-start items-start gap-4">
-        <h1 className="font-bold text-3xl">Generating Your CribFit Report</h1>
+    return (<div className="w-full md:w-[80%] p-12 flex flex-col justify-start items-center md:items-start gap-4">
+        <h1 className="font-bold text-3xl text-center md:text-left">Generating Your CribFit Report</h1>
         <span className="text-lg">{reportController.getSelectedLocationOther() ? "Comparing both locations..." : "Churning the numbers..."}</span>
         <div className="w-full mt-12 flex flex-col justify-center items-center">
             <PuffLoader loading={true} size={64} aria-label="Loading Spinner" />
