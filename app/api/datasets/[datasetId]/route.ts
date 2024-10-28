@@ -1,4 +1,5 @@
 // app/api/datasets/route.ts
+import { GeoJsonData } from '@/lib/boundary/implementation/govt-dataset-service';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest, {params} : {params: {datasetId: string}}) {
@@ -7,18 +8,33 @@ export async function GET(request: NextRequest, {params} : {params: {datasetId: 
             headers: {
                 'Content-Type': 'application/json',
             },
-        });
+            cache: "no-store",
+        }, );
 
         if (!response.ok) {
             throw new Error('Failed to fetch data');
         }
 
-        const data = await response.json();
+        const jsonData = await response.json();
 
+        const downloadLink = jsonData.data.url;
+        if (!downloadLink) {
+            throw new Error("Download URL not found in response!");
+        }
+
+
+        // Fetch the actual GeoJSON data from the download link
+        const downloadResponse = await fetch(downloadLink, {cache: "no-store"});
+        if (!downloadResponse.ok) {
+            throw new Error('Failed to download GeoJSON!');
+        }
+
+        // Parse and return GeoJSON data
+        const downloadedJSONData = await downloadResponse.json();
         // Return the data with CORS headers
-        return NextResponse.json(data, {
+        return NextResponse.json(downloadedJSONData as GeoJsonData, {
             headers: {
-                'Access-Control-Allow-Origin': 'https://cribcheck.vercel.app', // Replace with your actual Vercel domain
+                'Access-Control-Allow-Origin': 'https://cribcheck.vercel.app', 
                 'Access-Control-Allow-Methods': 'GET,OPTIONS',
                 'Access-Control-Allow-Headers': 'Content-Type',
             }
