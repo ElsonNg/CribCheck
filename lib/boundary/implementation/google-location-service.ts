@@ -11,20 +11,21 @@ import LocationPredictionEntity from "@/lib/entities/location/location-predictio
  * Note: The Google Maps JavaScript API script is injected in the layout file, so this service assumes
  *       that the script is already loaded and accessible when this service is initialized.
  */
+
+export interface GoogleLocation {
+    latitude: number;
+    longitude: number;
+    address: string;
+}
 export default class GoogleLocationService extends LocationService<LocationEntity, LocationPredictionEntity> {
     public autocompleteService: google.maps.places.AutocompleteService | null = null;
     public geocoder: google.maps.Geocoder | null = null;
 
-    // Geographic bounds for Singapore, used to restrict location services to this region.
-    private readonly SINGAPORE_BOUNDS = {
-        north: 1.47128,
-        south: 1.13651,
-        east: 104.1237,
-        west: 103.594,
-    }
+    public static fetchCalls: number = 0;
 
     constructor() {
         super();
+        GoogleLocationService.fetchCalls = 0;
     }
 
     /**
@@ -48,6 +49,8 @@ export default class GoogleLocationService extends LocationService<LocationEntit
         }
     }
 
+
+
     /**
      * Fetches the current geographic location using the browser's Geolocation API.
      *
@@ -62,7 +65,11 @@ export default class GoogleLocationService extends LocationService<LocationEntit
                     navigator.geolocation.getCurrentPosition(
                         (position) => {
                             const { latitude, longitude } = position.coords;
-                            resolve(new LocationEntity(latitude, longitude, "Current Location"));
+                            if (LocationService.isWithinSingaporeBounds(latitude, longitude)) {
+                                resolve(new LocationEntity(latitude, longitude, "Current Location"));
+                            } else {
+                                reject(new Error("Current location is outside of Singapore."));
+                            }
                         },
                         (error) => {
                             reject(new Error("Geolocation error: " + error.message));
@@ -90,13 +97,19 @@ export default class GoogleLocationService extends LocationService<LocationEntit
     async getLocationByCoordinates(latitude: number, longitude: number): Promise<LocationEntity | null> {
         try {
 
+            if (!LocationService.isWithinSingaporeBounds(latitude, longitude)) {
+                throw new Error("Out of Bounds");
+            }
+
             if (!this.geocoder) {
                 this.initializeServices();
             }
 
             return new Promise((resolve, reject) => {
+                GoogleLocationService.fetchCalls++;
                 this.geocoder?.geocode({ location: { lat: latitude, lng: longitude } }, (results, status) => {
                     if (status === google.maps.GeocoderStatus.OK && results && results[0]) {
+
                         const location = new LocationEntity(
                             latitude,
                             longitude,
@@ -134,14 +147,24 @@ export default class GoogleLocationService extends LocationService<LocationEntit
 
             return new Promise((resolve, reject) => {
                 const placesService = new google.maps.places.PlacesService(document.createElement("div"));
+                GoogleLocationService.fetchCalls++;
+                console.log("Fetch Calls: ", GoogleLocationService.fetchCalls);
+
                 placesService.getDetails(placeDetailsRequest, (place, status) => {
                     if (status === google.maps.places.PlacesServiceStatus.OK && place && place.geometry && place.geometry.location) {
-                        const location = new LocationEntity(
-                            place.geometry.location.lat(),
-                            place.geometry.location.lng(),
-                            place.formatted_address || "Unknown address"
-                        );
-                        resolve(location);
+
+                        const lat = place.geometry.location.lat();
+                        const lng = place.geometry.location.lng();
+                        if (LocationService.isWithinSingaporeBounds(lat, lng)) {
+                            const location = new LocationEntity(
+                                place.geometry.location.lat(),
+                                place.geometry.location.lng(),
+                                place.formatted_address || "Unknown address"
+                            );
+                            resolve(location);
+                        } else {
+                            reject(new Error("Out of Bounds"));
+                        }
                     } else if (status === google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
                         resolve(null);
                     } else {
@@ -171,9 +194,11 @@ export default class GoogleLocationService extends LocationService<LocationEntit
 
 
             return new Promise((resolve, reject) => {
+                GoogleLocationService.fetchCalls++;
+                console.log("Fetch Calls: ", GoogleLocationService.fetchCalls);
                 this.autocompleteService?.getPlacePredictions({
                     input: query,
-                    bounds: this.SINGAPORE_BOUNDS, // Restrict predictions to Singapore's geographic bounds
+                    bounds: LocationService.SINGAPORE_BOUNDS_RECT, // Restrict predictions to Singapore's geographic bounds
                     componentRestrictions: { country: "SG" }, // Restrict predictions to Singapore
                 }, (predictions, status) => {
                     if (status === google.maps.places.PlacesServiceStatus.OK) {

@@ -6,6 +6,8 @@ import LocationPredictionEntity from "@/lib/entities/location/location-predictio
 import { useMasterController } from "@/context/master-controller-context";
 import LocationEntity from "@/lib/entities/location/location-entity";
 import { ScreenState } from "@/lib/control/master-controller";
+import LocationService from "@/lib/boundary/location-service";
+import { IoMdAlert } from "react-icons/io";
 
 interface LatLng {
     lat: number;
@@ -13,7 +15,7 @@ interface LatLng {
 };
 
 interface LocationSearchProps {
-    onChange?: (location: LocationEntity) => void;
+    onChange?: (location: LocationEntity | null) => void;
 }
 
 export default function SearchLocation({ onChange }: LocationSearchProps) {
@@ -26,12 +28,17 @@ export default function SearchLocation({ onChange }: LocationSearchProps) {
 
     const userProfile = profileController.getProfile();
 
-    const [mapCenter, setMapCenter] = useState<LatLng>({
-        lat: 1.348502964206701,
-        lng: 103.68308105237777,
-    });
+    const defaultMapCenter: LatLng = { lat: 1.348502964206701, lng: 103.68308105237777 };
+
+    const [mapCenter, setMapCenter] = useState<LatLng>(defaultMapCenter);
     const [markerPosition, setMarkerPosition] = useState<LatLng>(mapCenter); // Track marker position
     const [zoomLevel, setZoomLevel] = useState<number>(12);
+
+    const [requestCount, setRequestCount] = useState<number>(0);
+
+    const MAX_REQUESTS = 3;
+    const TIME_WINDOW = 1000 * 5;
+
 
     const [autocompleteSuggestions, setAutocompleteSuggestions] =
         useState<LocationPredictionEntity[] | null>(null);
@@ -43,7 +50,11 @@ export default function SearchLocation({ onChange }: LocationSearchProps) {
     const mapRef = useRef<google.maps.Map | null>(null);
 
 
-    function setLocation(location: LocationEntity) {
+    function isSearchDisabled() {
+        return requestCount > MAX_REQUESTS;
+    }
+
+    function setLocation(location: LocationEntity | null) {
 
 
         reportController.clearReportResults();
@@ -57,7 +68,9 @@ export default function SearchLocation({ onChange }: LocationSearchProps) {
 
         if (onChange)
             onChange(location);
-        setMarkerPosition({ lat: location.latitude, lng: location.longitude });
+
+        if (location)
+            setMarkerPosition({ lat: location.latitude, lng: location.longitude });
     }
 
     // Handle location autocomplete search
@@ -87,15 +100,35 @@ export default function SearchLocation({ onChange }: LocationSearchProps) {
 
     // Handle map idle (when the map stops moving) to update marker's geographic position
     async function handleMapIdle() {
+        if (requestCount > MAX_REQUESTS) return;
+
         const map = mapRef.current;
         if (map) {
             const newCenter = map.getCenter()?.toJSON();
             if (newCenter) {
-                setMarkerPosition({ lat: newCenter.lat, lng: newCenter.lng }); // Update the marker's lat/lng to the center of the map
-                const location = await locationController.getLocationByCoordinates(newCenter.lat, newCenter.lng);
-                if (location) {
-                    setLocation(location);
-                    setSearchValue(location.address || ""); // Update the search bar with the address
+                const withinSG = LocationService.isWithinSingaporeBounds(newCenter.lat, newCenter.lng);
+
+                if (withinSG) {
+
+                    // Update the marker's lat/lng to the center of the map
+                    setMarkerPosition({ lat: newCenter.lat, lng: newCenter.lng });
+
+                    if(requestCount + 1 <= MAX_REQUESTS) 
+                    {
+                        const location = await locationController.getLocationByCoordinates(newCenter.lat, newCenter.lng).catch((reason) => {
+                        });
+                        if (location) {
+                            setLocation(location);
+                            setSearchValue(location.address || ""); // Update the search bar with the address
+                        }
+                    }
+
+                    setRequestCount((prev) => prev + 1);
+
+
+                } else {
+                    setLocation(null);
+                    setSearchValue("Please select a location within Singapore.");
                 }
             }
         }
@@ -111,10 +144,25 @@ export default function SearchLocation({ onChange }: LocationSearchProps) {
         if (map) {
             const newCenter = map.getCenter()?.toJSON();
             if (newCenter) {
-                setMarkerPosition({ lat: newCenter.lat, lng: newCenter.lng }); // Update the marker's lat/lng to the center of the map
+                setMarkerPosition({ lat: newCenter.lat, lng: newCenter.lng });
             }
         }
     }
+
+
+    // Effect to reset the request count after 30 seconds
+    useEffect(() => {
+        if (requestCount === 0) return;
+
+        // Start a timer to reset the request count after TIME_WINDOW
+        const timer = setTimeout(() => {
+            setRequestCount(0);
+            setSearchValue("");
+        }, TIME_WINDOW);
+
+        // Clear timer on cleanup
+        return () => clearTimeout(timer);
+    }, [requestCount, TIME_WINDOW]);
 
     // Sets the current browser's location as map center on initial load
     useEffect(() => {
@@ -151,11 +199,16 @@ export default function SearchLocation({ onChange }: LocationSearchProps) {
             {/* Input field for location search */}
             <input
                 value={searchValue}
+                disabled={isSearchDisabled()}
                 onChange={handleSearchChange}
                 type="text"
                 placeholder="Enter a location or postal code"
-                className="w-full h-10 bg-[#FAFAFA] rounded mb-2 px-3 text-lg leading-7 placeholder-[#B9B9B9] border border-[#E0E0E0] focus:outline-none"
+                className="w-full h-10 bg-[#FAFAFA] rounded mb-2 px-3 text-lg leading-7 placeholder-[#B9B9B9] border border-[#E0E0E0] focus:outline-none disabled:text-gray-300"
             />
+            {isSearchDisabled() && (<div className="py-2 flex flex-row justify-start items-center font-medium text-lg gap-2">
+                <IoMdAlert color="red" size={24} />
+                <span>Too many requests! Please wait up to {TIME_WINDOW/1000} seconds before trying again.</span>
+            </div>)}
             {searchValue === "" && savedSuggestions && (
                 <ul className="absolute top-12 z-20 w-full bg-white border border-gray-300 rounded shadow-lg max-h-60 overflow-x-hidden overflow-y-auto">
                     {savedSuggestions.map((suggestion) => (
@@ -195,14 +248,7 @@ export default function SearchLocation({ onChange }: LocationSearchProps) {
                     mapContainerStyle={{ width: "100%", height: "100%" }}
                     options={{
                         streetViewControl: false,
-                        restriction: {
-                            latLngBounds: {
-                                north: 1.54,
-                                south: 1.16,
-                                east: 104.2,
-                                west: 103.45,
-                            },
-                        }
+                        gestureHandling: isSearchDisabled() ? "none" : "auto",
                     }}
                 >
                     {/* Marker is fixed to the center of the map */}
