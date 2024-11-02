@@ -374,7 +374,7 @@ class ReportController {
      * 
      * @param {LocationEntity} location - The primary location for report generation.
      */
-    public setSelectedLocation(location: LocationEntity) {
+    public setSelectedLocation(location: LocationEntity | null) {
         this.selectedLocation = location;
     }
 
@@ -383,7 +383,7 @@ class ReportController {
      * 
      * @param {LocationEntity} location - The secondary location for comparison.
      */
-    public setSelectedLocationOther(location: LocationEntity) {
+    public setSelectedLocationOther(location: LocationEntity | null) {
         this.selectedLocationOther = location;
     }
 

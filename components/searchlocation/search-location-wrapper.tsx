@@ -18,7 +18,7 @@ export default function SearchLocationWrapper() {
             masterController.goToNextState();
     }
 
-    function handleOnChange(location : LocationEntity) {
+    function handleOnChange(location : LocationEntity | null) {
         setLocation(location);
     }
 
