@@ -46,7 +46,7 @@ export default function NavBar() {
                 </h1>
             </Link>
             <div className="flex flex-row gap-6 md:gap-10 text-lg md:text-md">
-                <Link href="#" className="hover:text-gray-400 transition duration-300" onClick={handleHome}>
+                <Link href="/app" className="hover:text-gray-400 transition duration-300" onClick={handleHome}>
                     Home
                 </Link>
                 <Link href="/about">

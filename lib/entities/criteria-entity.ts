@@ -58,6 +58,10 @@ export default class CriteriaEntity {
         this.criteriaRankingMap.clear();
     }
 
+    public hasAtLeastOneCriterionSelected() : boolean {
+        return this.criteriaRankingMap.size >= 1;
+    }
+
     /**
      * Retrieves the current criteria ranking map.
      * 

@@ -55,7 +55,7 @@ export default function ReportMap() {
         return {
             url: url,
             scaledSize: new google.maps.Size(24, 24),
-            anchor: new google.maps.Point(25, 30),
+            anchor: new google.maps.Point(15, 20),
         }
     }
 
