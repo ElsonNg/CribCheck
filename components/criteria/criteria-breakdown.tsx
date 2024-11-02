@@ -54,13 +54,13 @@ export default function CriteriaBreakdown({ className }: CriteriaCreateFormProps
     const criteriaController = masterController.getCriteriaController();
 
     const [criteria, setCriteria] = useState(criteriaController.getCriteriaEntity());
-    const [version, setVersion] = useState(0);
-
+    const [_, setVersion] = useState(0);
 
 
     function handleSelectCriterion(criteriaType: CriteriaType, ranking: number) {
 
-        if (criteria.getCriteriaRankingMap().has(criteriaType)) {
+        const map = criteria.getCriteriaRankingMap();
+        if (map.size > 1 && map.has(criteriaType)) {
             criteriaController.deselectCriteron(criteriaType);
         } else {
             criteriaController.selectCriterion(criteriaType, ranking);
@@ -75,10 +75,6 @@ export default function CriteriaBreakdown({ className }: CriteriaCreateFormProps
         setCriteria(criteriaController.getCriteriaEntity());
         setVersion(prevVersion => (prevVersion == 100 ? 0 : prevVersion + 1));
     }
-
-    // useEffect(() => {
-    //     setCriteria(criteriaController.getCriteriaEntity());
-    // }, [criteriaController]);
 
 
     return (<div className={cn("flex flex-col gap-2", className)}>

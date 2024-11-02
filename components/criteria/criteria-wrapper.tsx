@@ -7,7 +7,7 @@ import { useMasterController } from "@/context/master-controller-context";
 import CriteriaBreakdown from "./criteria-breakdown";
 import { cn } from "@/lib/utils";
 import { FaCheckCircle } from "react-icons/fa";
-import MasterController, { ScreenState } from "@/lib/control/master-controller";
+import  { ScreenState } from "@/lib/control/master-controller";
 
 const criteriaOptions: PresetCriteriaType[] = ["Singles", "Young Couple", "Family"];
 
@@ -118,7 +118,7 @@ export default function CriteriaWrapper() {
                 <button
                     type="button"
                     onClick={handleContinue}
-                    disabled={!selectedOption}
+                    disabled={!selectedOption || !criteriaController.getCriteriaEntity().hasAtLeastOneCriterionSelected()} 
                     className="group text-white bg-[#5A76FF] rounded py-2 px-4 flex flex-row items-center justify-center gap-2 self-end
                     disabled:opacity-60"
                 >
