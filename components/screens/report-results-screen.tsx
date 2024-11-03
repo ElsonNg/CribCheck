@@ -58,7 +58,7 @@ export default function ReportResultsScreen() {
             <div className="absolute top-0 left-0 z-50 pointer-events-none">
                 <Confetti mode="boom" deg={90} spreadDeg={300} launchSpeed={0.8} shapeSize={12} particleCount={120} colors={['#ff577f', '#ff884b']} />
             </div>
-            <div className="w-full md:w-[90%] p-4 md:p-12 flex flex-col justify-start items-start gap-6">
+            <div className="animate-fadeIn w-full md:w-[90%] p-4 md:p-12 flex flex-col justify-start items-start gap-6">
                 <div className="w-full flex flex-row justify-center md:justify-start items-center gap-6">
                     <div className="group hidden md:flex flex-row justify-start items-center gap-1 cursor-pointer" onClick={handleRestart}>
                         <MdKeyboardArrowLeft size={32} color="gray" />
