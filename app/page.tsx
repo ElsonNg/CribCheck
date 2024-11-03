@@ -6,7 +6,7 @@ import Link from "next/link";
 export default function HomePage() {
 
     return (
-        <div className="min-h-screen flex flex-col">
+        <div className="animate-fadeIn min-h-screen flex flex-col">
             <main className="grow flex flex-col justify-center items-center gap-24">
                 <h1 className="text-5xl font-bold">
                     🏠 CribCheck

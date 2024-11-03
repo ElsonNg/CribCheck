@@ -28,7 +28,7 @@ export default function ReportGenerationScreen() {
         hasStarted.current = true;
     }, [masterController, reportController]);
 
-    return (<div className="w-full md:w-[80%] p-12 flex flex-col justify-start items-center md:items-start gap-4">
+    return (<div className="animate-fadeIn w-full md:w-[80%] p-12 flex flex-col justify-start items-center md:items-start gap-4">
         <h1 className="font-bold text-3xl text-center md:text-left">Generating Your CribFit Report</h1>
         <span className="text-lg">{reportController.getSelectedLocationOther() ? "Comparing both locations..." : "Churning the numbers..."}</span>
         <div className="w-full mt-12 flex flex-col justify-center items-center">

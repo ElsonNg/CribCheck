@@ -12,7 +12,10 @@
  */
 abstract class LocationService<T, U> {
 
-    // Geographic bounds for Singapore, used to restrict location services to this region.
+    /**
+     * Geographic bounds for Singapore, used to restrict location services to this region.
+     * This rectangular boundary provides rough limits to identify if a location is within Singapore.
+     */
     public static readonly SINGAPORE_BOUNDS_RECT = {
         north: 1.472,
         south: 1.23,
@@ -24,7 +27,10 @@ abstract class LocationService<T, U> {
         // west: 103.45,
     }
 
-
+    /**
+    * Geographic boundary defined as a polygon for more precise region checking within Singapore.
+    * The array contains coordinates (latitude and longitude) defining the boundary of Singapore.
+    */
     public static readonly SINGAPORE_BOUNDS_POLYGON = [
         { lat: 1.4722264460140384, lng: 103.828983883667 },
         { lat: 1.3901931463330104, lng: 103.97009903948744 },
@@ -51,12 +57,14 @@ abstract class LocationService<T, U> {
 
 
     /**
-* Verifies if a location is within Singapore bounds.
-* 
-* @param latitude - The latitude of the location.
-* @param longitude - The longitude of the location.
-* @returns {boolean} - True if within Singapore bounds, otherwise false.
-*/
+     * Checks if a given location is within Singapore's rectangular bounds.
+     * This method verifies whether the provided latitude and longitude fall 
+     * within a predefined rectangular area that roughly encompasses Singapore.
+     *
+     * @param latitude - The latitude of the location.
+     * @param longitude - The longitude of the location.
+     * @returns {boolean} - True if the location is within the rectangular bounds of Singapore, otherwise false.
+     */
     public static isWithinSingaporeBoundsRect(latitude: number, longitude: number): boolean {
 
         return (
@@ -67,6 +75,15 @@ abstract class LocationService<T, U> {
         );
     }
 
+    /**
+     * Determines if a location is within the Singapore polygon bounds using a point-in-polygon algorithm.
+     * This method uses a more precise polygon boundary to check if the given latitude and longitude fall 
+     * within the complex geographic shape representing Singapore.
+     *
+     * @param latitude - The latitude of the location.
+     * @param longitude - The longitude of the location.
+     * @returns {boolean} - True if the location is within the polygonal bounds of Singapore, otherwise false.
+     */
     public static isWithinSingaporeBounds(latitude: number, longitude: number): boolean {
 
         let isInside = false;

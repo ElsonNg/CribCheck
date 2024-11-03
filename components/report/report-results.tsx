@@ -16,6 +16,7 @@ import MRTLogo from "@/app/images/mrt-logo.png";
 import Image from "next/image";
 import LocationEntity from "@/lib/entities/location/location-entity";
 import { ScoringResult } from "@/lib/strategy/scoring-strategy";
+import ReportDataCard from "./report-data-card";
 
 
 interface ReportResultsProps {
@@ -26,10 +27,9 @@ interface ReportResultsProps {
     results: Map<CriteriaType, ScoringResult>;
 }
 
-export default function ReportResults({queriedLocation, cribFitRating, results} : ReportResultsProps) {
+export default function ReportResults({ queriedLocation, cribFitRating, results }: ReportResultsProps) {
 
     const masterController = useMasterController();
-    const reportController = masterController.getReportController();
     const authController = masterController.getAuthController();
     const profileController = masterController.getProfileController();
 
@@ -44,8 +44,7 @@ export default function ReportResults({queriedLocation, cribFitRating, results} 
     const nearbySchools = results ? results.get(CriteriaType.proximityToSchool)?.getValidLocations().filter((l) => queriedLocation!.distanceToKilometres(l) <= 1.00) : [];
     const nearbySupermarkets = results ? results.get(CriteriaType.proximityToSupermarket)?.getValidLocations().filter((l) => queriedLocation!.distanceToKilometres(l) <= 1.00) : [];
 
-
-
+    // Save location to user's profile
     async function handleSaveLocation() {
         const user = authController.getCurrentUser();
         if (!user || !queriedLocation) return;
@@ -81,63 +80,60 @@ export default function ReportResults({queriedLocation, cribFitRating, results} 
             </div>
 
             {results && (<div className="flex flex-col gap-4">
+                {/* Hawker Summary */}
                 {nearbyHawkers && nearbyHawkers.length > 0
-                    && (<div className="px-6 py-4 flex flex-col md:flex-row justify-start items-center gap-8 bg-[#EEEEEE] rounded-md">
-                        <IoRestaurant size={32} className="basis-[20%] md:basis-[10%]" />
-                        <div className="basis-[80%] md:basis-[90%] flex flex-col justify-center items-start gap-0.5">
-                            <span className="text-lg font-bold">Near to Hawker Centres (300m)</span>
-                            <span className="text-md font-medium">{nearbyHawkers.length} location(s)</span>
-                            <span className="text-md font-medium">{nearbyHawkers.map((l) => (l as HawkerCentreEntity).getName() + " (" + l.distanceToMetres(queriedLocation!).toFixed() + "m)").join(", ")}</span>
+                    && (<ReportDataCard
+                        title="Near to Hawker Centres (300m)"
+                        locations={nearbyHawkers.length.toString()}
+                        description={nearbyHawkers.map((l) => (l as HawkerCentreEntity).getName() + " (" + l.distanceToMetres(queriedLocation!).toFixed() + "m)").join(", ")}
+                    >
+                        <IoRestaurant size={32} className="w-full h-full" />
+                    </ReportDataCard>
+                    )
 
-                        </div>
-                    </div>)
                 }
-                {nearbyMRT && nearbyMRT.length > 0
-                    && (<div className="px-6 py-4 flex flex-col md:flex-row justify-start items-center gap-8 bg-[#EEEEEE] rounded-md">
-                        {/* <FaTrain size={32} className="basis-[10%]" /> */}
-                        <div className="basis-[20%] md:basis-[10%] block" >
-                            <Image src={MRTLogo} alt="MRT Logo" width={32} height={32} className="m-auto" />
-                        </div>
-                        <div className="basis-[80%] md:basis-[90%] flex flex-col justify-center items-start gap-0.5">
-                            <span className="text-lg font-bold">Near to MRT Stations (1km)</span>
-                            <span className="text-md font-medium">{nearbyMRT.length} location(s)</span>
-                            <span className="text-md font-medium">{nearbyMRT.map((l) => (l as MRTStationEntity).getName() + " (" + l.distanceToMetres(queriedLocation!).toFixed() + "m)").join(", ")}</span>
-                        </div>
-                    </div>)
+                {/* MRT Summary */}
+                {nearbyMRT && nearbyMRT.length > 0 &&
+                    (<ReportDataCard
+                        title="Near to MRT Stations (1km)"
+                        locations={nearbyMRT.length.toString()}
+                        description={nearbyMRT.map((l) => (l as MRTStationEntity).getName() + " (" + l.distanceToMetres(queriedLocation!).toFixed() + "m)").join(", ")}
+                    >
+                        <Image src={MRTLogo} alt="MRT Logo" width={32} height={32} className="m-auto" />
+                    </ReportDataCard>)
                 }
+                {/* Clinic Summary */}
                 {nearbyClinics && nearbyClinics.length > 0
-                    && (<div className="px-6 py-4 flex flex-col md:flex-row justify-start items-center gap-8 bg-[#EEEEEE] rounded-md">
-                        <FaClinicMedical size={32} className="basis-[20%] md:basis-[10%]" />
-                        <div className="basis-[80%] md:basis-[90%] flex flex-col justify-center items-start gap-0.5">
-                            <span className="text-lg font-bold">Near to Clinics (500m)</span>
-                            <span className="text-md font-medium">{nearbyClinics.length} location(s)</span>
-                            <span className="text-md font-medium">{nearbyClinics.map((l) => (l as ClinicEntity).getName() + " (" + l.distanceToMetres(queriedLocation!).toFixed() + "m)").join(", ")}</span>
-                        </div>
-                    </div>)
+                    && (<ReportDataCard
+                        title="Near to Clinics (500m)"
+                        locations={nearbyClinics.length.toString()}
+                        description={nearbyClinics.map((l) => (l as ClinicEntity).getName() + " (" + l.distanceToMetres(queriedLocation!).toFixed() + "m)").join(", ")}
+                    >
+                        <FaClinicMedical size={32} className="m-auto" />
+                    </ReportDataCard>)
                 }
+                {/* Schools Summary */}
                 {nearbySchools && nearbySchools.length > 0
-                    && (<div className="px-6 py-4 flex flex-col md:flex-row justify-start items-center gap-8 bg-[#EEEEEE] rounded-md">
-                        <MdSchool size={32} className="basis-[20%] md:basis-[10%]" />
-                        <div className="basis-[80%] md:basis-[90%] flex flex-col justify-center items-start gap-0.5">
-                            <span className="text-lg font-bold">Near to Schools (1km)</span>
-                            <span className="text-md font-medium">{nearbySchools.length} location(s)</span>
-                            <span className="text-md font-medium">{nearbySchools.map((l) => (l as SchoolEntity).getName() + " (" + l.distanceToMetres(queriedLocation!).toFixed() + "m)").join(", ")}</span>
-
-                        </div>
-                    </div>)
+                    && (<ReportDataCard
+                        title="Near to Schools (1km)"
+                        locations={nearbySchools.length.toString()}
+                        description={nearbySchools.map((l) => (l as SchoolEntity).getName() + " (" + l.distanceToMetres(queriedLocation!).toFixed() + "m)").join(", ")}>
+                        <MdSchool size={32} className="m-auto" />
+                    </ReportDataCard>)
                 }
+                {/* Supermarkets Summary */}
                 {nearbySupermarkets && nearbySupermarkets.length > 0
-                    && (<div className="px-6 py-4 flex flex-col md:flex-row justify-start items-center gap-8 bg-[#EEEEEE] rounded-md">
-                        <FaBasketShopping size={32} className="basis-[20%] md:basis-[10%]" />
-                        <div className="basis-[80%] md:basis-[90%] flex flex-col justify-center items-start gap-0.5">
-                            <span className="text-lg font-bold">Near to Supermarkets (1km)</span>
-                            <span className="text-md font-medium">{nearbySupermarkets.length} location(s)</span>
-                            <span className="text-md font-medium">{nearbySupermarkets.map((l) => (l as SupermarketEntity).getName() + " (" + l.distanceToMetres(queriedLocation!).toFixed() + "m)").join(", ")}</span>
-
-                        </div>
-                    </div>)
+                    && (<ReportDataCard
+                        title="Near to Supermarkets (1km)"
+                        locations={nearbySupermarkets.length.toString()}
+                        description={nearbySupermarkets.map((l) => (l as SupermarketEntity).getName() + " (" + l.distanceToMetres(queriedLocation!).toFixed() + "m)").join(", ")}
+                    >
+                        <FaBasketShopping size={32} className="m-auto" />
+                    </ReportDataCard>)
                 }
-            </div>)}
-        </div>
+            </div>)
+            }
+        </div >
     );
 }
+

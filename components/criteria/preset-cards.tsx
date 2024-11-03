@@ -1,4 +1,3 @@
-// CriteriaCard.tsx
 import Card from "../general/card";
 import Singles from "@/app/images/singles.png";
 import YoungCouple from "@/app/images/youngcouple.png";

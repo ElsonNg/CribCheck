@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from 'next/server';
 const allowedOrigin = 'https://cribcheck.vercel.app';
 
 export async function GET(request: NextRequest, { params }: { params: { datasetId: string } }) {
+
     // Validate the origin to allow only the specified domain
     const origin = request.headers.get('origin');
     if (origin !== null && origin !== allowedOrigin) {
@@ -15,6 +16,7 @@ export async function GET(request: NextRequest, { params }: { params: { datasetI
     }
 
     try {
+        
         // Fetch dataset download link
         const response = await fetch(`https://api-open.data.gov.sg/v1/public/api/datasets/${params.datasetId}/poll-download`, {
             headers: {
