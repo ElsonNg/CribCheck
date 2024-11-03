@@ -14,17 +14,19 @@ export default function ReportAddComparison() {
     const [showAddComparisonDialog, setShowAddComparisonDialog] = useState<boolean>(false);
 
 
+    // Cancel comparison
     function handleCancelComparison() {
         setShowAddComparisonDialog(false);
     }
 
+    // After comparing, generate a new report with both locations
     function handleFinishComparison() {
         if (masterController.getCurrentState() !== ScreenState.ViewReport) return;
         masterController.setState(ScreenState.GeneratingReport);
         setShowAddComparisonDialog(false);
     }
 
-
+    // Add a new comparison by showing the comparison dialog
     function handleAddComparison() {
         setShowAddComparisonDialog(true);
     }

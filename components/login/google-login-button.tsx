@@ -15,12 +15,13 @@ export default function GoogleLoginButton() {
 
     const [isPending, startTransition] = useTransition();
 
+    // Logins the user with Google and fetches their profile
     function handleSignInWithGoogle() {
         startTransition(async () => {
             const authController = masterController.getAuthController();
             const user = await authController.loginWithGoogle();
             if (user) {
-                const profile = await profileController.loadUserProfile(user.getId());
+                await profileController.loadUserProfile(user.getId());
                 router.push("/app");
             }
         });

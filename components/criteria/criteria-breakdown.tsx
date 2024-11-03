@@ -57,6 +57,7 @@ export default function CriteriaBreakdown({ className }: CriteriaCreateFormProps
     const [_, setVersion] = useState(0);
 
 
+    // Toggle criterion on and off
     function handleSelectCriterion(criteriaType: CriteriaType, ranking: number) {
 
         const map = criteria.getCriteriaRankingMap();
@@ -69,6 +70,7 @@ export default function CriteriaBreakdown({ className }: CriteriaCreateFormProps
         setVersion(prevVersion => (prevVersion == 100 ? 0 : prevVersion + 1));
     }
 
+    // Update the number of stars for the selected criteria
     function handeStarsOnClick(event: React.MouseEvent, criteriaType: CriteriaType, ranking: number) {
         event.stopPropagation();
         criteriaController.selectCriterion(criteriaType, ranking);

@@ -68,27 +68,6 @@ class GovtDatasetService extends DatasetService<GeoJsonData> {
             if (!response.ok) {
                 throw new Error('Failed to fetch from API URL!');
             }
-            
-
-            // // Parse JSON response to obtain download link
-            // const jsonData = await response.json();
-            // const downloadLink = jsonData.data.url;
-
-            // if (!downloadLink) {
-            //     throw new Error("Download URL not found in response!");
-            // }
-
-            // console.log(downloadLink);
-
-            // // Fetch the actual GeoJSON data from the download link
-            // const downloadResponse = await fetch(downloadLink);
-            // if (!downloadResponse.ok) {
-            //     throw new Error('Failed to download GeoJSON!');
-            // }
-
-            // // Parse and return GeoJSON data
-            // const downloadedJSONData = await downloadResponse.json();
-            // return downloadedJSONData as GeoJsonData;
             const downloadedJSONData = await response.json();
             return downloadedJSONData as GeoJsonData;
 

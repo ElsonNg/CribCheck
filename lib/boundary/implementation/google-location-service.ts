@@ -1,72 +1,74 @@
 import LocationService from "@/lib/boundary/location-service";
-import LocationEntity from "@/lib/entities/location/location-entity";
-import LocationPredictionEntity from "@/lib/entities/location/location-prediction-entity";
 
 /**
- * GoogleLocationService is an implementation of LocationService for interacting with
+ * `GoogleLocationService` is an implementation of `LocationService` for interacting with
  * the Google Maps JavaScript API. It provides services for geocoding, reverse geocoding,
  * location autocomplete, and retrieving detailed location information.
- *
  *
  * Note: The Google Maps JavaScript API script is injected in the layout file, so this service assumes
  *       that the script is already loaded and accessible when this service is initialized.
  */
-
 export interface GoogleLocation {
     latitude: number;
     longitude: number;
     address: string;
 }
-export default class GoogleLocationService extends LocationService<LocationEntity, LocationPredictionEntity> {
-    public autocompleteService: google.maps.places.AutocompleteService | null = null;
-    public geocoder: google.maps.Geocoder | null = null;
 
-    public static fetchCalls: number = 0;
+export interface GooglePrediction {
+    placeId: string;
+    description: string;
+}
+
+export default class GoogleLocationService extends LocationService<GoogleLocation, GooglePrediction> {
+    /**
+     * Google Places Autocomplete service for providing location predictions.
+     */
+    public autocompleteService: google.maps.places.AutocompleteService | null = null;
+
+    /**
+     * Google Geocoding service for fetching location details based on coordinates.
+     */
+    public geocoder: google.maps.Geocoder | null = null;
 
     constructor() {
         super();
-        GoogleLocationService.fetchCalls = 0;
     }
 
     /**
-     *  Initializes the Google Maps services (Autocomplete and Geocoder) if they are not already initialized.
-     *  Assumes that the Google Maps script is loaded in the layout file.
+     * Initializes the Google Maps services (Autocomplete and Geocoder) if they are not already initialized.
+     * Assumes that the Google Maps script is loaded in the layout file.
      *
+     * @throws {Error} Throws an error if Google Maps API is not loaded.
      */
     private initializeServices() {
-
         if (!window.google || !window.google.maps) {
             throw new Error("Google Maps API is not loaded yet.");
         }
 
         try {
-
             this.autocompleteService = new google.maps.places.AutocompleteService();
             this.geocoder = new google.maps.Geocoder();
-
         } catch (error) {
             throw new Error("Failed to initialize Google Maps services: " + error);
         }
     }
 
-
-
     /**
      * Fetches the current geographic location using the browser's Geolocation API.
      *
-     * @returns {Promise<LocationEntity | null>} A promise resolving to the current location
-     *                                          as a LocationEntity, or null if location services are unavailable.
+     * @returns {Promise<GoogleLocation | null>} A promise resolving to the current location
+     *                                          as a `GoogleLocation`, or `null` if location services are unavailable.
+     * @throws {Error} Throws an error if the geolocation is unavailable or if the location is outside Singapore.
      */
-    async getCurrentLocation(): Promise<LocationEntity | null> {
+    async getCurrentLocation(): Promise<GoogleLocation | null> {
         try {
-
             return new Promise((resolve, reject) => {
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(
                         (position) => {
                             const { latitude, longitude } = position.coords;
                             if (LocationService.isWithinSingaporeBounds(latitude, longitude)) {
-                                resolve(new LocationEntity(latitude, longitude, "Current Location"));
+                                resolve({ latitude, longitude, address: "Current Location" });
                             } else {
                                 reject(new Error("Current location is outside of Singapore."));
                             }
@@ -91,12 +93,12 @@ export default class GoogleLocationService extends LocationService<LocationEntit
      *
      * @param latitude - Latitude of the location.
      * @param longitude - Longitude of the location.
-     * @returns {Promise<LocationEntity | null>} A promise resolving to the location entity 
-     *                                          or null if the location details cannot be fetched.
+     * @returns {Promise<GoogleLocation | null>} A promise resolving to a `GoogleLocation` object
+     *                                          or `null` if the location details cannot be fetched.
+     * @throws {Error} Throws an error if the coordinates are out of bounds or if geocoding fails.
      */
-    async getLocationByCoordinates(latitude: number, longitude: number): Promise<LocationEntity | null> {
+    async getLocationByCoordinates(latitude: number, longitude: number): Promise<GoogleLocation | null> {
         try {
-
             if (!LocationService.isWithinSingaporeBounds(latitude, longitude)) {
                 throw new Error("Out of Bounds");
             }
@@ -106,15 +108,13 @@ export default class GoogleLocationService extends LocationService<LocationEntit
             }
 
             return new Promise((resolve, reject) => {
-                GoogleLocationService.fetchCalls++;
                 this.geocoder?.geocode({ location: { lat: latitude, lng: longitude } }, (results, status) => {
                     if (status === google.maps.GeocoderStatus.OK && results && results[0]) {
-
-                        const location = new LocationEntity(
+                        const location: GoogleLocation = {
                             latitude,
                             longitude,
-                            results[0].formatted_address || "Unknown address"
-                        );
+                            address: results[0].formatted_address || "Unknown address"
+                        };
                         resolve(location);
                     } else {
                         reject(new Error("Error fetching geocode data: " + status));
@@ -129,13 +129,13 @@ export default class GoogleLocationService extends LocationService<LocationEntit
     /**
      * Retrieves detailed location information based on a place prediction (typically returned from autocomplete).
      *
-     * @param prediction - The location prediction entity containing the placeId.
-     * @returns {Promise<LocationEntity | null>} A promise resolving to the location entity 
-     *                                          or null if details cannot be fetched.
+     * @param prediction - The location prediction containing the `placeId`.
+     * @returns {Promise<GoogleLocation | null>} A promise resolving to a `GoogleLocation` object
+     *                                          or `null` if details cannot be fetched.
+     * @throws {Error} Throws an error if the `placeId` is invalid or if fetching details fails.
      */
-    async getLocationByPrediction(prediction: LocationPredictionEntity): Promise<LocationEntity | null> {
+    async getLocationByPrediction(prediction: GooglePrediction): Promise<GoogleLocation | null> {
         try {
-
             if (!this.autocompleteService) {
                 this.initializeServices();
             }
@@ -147,20 +147,18 @@ export default class GoogleLocationService extends LocationService<LocationEntit
 
             return new Promise((resolve, reject) => {
                 const placesService = new google.maps.places.PlacesService(document.createElement("div"));
-                GoogleLocationService.fetchCalls++;
-                console.log("Fetch Calls: ", GoogleLocationService.fetchCalls);
 
                 placesService.getDetails(placeDetailsRequest, (place, status) => {
                     if (status === google.maps.places.PlacesServiceStatus.OK && place && place.geometry && place.geometry.location) {
-
                         const lat = place.geometry.location.lat();
                         const lng = place.geometry.location.lng();
+
                         if (LocationService.isWithinSingaporeBounds(lat, lng)) {
-                            const location = new LocationEntity(
-                                place.geometry.location.lat(),
-                                place.geometry.location.lng(),
-                                place.formatted_address || "Unknown address"
-                            );
+                            const location: GoogleLocation = {
+                                latitude: lat,
+                                longitude: lng,
+                                address: place.formatted_address || "Unknown address"
+                            };
                             resolve(location);
                         } else {
                             reject(new Error("Out of Bounds"));
@@ -182,20 +180,17 @@ export default class GoogleLocationService extends LocationService<LocationEntit
      * This is useful for providing autocomplete suggestions as the user types in a search box.
      *
      * @param query - The search string used to generate location suggestions.
-     * @returns {Promise<LocationPredictionEntity[] | null>} A promise resolving to an array of location predictions 
-     *                                                      or null if no suggestions are found.
+     * @returns {Promise<GooglePrediction[] | null>} A promise resolving to an array of `GooglePrediction`
+     *                                              objects or `null` if no suggestions are found.
+     * @throws {Error} Throws an error if the autocomplete request fails.
      */
-    async queryLocationAutoComplete(query: string): Promise<LocationPredictionEntity[] | null> {
+    async queryLocationAutoComplete(query: string): Promise<GooglePrediction[] | null> {
         try {
-
             if (!this.autocompleteService) {
                 this.initializeServices();
             }
 
-
             return new Promise((resolve, reject) => {
-                GoogleLocationService.fetchCalls++;
-                console.log("Fetch Calls: ", GoogleLocationService.fetchCalls);
                 this.autocompleteService?.getPlacePredictions({
                     input: query,
                     bounds: LocationService.SINGAPORE_BOUNDS_RECT, // Restrict predictions to Singapore's geographic bounds
@@ -207,7 +202,12 @@ export default class GoogleLocationService extends LocationService<LocationEntit
                             return;
                         }
                         const results = predictions.map(
-                            (p) => new LocationPredictionEntity(p.place_id, p.description)
+                            (p) => {
+                                return {
+                                    placeId: p.place_id,
+                                    description: p.description
+                                } as GooglePrediction;
+                            }
                         );
                         resolve(results);
                     } else if (status === google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {

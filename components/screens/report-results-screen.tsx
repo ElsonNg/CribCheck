@@ -28,13 +28,10 @@ export default function ReportResultsScreen() {
     const customPreset = current.getCustom();
 
 
-    const scoringResults = reportController.getScoringResults();
     const authUser = authController.getCurrentUser();
 
     const userProfile = profileController.getProfile();
     const [isPending, startTransition] = useTransition();
-
-
 
     function handleRestart() {
         masterController.setState(ScreenState.SelectingLocation);

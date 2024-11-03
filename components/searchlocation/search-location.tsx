@@ -29,23 +29,18 @@ export default function SearchLocation({ onChange }: LocationSearchProps) {
     const userProfile = profileController.getProfile();
 
     const defaultMapCenter: LatLng = { lat: 1.348502964206701, lng: 103.68308105237777 };
-
-    const [mapCenter, setMapCenter] = useState<LatLng>(defaultMapCenter);
-    const [markerPosition, setMarkerPosition] = useState<LatLng>(mapCenter); // Track marker position
-    const [zoomLevel, setZoomLevel] = useState<number>(12);
-
-    const [requestCount, setRequestCount] = useState<number>(0);
-
     const MAX_REQUESTS = 3;
     const TIME_WINDOW = 1000 * 5;
 
 
+    const [mapCenter, setMapCenter] = useState<LatLng>(defaultMapCenter);
+    const [markerPosition, setMarkerPosition] = useState<LatLng>(mapCenter); // Track marker position
+    const [zoomLevel, setZoomLevel] = useState<number>(12);
+    const [requestCount, setRequestCount] = useState<number>(-1);
     const [autocompleteSuggestions, setAutocompleteSuggestions] =
         useState<LocationPredictionEntity[] | null>(null);
-
     const [savedSuggestions, setSavedSuggestions] =
         useState<LocationPredictionEntity[] | null>(null);
-
     const [searchValue, setSearchValue] = useState<string>("");
     const mapRef = useRef<google.maps.Map | null>(null);
 
@@ -54,14 +49,15 @@ export default function SearchLocation({ onChange }: LocationSearchProps) {
         return requestCount > MAX_REQUESTS;
     }
 
+    // This function may be invoked when selecting only one location / two locations
     function setLocation(location: LocationEntity | null) {
-
-
         reportController.clearReportResults();
 
+        // Selecting only one location
         if (masterController.getCurrentState() === ScreenState.SelectingLocation) {
             reportController.setSelectedLocation(location);
 
+        // Selecting two locations
         } else if (masterController.getCurrentState() === ScreenState.ViewReport) {
             reportController.setSelectedLocationOther(location);
         }
@@ -113,6 +109,7 @@ export default function SearchLocation({ onChange }: LocationSearchProps) {
                     // Update the marker's lat/lng to the center of the map
                     setMarkerPosition({ lat: newCenter.lat, lng: newCenter.lng });
 
+                    // Check if there has been too many requests before fetching location
                     if(requestCount + 1 <= MAX_REQUESTS) 
                     {
                         const location = await locationController.getLocationByCoordinates(newCenter.lat, newCenter.lng).catch((reason) => {
@@ -124,7 +121,6 @@ export default function SearchLocation({ onChange }: LocationSearchProps) {
                     }
 
                     setRequestCount((prev) => prev + 1);
-
 
                 } else {
                     setLocation(null);
@@ -150,7 +146,7 @@ export default function SearchLocation({ onChange }: LocationSearchProps) {
     }
 
 
-    // Effect to reset the request count after 30 seconds
+    // Reset the request count after TIME_WINDOW
     useEffect(() => {
         if (requestCount === 0) return;
 

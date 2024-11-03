@@ -36,21 +36,21 @@ class CriteriaController {
                 this.currentCriteria.selectCriterion(CriteriaType.proximityToHawkerCentres, 4);
                 this.currentCriteria.selectCriterion(CriteriaType.proximityToMRT, 5);
                 this.currentCriteria.selectCriterion(CriteriaType.proximityToClinic, 3);
-                this.currentCriteria.selectCriterion(CriteriaType.proximityToSchool, 5);
-                this.currentCriteria.selectCriterion(CriteriaType.proximityToSupermarket, 2);
+                this.currentCriteria.selectCriterion(CriteriaType.proximityToSchool, 2);
+                this.currentCriteria.selectCriterion(CriteriaType.proximityToSupermarket, 3);
                 break;
             case "Young Couple":
-                this.currentCriteria.selectCriterion(CriteriaType.proximityToHawkerCentres, 3);
+                this.currentCriteria.selectCriterion(CriteriaType.proximityToHawkerCentres, 4);
                 this.currentCriteria.selectCriterion(CriteriaType.proximityToMRT, 5);
-                this.currentCriteria.selectCriterion(CriteriaType.proximityToClinic, 4);
-                this.currentCriteria.selectCriterion(CriteriaType.proximityToSchool, 3);
-                this.currentCriteria.selectCriterion(CriteriaType.proximityToSupermarket, 2);
+                this.currentCriteria.selectCriterion(CriteriaType.proximityToClinic, 3);
+                this.currentCriteria.selectCriterion(CriteriaType.proximityToSchool, 4);
+                this.currentCriteria.selectCriterion(CriteriaType.proximityToSupermarket, 4);
                 break;
             case "Family":
-                this.currentCriteria.selectCriterion(CriteriaType.proximityToHawkerCentres, 5);
-                this.currentCriteria.selectCriterion(CriteriaType.proximityToMRT, 5);
+                this.currentCriteria.selectCriterion(CriteriaType.proximityToHawkerCentres, 3);
+                this.currentCriteria.selectCriterion(CriteriaType.proximityToMRT, 4);
                 this.currentCriteria.selectCriterion(CriteriaType.proximityToClinic, 4);
-                this.currentCriteria.selectCriterion(CriteriaType.proximityToSchool, 4);
+                this.currentCriteria.selectCriterion(CriteriaType.proximityToSchool, 5);
                 this.currentCriteria.selectCriterion(CriteriaType.proximityToSupermarket, 5);
                 break;
         }
