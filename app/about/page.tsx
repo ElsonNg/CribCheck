@@ -21,6 +21,13 @@ export default function AboutPage() {
                         </ul>
                     </div>
                     <div className="w-2xl flex flex-col gap-2 items-center text-center">
+                        <h3 className="text-2xl font-bold text-center">Datasets & API</h3>
+                        <ul>
+                            <li><a href="https://www.data.gov.sg/" title="Data Gov SG" className="hover:underline">data.gov.sg</a></li>
+                            <li><a href="https://developers.google.com/maps/documentation/javascript" title="Google Maps Javascript API" className="hover:underline">Google Maps Javascript API</a></li>
+                        </ul>
+                    </div>
+                    <div className="w-2xl flex flex-col gap-2 items-center text-center">
                         <h3 className="text-2xl font-bold text-center">Credits</h3>
                         <ul>
                             <li><a href="https://www.flaticon.com/free-icons/singapore" title="singapore icons" className="hover:underline">Singapore icons created by Freepik - Flaticon</a></li>
