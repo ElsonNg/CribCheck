@@ -20,7 +20,7 @@ interface LocationSearchProps {
 
 export default function SearchLocation({ onChange }: LocationSearchProps) {
 
-    const masterController = useMasterController();
+    const {masterController} = useMasterController();
     const authController = masterController.getAuthController();
     const locationController = masterController.getLocationController();
     const reportController = masterController.getReportController();

@@ -9,7 +9,7 @@ import  { ScreenState } from "@/lib/control/master-controller";
 
 export default function SearchLocationWrapper() {
 
-    const masterController = useMasterController();
+    const {masterController} = useMasterController();
     const [location, setLocation] = useState<LocationEntity | null>(null);
 
 

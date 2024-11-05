@@ -2,10 +2,9 @@
 
 import { useMasterController } from "@/context/master-controller-context";
 import { ScreenState } from "@/lib/control/master-controller";
-import AuthUserEntity from "@/lib/entities/auth-user-entity";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, useTransition } from "react";
+import { useTransition } from "react";
 
 
 export default function NavBar() {
@@ -13,20 +12,9 @@ export default function NavBar() {
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
 
-    const masterController = useMasterController();
+    const {masterController, currentUser} = useMasterController();
     const authController = masterController.getAuthController();
 
-    // State to hold the `authUser` once it is available
-    const [authUser, setAuthUser] = useState<AuthUserEntity | null>(null);
-
-    // Fetch the current user on the client side
-    useEffect(() => {
-        const currentUser = authController.getCurrentUser();
-        setAuthUser(currentUser);
-    }, [authController]);
-
-
-    
 
     async function handleLogout() {
         await authController.logout();
@@ -52,7 +40,7 @@ export default function NavBar() {
                 <Link href="/about">
                     About
                 </Link>
-                {!authUser ? (
+                {!currentUser ? (
                     <Link href="/" className="hover:text-gray-400 transition duration-300">
                         Login
                     </Link>

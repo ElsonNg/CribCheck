@@ -50,7 +50,7 @@ const CriteriaInfoList: CriteriaInfo[] = [
 
 export default function CriteriaBreakdown({ className }: CriteriaCreateFormProps) {
 
-    const masterController = useMasterController();
+    const {masterController} = useMasterController();
     const criteriaController = masterController.getCriteriaController();
 
     const [criteria, setCriteria] = useState(criteriaController.getCriteriaEntity());

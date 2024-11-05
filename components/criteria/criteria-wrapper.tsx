@@ -12,7 +12,7 @@ import  { ScreenState } from "@/lib/control/master-controller";
 const criteriaOptions: PresetCriteriaType[] = ["Singles", "Young Couple", "Family"];
 
 export default function CriteriaWrapper() {
-    const masterController = useMasterController();
+    const {masterController} = useMasterController();
     const criteriaController = masterController.getCriteriaController();
     const reportController = masterController.getReportController();
     const profileController = masterController.getProfileController();

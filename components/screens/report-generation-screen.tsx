@@ -10,7 +10,7 @@ export default function ReportGenerationScreen() {
 
     const hasStarted = useRef(false);
 
-    const masterController = useMasterController();
+    const {masterController} = useMasterController();
     const reportController = masterController.getReportController();
 
 

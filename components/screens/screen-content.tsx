@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 export default function ScreenContent() {
 
     // Retrieve the master controller instance using a custom hook
-    const masterController = useMasterController();
+    const {masterController} = useMasterController();
 
     // Local state to keep track of the current screen state
     const [screenState, setScreenState] = useState<ScreenState>(ScreenState.SelectingLocation);
