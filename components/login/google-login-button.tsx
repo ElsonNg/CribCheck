@@ -4,16 +4,23 @@ import Image from "next/image";
 import GoogleIcon from "@/app/images/google-icon.png";
 import { useRouter } from "next/navigation";
 import { useMasterController } from "@/context/master-controller-context";
-import { useTransition } from "react";
+import { useEffect, useTransition } from "react";
 
 
 export default function GoogleLoginButton() {
 
-    const masterController = useMasterController();
+    const {masterController, currentUser} = useMasterController();
     const profileController = masterController.getProfileController();
+    const authController = masterController.getAuthController();
     const router = useRouter();
 
     const [isPending, startTransition] = useTransition();
+
+    useEffect(() => {
+        if(currentUser)
+            router.push("/app");
+    }, [authController, currentUser, router]);
+
 
     // Logins the user with Google and fetches their profile
     function handleSignInWithGoogle() {

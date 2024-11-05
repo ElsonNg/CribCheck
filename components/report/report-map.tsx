@@ -19,7 +19,7 @@ interface LatLng {
 export default function ReportMap() {
 
 
-    const masterController = useMasterController();
+    const {masterController} = useMasterController();
     const reportController = masterController.getReportController();
 
     const combinedResults = [reportController.getInitialResult(), reportController.getOtherResult()];

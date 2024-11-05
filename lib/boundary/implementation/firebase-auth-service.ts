@@ -10,7 +10,7 @@
 
 import AuthService from "@/lib/boundary/auth-service";
 import { FirebaseApp, FirebaseError, FirebaseOptions, getApp, getApps, initializeApp } from "firebase/app";
-import { Auth, getAuth, User as FirebaseUser, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { Auth, getAuth, User as FirebaseUser, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "firebase/auth";
 
 class FirebaseAuthService extends AuthService<FirebaseUser> {
 
@@ -44,6 +44,8 @@ class FirebaseAuthService extends AuthService<FirebaseUser> {
         this.googleProvider = new GoogleAuthProvider();
     }
 
+
+
     /**
       * Logs in the user with Google using Firebase Authentication.
       * 
@@ -52,7 +54,7 @@ class FirebaseAuthService extends AuthService<FirebaseUser> {
       * 
       * @returns {Promise<FirebaseUser | null>} A promise that resolves to the authenticated Firebase user, or `null` if login fails.
       */
-    async loginWithGoogle(): Promise<FirebaseUser | null> {
+    public async loginWithGoogle(): Promise<FirebaseUser | null> {
         try {
 
             const result = await signInWithPopup(this.auth, this.googleProvider);
@@ -60,14 +62,14 @@ class FirebaseAuthService extends AuthService<FirebaseUser> {
             return user;
 
         } catch (error) {
-            
+
             const firebaseError = error as FirebaseError;
 
             if (firebaseError.code === 'auth/popup-closed-by-user') {
                 console.warn("Google sign-in was canceled by the user.");
                 return null;
             }
-            
+
             console.error("Error signing in with Google: ", error);
             return null;
         }
@@ -80,7 +82,7 @@ class FirebaseAuthService extends AuthService<FirebaseUser> {
      * 
      * @returns {Promise<boolean>} A promise that resolves to `true` if the logout was successful, or `false` if an error occurred.
      */
-    async logout(): Promise<boolean> {
+    public async logout(): Promise<boolean> {
         try {
             await this.auth.signOut();
             return true;
@@ -98,8 +100,36 @@ class FirebaseAuthService extends AuthService<FirebaseUser> {
      * 
      * @returns {FirebaseUser | null} The authenticated Firebase user, or `null` if no user is currently logged in.
      */
-    getCurrentUser(): FirebaseUser | null {
+    public getCurrentUser(): FirebaseUser | null {
         return this.auth.currentUser;
+    }
+
+    /**
+       * Subscribes to changes in the authentication state using Firebase Authentication.
+       * 
+       * This method listens for changes in the user's authentication state, such as login, logout, 
+       * or session expiration. It invokes the provided callback function whenever the authentication 
+       * state changes, passing the `FirebaseUser` object if a user is authenticated, or `null` if 
+       * no user is currently authenticated.
+       * 
+       * The method returns an unsubscribe function, which can be called to stop listening for further 
+       * authentication state changes. This is particularly useful for cleaning up listeners in 
+       * components when they are unmounted.
+       * 
+       * @param callback - A function that will be called with the current `FirebaseUser` object if 
+       * the user is logged in, or `null` if the user is logged out.
+       * 
+       * @returns {() => void} A function that can be called to unsubscribe from auth state changes.
+       */
+    public onAuthStateChanged(callback: (user: FirebaseUser | null) => void): () => void {
+        const unsubscribe = onAuthStateChanged(this.auth, (firebaseUser) => {
+            if (firebaseUser) {
+                callback(firebaseUser);
+            } else {
+                callback(null);
+            }
+        });
+        return unsubscribe; // Return the unsubscribe function to allow cleanup
     }
 
 

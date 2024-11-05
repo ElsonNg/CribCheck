@@ -52,7 +52,7 @@ class AuthController {
      * @returns {Promise<AuthUserEntity | null>} A promise that resolves to the authenticated
      * user entity or `null` if the login fails or no user is authenticated.
      */
-    async loginWithGoogle(): Promise<AuthUserEntity | null> {
+    public async loginWithGoogle(): Promise<AuthUserEntity | null> {
         const user = await this.authService.loginWithGoogle();
         if (!user) return null;
         return this.mapToAuthUserEntity(user);
@@ -66,23 +66,35 @@ class AuthController {
      * @returns {Promise<boolean>} A promise that resolves to `true` if the user
      * was successfully logged out, or `false` if the operation failed.
      */
-    async logout(): Promise<boolean> {
+    public async logout(): Promise<boolean> {
         return this.authService.logout();
     }
 
     /**
-     * Retrieves the currently authenticated user from the `AuthService`.
+     * Subscribes to authentication state changes and provides the current authenticated user (if any) 
+     * as an `AuthUserEntity` to the provided callback function.
      * 
-     * This method fetches the current user from Firebase and maps the result
-     * to the internal `AuthUserEntity`. If no user is authenticated, it resolves to `null`.
+     * This method listens for changes in the authentication state (e.g., login, logout) and invokes 
+     * the provided callback with an `AuthUserEntity` representing the authenticated user or `null` 
+     * if no user is authenticated.
      * 
-     * @returns {Promise<AuthUserEntity | null>} A promise that resolves to the authenticated
-     * user entity or `null` if no user is authenticated.
+     * The function returns an unsubscribe function that can be called to stop listening for authentication
+     * state changes.
+     * 
+     * @param callback - A function that receives an `AuthUserEntity` representing the authenticated user, 
+     * or `null` if the user is signed out.
+     * 
+     * @returns A function that can be called to unsubscribe from the auth state changes.
      */
-    getCurrentUser(): AuthUserEntity | null {
-        const user = this.authService.getCurrentUser();
-        if (!user) return null;
-        return this.mapToAuthUserEntity(user);
+    public onAuthStateChanged(callback: (user: AuthUserEntity | null) => void): () => void {
+        const unsubscribe = this.authService.onAuthStateChanged((user) => {
+            if (user) {
+                callback(this.mapToAuthUserEntity(user));
+            } else {
+                callback(null);
+            }
+        });
+        return unsubscribe;
     }
 }
 

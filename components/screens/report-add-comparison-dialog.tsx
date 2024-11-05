@@ -11,7 +11,7 @@ interface DialogProps {
 
 export default function ReportAddComparisonDialog({ onCancel, onCompare, children }: DialogProps) {
 
-    const masterController = useMasterController();
+    const {masterController} = useMasterController();
     const reportController = masterController.getReportController();
 
 

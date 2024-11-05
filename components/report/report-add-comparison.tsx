@@ -8,7 +8,7 @@ import { useMasterController } from "@/context/master-controller-context";
 
 export default function ReportAddComparison() {
 
-    const masterController = useMasterController();
+    const {masterController} = useMasterController();
     const reportController = masterController.getReportController();
 
     const [showAddComparisonDialog, setShowAddComparisonDialog] = useState<boolean>(false);

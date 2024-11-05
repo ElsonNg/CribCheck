@@ -16,8 +16,7 @@ import ReportAddComparison from "../report/report-add-comparison";
 
 export default function ReportResultsScreen() {
 
-    const masterController = useMasterController();
-    const authController = masterController.getAuthController();
+    const {masterController, currentUser} = useMasterController();
 
     const reportController = masterController.getReportController();
     const criteriaController = masterController.getCriteriaController();
@@ -27,9 +26,6 @@ export default function ReportResultsScreen() {
     const critieraMap = current.getCriteriaRankingMap();
     const customPreset = current.getCustom();
 
-
-    const authUser = authController.getCurrentUser();
-
     const userProfile = profileController.getProfile();
     const [isPending, startTransition] = useTransition();
 
@@ -38,13 +34,12 @@ export default function ReportResultsScreen() {
     }
 
     async function handleSavePreset() {
-        const user = authController.getCurrentUser();
-        if (!user || !current) return;
+        if (!currentUser || !current) return;
         startTransition(() => {
             if (userProfile.hasPreset(current)) {
-                profileController.removeSavedPreset(user, current);
+                profileController.removeSavedPreset(currentUser, current);
             } else {
-                profileController.savePreset(user, current);
+                profileController.savePreset(currentUser, current);
             }
         });
     }
@@ -69,7 +64,7 @@ export default function ReportResultsScreen() {
                     <Card className="col-span-6 md:col-span-3 flex flex-col gap-6">
                         <div className="w-full flex flex-col md:flex-row justify-between items-center gap-6">
                             <h3 className="font-semibold text-2xl">📋  {criteriaController.getCriteriaEntity().getName()}</h3>
-                            {authUser && customPreset && (<button type="button" onClick={handleSavePreset}
+                            {currentUser && customPreset && (<button type="button" onClick={handleSavePreset}
                                 className="w-full md:w-fit group text-black bg-gray-50 hover:opacity-90 hover:text-black/60 border rounded py-2 px-3 flex flex-row items-center justify-center gap-2 self-end">
                                 {userProfile.hasPreset(current) ? <GoHeartFill size={16} /> : <GoHeart size={16} />}
                                 <span>{userProfile.hasPreset(current) ? "Remove Saved Preset " : "Save Preset"}</span>

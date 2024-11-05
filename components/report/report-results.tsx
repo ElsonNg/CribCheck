@@ -29,13 +29,10 @@ interface ReportResultsProps {
 
 export default function ReportResults({ queriedLocation, cribFitRating, results }: ReportResultsProps) {
 
-    const masterController = useMasterController();
-    const authController = masterController.getAuthController();
+    const {masterController, currentUser} = useMasterController();
     const profileController = masterController.getProfileController();
 
     const [isPending, startTransition] = useTransition();
-
-    const authUser = authController.getCurrentUser();
     const userProfile = profileController.getProfile();
 
     const nearbyHawkers = results ? results.get(CriteriaType.proximityToHawkerCentres)?.getValidLocations().filter((l) => queriedLocation!.distanceToKilometres(l) <= 0.300) : [];
@@ -46,23 +43,41 @@ export default function ReportResults({ queriedLocation, cribFitRating, results 
 
     // Save location to user's profile
     async function handleSaveLocation() {
-        const user = authController.getCurrentUser();
-        if (!user || !queriedLocation) return;
+        if (!currentUser || !queriedLocation) return;
         startTransition(() => {
             if (userProfile.hasLocation(queriedLocation))
-                profileController.removeSavedLocation(user, queriedLocation);
+                profileController.removeSavedLocation(currentUser, queriedLocation);
             else
-                profileController.saveLocation(user, queriedLocation);
+                profileController.saveLocation(currentUser, queriedLocation);
         });
     }
 
+    function getCribFitRatingColour(rating: number) {
+        const clampedRating = Math.max(0, Math.min(100, rating));
+
+        if (clampedRating <= 50) {
+            // Interpolate between red (255, 0, 0) and orange (255, 165, 0)
+            const ratio = clampedRating / 50;
+            const red = 255;
+            const green = Math.round(165 * ratio);
+            const blue = 0;
+            return `rgb(${red}, ${green}, ${blue})`;
+        } else {
+            // Interpolate between orange (255, 165, 0) and green (0, 128, 0)
+            const ratio = (clampedRating - 50) / 50;
+            const red = Math.round(255 * (1 - ratio));
+            const green = Math.round(165 + (128 - 165) * ratio);
+            const blue = 0;
+            return `rgb(${red}, ${green}, ${blue})`;
+        }
+    }
 
     return (
         <div className="flex flex-col gap-8">
             <div className="flex flex-col justify-center items-start gap-0.5">
                 <div className="text-xl font-bold">Searched Location</div>
                 <span className="text-lg font-normal">{queriedLocation.address}</span>
-                {authUser && (<button type="button"
+                {currentUser && (<button type="button"
                     disabled={isPending}
                     onClick={handleSaveLocation}
                     className="w-full md:w-fit mt-4 text-black bg-gray-50 hover:opacity-90 hover:text-black/60 border rounded py-2 px-3  flex flex-row items-center justify-center gap-2">
@@ -75,7 +90,7 @@ export default function ReportResults({ queriedLocation, cribFitRating, results 
             <div className="flex flex-col gap-6">
                 <h4 className="font-semibold text-2xl">CribFit Score</h4>
                 <div className="flex flex-row items-center gap-6">
-                    <span className="font-bold text-7xl text-green-600">{cribFitRating.toFixed()}</span><span className="text-3xl font-normal">/100</span>
+                    <span className="font-bold text-7xl" style={{color: getCribFitRatingColour(cribFitRating)}}>{cribFitRating.toFixed()}</span><span className="text-3xl font-normal">/100</span>
                 </div>
             </div>
 
@@ -87,7 +102,7 @@ export default function ReportResults({ queriedLocation, cribFitRating, results 
                         locations={nearbyHawkers.length.toString()}
                         description={nearbyHawkers.map((l) => (l as HawkerCentreEntity).getName() + " (" + l.distanceToMetres(queriedLocation!).toFixed() + "m)").join(", ")}
                     >
-                        <IoRestaurant size={32} className="w-full h-full" />
+                        <IoRestaurant size={32} className="m-auto" />
                     </ReportDataCard>
                     )
 
