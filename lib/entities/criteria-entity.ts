@@ -16,6 +16,22 @@ export const CriteriaLabels: { [key in CriteriaType]: string } = {
     [CriteriaType.proximityToClinic]: 'Proximity to Clinics',
 };
 
+export const CriteriaVariety: { [key in CriteriaType]: number } = {
+    [CriteriaType.proximityToHawkerCentres]: 5,
+    [CriteriaType.proximityToMRT]: 3,
+    [CriteriaType.proximityToSchool]: 2,
+    [CriteriaType.proximityToSupermarket]: 5,
+    [CriteriaType.proximityToClinic]: 2,
+};
+
+export const CriteriaThresholds: { [key in CriteriaType]: number[] } = {
+    [CriteriaType.proximityToHawkerCentres]: [0.3, 0.5, 1, 2],
+    [CriteriaType.proximityToMRT]: [0.3, 0.5, 1, 2],
+    [CriteriaType.proximityToSchool]: [0.3, 0.5, 1, 2],
+    [CriteriaType.proximityToSupermarket]: [1, 2, 5],
+    [CriteriaType.proximityToClinic]: [1, 2, 5],
+};
+
 // Define types for preset criteria
 export type PresetCriteriaType = "Singles" | "Young Couple" | "Family" | "Saved";
 
@@ -58,7 +74,7 @@ export default class CriteriaEntity {
         this.criteriaRankingMap.clear();
     }
 
-    public hasAtLeastOneCriterionSelected() : boolean {
+    public hasAtLeastOneCriterionSelected(): boolean {
         return this.criteriaRankingMap.size >= 1;
     }
 

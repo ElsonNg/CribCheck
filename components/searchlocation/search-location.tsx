@@ -33,6 +33,7 @@ export default function SearchLocation({ onChange }: LocationSearchProps) {
     const TIME_WINDOW = 1000 * 5;
 
 
+    const [isSearchBarFocused, setIsSearchBarFocused] = useState<boolean>(false);
     const [mapCenter, setMapCenter] = useState<LatLng>(defaultMapCenter);
     const [markerPosition, setMarkerPosition] = useState<LatLng>(mapCenter); // Track marker position
     const [zoomLevel, setZoomLevel] = useState<number>(12);
@@ -45,8 +46,17 @@ export default function SearchLocation({ onChange }: LocationSearchProps) {
     const mapRef = useRef<google.maps.Map | null>(null);
 
 
+
     function isSearchDisabled() {
         return requestCount > MAX_REQUESTS;
+    }
+
+    function handleSearchBarFocus() {
+        setIsSearchBarFocused(true);
+    }
+    
+    function handleSearchBarBlur() {
+        setTimeout(() => setIsSearchBarFocused(false), 200);
     }
 
     // This function may be invoked when selecting only one location / two locations
@@ -196,6 +206,8 @@ export default function SearchLocation({ onChange }: LocationSearchProps) {
             <input
                 value={searchValue}
                 disabled={isSearchDisabled()}
+                onFocus={handleSearchBarFocus}
+                onBlur={handleSearchBarBlur}
                 onChange={handleSearchChange}
                 type="text"
                 placeholder="Enter a location or postal code"
@@ -205,7 +217,7 @@ export default function SearchLocation({ onChange }: LocationSearchProps) {
                 <IoMdAlert color="red" size={24} />
                 <span>Too many requests! Please wait up to {TIME_WINDOW/1000} seconds before trying again.</span>
             </div>)}
-            {searchValue === "" && savedSuggestions && (
+            {isSearchBarFocused && savedSuggestions && (
                 <ul className="absolute top-12 z-20 w-full bg-white border border-gray-300 rounded shadow-lg max-h-60 overflow-x-hidden overflow-y-auto">
                     {savedSuggestions.map((suggestion) => (
                         <li
