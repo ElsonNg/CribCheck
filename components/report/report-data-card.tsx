@@ -100,7 +100,7 @@ export default function ReportDataCard({ className, children, criteriaType, titl
 
                             return (
                                 <div key={actualIndex} className="w-full">
-                                    {actualIndex == firstIndex && componentScore >= 100 && (<div className="font-normal text-green-600 mb-2">Great! There are {loc.length} locations within {thresholds[actualIndex]} km away.</div>)}
+                                    {actualIndex == firstIndex && componentScore >= 100 && (<div className="font-normal text-green-600 mb-2">Great! There {loc.length == 1 ? "is" : "are"} {loc.length} {loc.length == 1 ? "location" : "locations"} within {thresholds[actualIndex]} km away.</div>)}
                                     <div className="mb-1">
                                         <div key={actualIndex} className="text-md font-semibold">
                                             <span className="text-md">Within {threshold < 1 ? (`${threshold * 1000}m`) : `${threshold}km`}</span>: <span className="font-normal"> {loc.length == 0 ? "None" : `${loc.length} location(s)`}</span>
