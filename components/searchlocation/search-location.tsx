@@ -20,7 +20,7 @@ interface LocationSearchProps {
 
 export default function SearchLocation({ onChange }: LocationSearchProps) {
 
-    const {masterController} = useMasterController();
+    const { masterController } = useMasterController();
     const authController = masterController.getAuthController();
     const locationController = masterController.getLocationController();
     const reportController = masterController.getReportController();
@@ -29,7 +29,7 @@ export default function SearchLocation({ onChange }: LocationSearchProps) {
     const userProfile = profileController.getProfile();
 
     const defaultMapCenter: LatLng = { lat: 1.348502964206701, lng: 103.68308105237777 };
-    const MAX_REQUESTS = 3;
+    const MAX_REQUESTS = 4;
     const TIME_WINDOW = 1000 * 5;
 
 
@@ -54,23 +54,13 @@ export default function SearchLocation({ onChange }: LocationSearchProps) {
     function handleSearchBarFocus() {
         setIsSearchBarFocused(true);
     }
-    
+
     function handleSearchBarBlur() {
         setTimeout(() => setIsSearchBarFocused(false), 200);
     }
 
     // This function may be invoked when selecting only one location / two locations
-    function setLocation(location: LocationEntity | null) {
-        reportController.clearReportResults();
-
-        // Selecting only one location
-        if (masterController.getCurrentState() === ScreenState.SelectingLocation) {
-            reportController.setSelectedLocation(location);
-
-        // Selecting two locations
-        } else if (masterController.getCurrentState() === ScreenState.ViewReport) {
-            reportController.setSelectedLocationOther(location);
-        }
+    function setLocation(location: LocationEntity | null, confirmed: boolean = false) {
 
         if (onChange)
             onChange(location);
@@ -120,8 +110,7 @@ export default function SearchLocation({ onChange }: LocationSearchProps) {
                     setMarkerPosition({ lat: newCenter.lat, lng: newCenter.lng });
 
                     // Check if there has been too many requests before fetching location
-                    if(requestCount + 1 <= MAX_REQUESTS) 
-                    {
+                    if (requestCount + 1 <= MAX_REQUESTS) {
                         const location = await locationController.getLocationByCoordinates(newCenter.lat, newCenter.lng).catch((reason) => {
                         });
                         if (location) {
@@ -215,7 +204,7 @@ export default function SearchLocation({ onChange }: LocationSearchProps) {
             />
             {isSearchDisabled() && (<div className="py-2 flex flex-row justify-start items-center font-medium text-lg gap-2">
                 <IoMdAlert color="red" size={24} />
-                <span>Too many requests! Please wait up to {TIME_WINDOW/1000} seconds before trying again.</span>
+                <span>Too many requests! Please wait up to {TIME_WINDOW / 1000} seconds before trying again.</span>
             </div>)}
             {isSearchBarFocused && savedSuggestions && (
                 <ul className="absolute top-12 z-20 w-full bg-white border border-gray-300 rounded shadow-lg max-h-60 overflow-x-hidden overflow-y-auto">

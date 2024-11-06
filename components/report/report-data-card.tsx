@@ -68,14 +68,20 @@ export default function ReportDataCard({ className, children, criteriaType, titl
 
 
     return (<div className="animate-fadeInUp px-6 py-4 flex flex-col md:flex-row justify-start items-center gap-8 bg-[#EEEEEE] rounded-md">
-        <div className="basis-[20%] md:basis-[10%]">
+        {/* <div className="basis-[20%] md:basis-[10%]">
             {children}
-        </div>
-        <div className="basis-[60%] md:basis-[80%] flex flex-col justify-center items-start gap-2">
-            <span className="text-xl font-bold">{title}</span>
-            <div className="flex flex-col gap-2">
-                {locations.length == 0 ? (<span className="text-md font-normal text-red-600">There are no nearby locations that are convenient.</span>) :
+        </div> */}
 
+        <div className="grow w-full flex flex-col justify-center items-start gap-2">
+            <div className="mt-1 w-full flex flex-row justify-start items-center gap-4">
+                <div>{children}</div>
+                <span className="grow text-xl font-bold">{title}</span>
+                <span className="font-bold text-2xl">
+                    {getRating(componentScore)}
+                </span>
+            </div>
+            <div className="w-full flex flex-col gap-2">
+                {locations.length == 0 ? (<span className="text-md font-normal text-red-600">There are no nearby locations that are convenient.</span>) :
 
                     (firstIndex !== -1 && (<>
                         {firstIndex > 0 && componentScore < 100 && (<div className="font-normal text-red-600">There are no nearby locations within {thresholds[firstIndex - 1]} km away.</div>)}
@@ -114,10 +120,6 @@ export default function ReportDataCard({ className, children, criteriaType, titl
 
             </div>
         </div>
-        <div className="basis-[20%] md:basis-[10%] text-end">
-            <span className="font-bold text-2xl">
-                {getRating(componentScore)}
-            </span>
-        </div>
+
     </div>)
 }
