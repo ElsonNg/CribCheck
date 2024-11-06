@@ -1,5 +1,5 @@
 import DatasetService from '@/lib/boundary/dataset-service';
-import CriteriaEntity, { CriteriaType } from '@/lib/entities/criteria-entity';
+import CriteriaEntity, { CriteriaThresholds, CriteriaType, CriteriaVariety } from '@/lib/entities/criteria-entity';
 import { GeoJsonData } from '@/lib/boundary/implementation/govt-dataset-service';
 import HawkerCentreEntity from '@/lib/entities/datasets/hawker-centre-entity';
 import MRTStationEntity from '@/lib/entities/datasets/mrt-station-entity';
@@ -70,23 +70,23 @@ class ReportController {
         // Define scoring strategy implementations for each criteria type
         this.proximityScorer.addCriteriaStrategy(
             CriteriaType.proximityToHawkerCentres,
-            new DecayThresholdScoringStrategy(5, [0.3, 0.5, 1, 2], [100, 90, 75, 50], [0.6, 0.2, 0.1, 0.05, 0.05])
+            new DecayThresholdScoringStrategy(CriteriaVariety[CriteriaType.proximityToHawkerCentres], CriteriaThresholds[CriteriaType.proximityToHawkerCentres], [100, 90, 75, 50], [0.6, 0.2, 0.1, 0.05, 0.05])
         );
         this.proximityScorer.addCriteriaStrategy(
             CriteriaType.proximityToMRT,
-            new DecayThresholdScoringStrategy(3, [0.3, 0.5, 1, 2], [100, 90, 75, 50], [0.7, 0.2, 0.1])
-        );
-        this.proximityScorer.addCriteriaStrategy(
-            CriteriaType.proximityToSupermarket,
-            new DecayThresholdScoringStrategy(2, [0.3, 0.5, 1, 2], [100, 90, 75, 50], [0.6, 0.4])
+            new DecayThresholdScoringStrategy(CriteriaVariety[CriteriaType.proximityToMRT], CriteriaThresholds[CriteriaType.proximityToMRT], [100, 90, 75, 50], [0.7, 0.2, 0.1])
         );
         this.proximityScorer.addCriteriaStrategy(
             CriteriaType.proximityToSchool,
-            new DecayThresholdScoringStrategy(5, [1, 2, 5], [100, 75, 50], [0.6, 0.2, 0.1, 0.05, 0.05])
+            new DecayThresholdScoringStrategy(CriteriaVariety[CriteriaType.proximityToSchool], CriteriaThresholds[CriteriaType.proximityToSchool], [100, 90, 75, 50], [0.6, 0.4])
+        );
+        this.proximityScorer.addCriteriaStrategy(
+            CriteriaType.proximityToSupermarket,
+            new DecayThresholdScoringStrategy(CriteriaVariety[CriteriaType.proximityToSupermarket], CriteriaThresholds[CriteriaType.proximityToSupermarket], [100, 75, 50], [0.6, 0.2, 0.1, 0.05, 0.05])
         );
         this.proximityScorer.addCriteriaStrategy(
             CriteriaType.proximityToClinic,
-            new DecayThresholdScoringStrategy(2, [1, 2, 5], [100, 75, 50], [0.6, 0.4])
+            new DecayThresholdScoringStrategy(CriteriaVariety[CriteriaType.proximityToClinic], CriteriaThresholds[CriteriaType.proximityToClinic], [100, 75, 50], [0.6, 0.4])
         );
     }
 

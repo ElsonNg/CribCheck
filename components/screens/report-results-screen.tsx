@@ -7,7 +7,7 @@ import ReportMap from "../report/report-map";
 import ReportResults from "../report/report-results";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { GoHeart, GoHeartFill } from "react-icons/go";
-import { useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import Confetti from "react-confetti-boom";
 import ReportAddComparison from "../report/report-add-comparison";
 
@@ -29,6 +29,18 @@ export default function ReportResultsScreen() {
     const userProfile = profileController.getProfile();
     const [isPending, startTransition] = useTransition();
 
+    const [showConfetti, setShowConfetti] = useState<boolean>(true);
+
+    useEffect(() => {
+        // Set a timeout to hide confetti after 3 seconds (adjust as needed)
+        const timer = setTimeout(() => {
+            setShowConfetti(false);
+        }, 5000); // 3000 ms = 3 seconds
+
+        // Cleanup the timer if the component unmounts
+        return () => clearTimeout(timer);
+    }, []);
+
     function handleRestart() {
         masterController.setState(ScreenState.SelectingLocation);
     }
@@ -48,7 +60,7 @@ export default function ReportResultsScreen() {
     return (
         <>
             <div className="absolute top-0 left-0 z-50 pointer-events-none">
-                <Confetti mode="boom" deg={90} spreadDeg={300} launchSpeed={0.8} shapeSize={12} particleCount={120} colors={['#ff577f', '#ff884b']} />
+                {showConfetti && <Confetti mode="boom" deg={90} spreadDeg={300} launchSpeed={1} shapeSize={12} particleCount={100} colors={['#ff577f', '#ff884b']} />}
             </div>
             <div className="animate-fadeIn w-full md:w-[90%] p-4 md:p-12 flex flex-col justify-start items-start gap-6">
                 <div className="w-full flex flex-row justify-center md:justify-start items-center gap-6">

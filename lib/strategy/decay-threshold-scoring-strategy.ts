@@ -54,7 +54,7 @@ export class DecayThresholdScoringStrategy implements ScoringStrategy {
         const result = new ScoringResult();
 
         // Cap the score at 100 and ensure that full score is only given for 3 centres within 0.3 km
-        score = Math.min(score, 100);
+        score = Math.max(Math.min(score, 100), 0);
 
         // Prevent divide-by-zero if no valid locations
         if (validLocations.length !== 0) {

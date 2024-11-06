@@ -7,8 +7,12 @@ import LocationEntity from "../entities/location/location-entity";
  * and the list of valid locations that contributed to this score.
  */
 export class ScoringResult {
+
+
     private score: number;
     private validLocations: LocationEntity[];
+
+  
 
     /**
      * Initializes a new instance of `ScoringResult` with default values.

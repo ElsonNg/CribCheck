@@ -82,7 +82,7 @@ export default function CriteriaBreakdown({ className }: CriteriaCreateFormProps
     return (<div className={cn("flex flex-col gap-2", className)}>
         <div className="flex flex-col justify-start items-center gap-2">
             <h3 className="text-2xl font-bold">{criteria.getName()}</h3>
-            {criteria.getCustom() && (<span className="text-md font-medium text-center">Choose from a list of criteria and rank them with stars (more stars = more important).<br/>Click to turn on/off a criterion.</span>)}
+            {criteria.getCustom() && (<span className="text-md font-medium text-center">Choose from a list of criteria and rank them with stars (more stars = more important).<br/>You may only have one saved preset at once.<br/><span className="font-normal text-[#0066CC]">To add/remove a criteria, click on the rectangle.</span></span>)}
         </div>
 
         <div className="mt-4 flex flex-col gap-2.5">
