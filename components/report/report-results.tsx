@@ -109,7 +109,7 @@ export default function ReportResults({ queriedLocation, cribFitRating, results 
                         locations={nearbyHawkers}
                         componentScore={results.get(CriteriaType.proximityToHawkerCentres)?.getScore() ?? 0}
                     >
-                        <IoRestaurant size={32} className="m-auto" />
+                        <IoRestaurant size={30} className="m-auto" />
                     </ReportDataCard>
                     )
 
@@ -123,7 +123,7 @@ export default function ReportResults({ queriedLocation, cribFitRating, results 
                         locations={nearbyMRT}
                         componentScore={results.get(CriteriaType.proximityToMRT)?.getScore() ?? 0}
                     >
-                        <Image src={MRTLogo} alt="MRT Logo" width={32} height={32} className="m-auto" />
+                        <Image src={MRTLogo} alt="MRT Logo" width={30} height={30} className="m-auto" />
                     </ReportDataCard>)
                 }
                 {/* Clinic Summary */}
@@ -136,7 +136,7 @@ export default function ReportResults({ queriedLocation, cribFitRating, results 
                         componentScore={results.get(CriteriaType.proximityToClinic)?.getScore() ?? 0}
 
                     >
-                        <FaClinicMedical size={32} className="m-auto" />
+                        <FaClinicMedical size={30} className="m-auto" />
                     </ReportDataCard>)
                 }
                 {/* Schools Summary */}
@@ -149,7 +149,7 @@ export default function ReportResults({ queriedLocation, cribFitRating, results 
                         componentScore={results.get(CriteriaType.proximityToSchool)?.getScore() ?? 0}
                     >
 
-                        <MdSchool size={32} className="m-auto" />
+                        <MdSchool size={30} className="m-auto" />
                     </ReportDataCard>)
                 }
                 {/* Supermarkets Summary */}
@@ -162,7 +162,7 @@ export default function ReportResults({ queriedLocation, cribFitRating, results 
                         componentScore={results.get(CriteriaType.proximityToSupermarket)?.getScore() ?? 0}
 
                     >
-                        <FaBasketShopping size={32} className="m-auto" />
+                        <FaBasketShopping size={30} className="m-auto" />
                     </ReportDataCard>)
                 }
             </div>)

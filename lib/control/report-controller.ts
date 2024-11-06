@@ -78,11 +78,11 @@ class ReportController {
         );
         this.proximityScorer.addCriteriaStrategy(
             CriteriaType.proximityToSchool,
-            new DecayThresholdScoringStrategy(CriteriaVariety[CriteriaType.proximityToSchool], CriteriaThresholds[CriteriaType.proximityToSchool], [100, 90, 75, 50], [0.6, 0.4])
+            new DecayThresholdScoringStrategy(CriteriaVariety[CriteriaType.proximityToSchool], CriteriaThresholds[CriteriaType.proximityToSchool], [100, 75, 50], [0.6, 0.4])
         );
         this.proximityScorer.addCriteriaStrategy(
             CriteriaType.proximityToSupermarket,
-            new DecayThresholdScoringStrategy(CriteriaVariety[CriteriaType.proximityToSupermarket], CriteriaThresholds[CriteriaType.proximityToSupermarket], [100, 75, 50], [0.6, 0.2, 0.1, 0.05, 0.05])
+            new DecayThresholdScoringStrategy(CriteriaVariety[CriteriaType.proximityToSupermarket], CriteriaThresholds[CriteriaType.proximityToSupermarket], [100, 90, 75, 50], [0.6, 0.2, 0.1, 0.05, 0.05])
         );
         this.proximityScorer.addCriteriaStrategy(
             CriteriaType.proximityToClinic,

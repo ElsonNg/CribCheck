@@ -1,17 +1,17 @@
 import { useMasterController } from '@/context/master-controller-context';
-import React from 'react';
+import LocationEntity from '@/lib/entities/location/location-entity';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 
 
 interface DialogProps {
     onCancel: () => void,
-    onCompare: () => void,
     children?: React.ReactNode;
 }
 
-export default function ReportAddComparisonDialog({ onCancel, onCompare, children }: DialogProps) {
+export default function ReportAddComparisonDialog({ onCancel, children }: DialogProps) {
 
-    const {masterController} = useMasterController();
+    const { masterController } = useMasterController();
     const reportController = masterController.getReportController();
 
 
@@ -40,22 +40,8 @@ export default function ReportAddComparisonDialog({ onCancel, onCompare, childre
                     {children}
                 </div>
 
-                {/* Modal Actions */}
-                <div className="mt-6 flex justify-end">
-                    <button
-                        className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
-                        onClick={onCancel}
-                    >
-                        Cancel
-                    </button>
-                    <button className="bg-blue-500 text-white px-4 py-2 ml-3 rounded-md hover:bg-blue-600"
-                        onClick={onCompare}>
-                        Compare
-                    </button>
-                </div>
             </div>
-        </div>, document.body
-    );
+        </div>, document.body);
 
 }
 

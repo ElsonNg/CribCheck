@@ -36,6 +36,8 @@ export default function ReportMap() {
 
     const [zoomLevel, setZoomLevel] = useState<number>(12);
 
+    const maxDistanceKilometres = 2;
+
 
     // Fetch the url of the icon based on criteria type to show on the map
     function getMarkerIcon(type: CriteriaType) {
@@ -88,6 +90,9 @@ export default function ReportMap() {
                         {results.get(CriteriaType.proximityToHawkerCentres) && results.get(CriteriaType.proximityToHawkerCentres)?.getValidLocations().map((location: LocationEntity, i: number) => {
 
                             const hawkerEntity = location as HawkerCentreEntity;
+                            if(selectedLocation && location.distanceToKilometres(selectedLocation) > maxDistanceKilometres && !selectedLocationOther) return;
+                            if(selectedLocation && location.distanceToKilometres(selectedLocation) > maxDistanceKilometres && selectedLocationOther && location.distanceToKilometres(selectedLocationOther) > maxDistanceKilometres) return;
+
                             return (
 
                                 <Marker
@@ -103,6 +108,9 @@ export default function ReportMap() {
                         {results.get(CriteriaType.proximityToMRT) && results.get(CriteriaType.proximityToMRT)?.getValidLocations().map((location: LocationEntity, i: number) => {
 
                             const mrtEntity = location as MRTStationEntity;
+                            if(selectedLocation && location.distanceToKilometres(selectedLocation) > maxDistanceKilometres && !selectedLocationOther) return;
+                            if(selectedLocation && location.distanceToKilometres(selectedLocation) > maxDistanceKilometres && selectedLocationOther && location.distanceToKilometres(selectedLocationOther) > maxDistanceKilometres) return;
+
                             return (
 
                                 <Marker
@@ -118,6 +126,9 @@ export default function ReportMap() {
                         {results.get(CriteriaType.proximityToClinic) && results.get(CriteriaType.proximityToClinic)?.getValidLocations().map((location: LocationEntity, i: number) => {
 
                             const clinicEntity = location as ClinicEntity;
+                            if(selectedLocation && location.distanceToKilometres(selectedLocation) > maxDistanceKilometres && !selectedLocationOther) return;
+                            if(selectedLocation && location.distanceToKilometres(selectedLocation) > maxDistanceKilometres && selectedLocationOther && location.distanceToKilometres(selectedLocationOther) > maxDistanceKilometres) return;
+
                             return (
 
                                 <Marker
@@ -133,6 +144,9 @@ export default function ReportMap() {
                         {results.get(CriteriaType.proximityToSchool) && results.get(CriteriaType.proximityToSchool)?.getValidLocations().map((location: LocationEntity, i: number) => {
 
                             const schoolEntity = location as SchoolEntity;
+                            if(selectedLocation && location.distanceToKilometres(selectedLocation) > maxDistanceKilometres && !selectedLocationOther) return;
+                            if(selectedLocation && location.distanceToKilometres(selectedLocation) > maxDistanceKilometres && selectedLocationOther && location.distanceToKilometres(selectedLocationOther) > maxDistanceKilometres) return;
+
                             return (
 
                                 <Marker
@@ -148,6 +162,9 @@ export default function ReportMap() {
                         {results.get(CriteriaType.proximityToSupermarket) && results.get(CriteriaType.proximityToSupermarket)?.getValidLocations().map((location: LocationEntity, i: number) => {
 
                             const supermarketEntity = location as SupermarketEntity;
+                            if(selectedLocation && location.distanceToKilometres(selectedLocation) > maxDistanceKilometres && !selectedLocationOther) return;
+                            if(selectedLocation && location.distanceToKilometres(selectedLocation) > maxDistanceKilometres && selectedLocationOther && location.distanceToKilometres(selectedLocationOther) > maxDistanceKilometres) return;
+
                             return (
 
                                 <Marker

@@ -24,27 +24,27 @@ const CriteriaInfoList: CriteriaInfo[] = [
     {
         type: CriteriaType.proximityToHawkerCentres,
         icon: <IoRestaurant size={24} />,
-        description: "Near to Hawker Centres (within 500 metres)",
+        description: "Near to Hawker Centres (within 300m)",
     },
     {
         type: CriteriaType.proximityToMRT,
         icon: <FaTrain size={24} />,
-        description: "Near to MRT Stations (within 300 metres)",
+        description: "Near to MRT Stations (within 300m)",
     },
     {
         type: CriteriaType.proximityToClinic,
         icon: <FaClinicMedical size={24} />,
-        description: "Near to Clinics (within 5 kilometres)",
+        description: "Near to Clinics (within 1km)",
     },
     {
         type: CriteriaType.proximityToSchool,
         icon: <FaSchool size={24} />,
-        description: "Near to Schools (within 1 kilometre)",
+        description: "Near to Schools (within 1km)",
     },
     {
         type: CriteriaType.proximityToSupermarket,
         icon: <FaShoppingCart size={24} />,
-        description: "Near to Supermarkets (within 1 kilometre)",
+        description: "Near to Supermarkets (within 300m)",
     },
 ];
 
@@ -100,9 +100,9 @@ export default function CriteriaBreakdown({ className }: CriteriaCreateFormProps
                         },)}
                         onClick={() => criteria.getCustom() ? handleSelectCriterion(criteriaInfo.type, 1) : null} // Toggle selection
                     >
-                        <div className="w-full flex flex-row justify-center md:justify-start items-center px-2">
-                            <div className="basis-[18%] md:basis-[10%]">{criteriaInfo.icon}</div>
-                            <span className="basis-[82%] md:basis-[90%] font-semibold">{criteriaInfo.description}</span>
+                        <div className="w-full flex flex-row justify-center md:justify-start items-center px-2 gap-4 md:gap-0">
+                            <div className="md:basis-[10%]">{criteriaInfo.icon}</div>
+                            <span className="md:basis-[90%] font-semibold">{criteriaInfo.description}</span>
                         </div>
                         <div className="mt-2 md:mt-0 flex flex-row justify-center md:justify-end gap-2">
                             {Array.from({ length: 5 }).map((_, index) => (

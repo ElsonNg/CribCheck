@@ -27,8 +27,8 @@ export const CriteriaVariety: { [key in CriteriaType]: number } = {
 export const CriteriaThresholds: { [key in CriteriaType]: number[] } = {
     [CriteriaType.proximityToHawkerCentres]: [0.3, 0.5, 1, 2],
     [CriteriaType.proximityToMRT]: [0.3, 0.5, 1, 2],
-    [CriteriaType.proximityToSchool]: [0.3, 0.5, 1, 2],
-    [CriteriaType.proximityToSupermarket]: [1, 2, 5],
+    [CriteriaType.proximityToSchool]: [1, 2, 5],
+    [CriteriaType.proximityToSupermarket]: [0.3, 0.5, 1, 2],
     [CriteriaType.proximityToClinic]: [1, 2, 5],
 };
 

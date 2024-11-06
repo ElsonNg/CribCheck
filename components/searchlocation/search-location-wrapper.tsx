@@ -4,22 +4,31 @@ import { useMasterController } from "@/context/master-controller-context";
 import SearchLocation from "@/components/searchlocation/search-location";
 import { useState } from "react";
 import LocationEntity from "@/lib/entities/location/location-entity";
-import  { ScreenState } from "@/lib/control/master-controller";
+import { ScreenState } from "@/lib/control/master-controller";
 
 
 export default function SearchLocationWrapper() {
 
-    const {masterController} = useMasterController();
+    const { masterController } = useMasterController();
     const [location, setLocation] = useState<LocationEntity | null>(null);
-
+    const reportController = masterController.getReportController();
 
     function handleNext() {
-        if(masterController.getCurrentState() === ScreenState.SelectingLocation)
+        if (masterController.getCurrentState() === ScreenState.SelectingLocation)
+        {
+            reportController.clearReportResults();
             masterController.goToNextState();
+        }
     }
 
-    function handleOnChange(location : LocationEntity | null) {
+    function handleOnChange(location: LocationEntity | null) {
         setLocation(location);
+
+        // Selecting only one location
+        if (masterController.getCurrentState() === ScreenState.SelectingLocation) {
+            reportController.setSelectedLocation(location);
+        }
+
     }
 
 
