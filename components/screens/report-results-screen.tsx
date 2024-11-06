@@ -106,14 +106,14 @@ export default function ReportResultsScreen() {
 
                             {reportController.getSelectedLocationOther() ? (
                                 <div className="grid grid-cols-2 gap-4">
-                                    <Card className="col-span-1">
+                                    <Card className="col-span-2 lg:col-span-1">
                                         <ReportResults
                                             queriedLocation={reportController.getSelectedLocation()!}
                                             cribFitRating={reportController.getCribFitRating()}
                                             results={reportController.getInitialResult()!} />
 
                                     </Card>
-                                    <Card className="col-span-1">
+                                    <Card className="col-span-2 lg:col-span-1">
                                         <ReportResults
                                             queriedLocation={reportController.getSelectedLocationOther()!}
                                             cribFitRating={reportController.getCribFitRatingOther()}

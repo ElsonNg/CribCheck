@@ -31,10 +31,10 @@ export default function AboutPage() {
                         <h3 className="text-2xl font-bold text-center">Credits</h3>
                         <ul>
                             <li><a href="https://www.flaticon.com/free-icons/singapore" title="singapore icons" className="hover:underline">Singapore icons created by Freepik - Flaticon</a></li>
-                            <li><a href="https://www.freepik.com/free-vector/banner-with-diverse-happy-people-group-standing-together-white_12873006.htm#fromView=search&page=1&position=14&uuid=2e9195e4-6371-44f2-92e0-5e1b2c8d1970" title="Singles" className="hover:underline">Singles Illustration designed by Freepik</a></li>
-                            <li><a href="https://www.freepik.com/free-vector/collection-young-couples-walking_5524592.htm#fromView=search&page=1&position=5&uuid=905c0f65-ea51-4482-9ec6-25cd3abb1f4d" title="Young couple" className="hover:underline">Young Couple Illustration designed by Freepik</a></li>
-                            <li><a href="https://www.freepik.com/free-vector/hand-drawn-family-portrait_4112736.htm#fromView=search&page=1&position=6&uuid=b4fa54c1-c5bf-4a3d-afd9-1dc0dd2316f0" title="Family" className="hover:underline">Family Illustration designed by Freepik</a></li>
-
+                            <li><a href="https://www.freepik.com/free-vector/banner-with-diverse-happy-people-group-standing-together-white_12873006.htm" title="Singles" className="hover:underline">Singles Illustration designed by Freepik</a></li>
+                            <li><a href="https://www.freepik.com/free-vector/collection-young-couples-walking_5524592.htm" title="Young couple" className="hover:underline">Young Couple Illustration designed by Freepik</a></li>
+                            <li><a href="https://www.freepik.com/free-vector/hand-drawn-family-portrait_4112736.htm" title="Family" className="hover:underline">Family Illustration designed by Freepik</a></li>
+                            <li><a href="https://www.freepik.com/free-vector/urban-buildings-cityscape-view-scenarios_4794195.htm" title="Urban Buildings Skyscraper" className="hover:underline">Urban buildings cityscape view scenarios created by jemastock - Freepik</a></li>
                         </ul>
                     </div>
                 </main>
