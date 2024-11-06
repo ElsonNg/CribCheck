@@ -4,7 +4,7 @@ import { CriteriaType } from "@/lib/entities/criteria-entity";
 import HawkerCentreEntity from "@/lib/entities/datasets/hawker-centre-entity";
 import MRTStationEntity from "@/lib/entities/datasets/mrt-station-entity";
 import LocationEntity from "@/lib/entities/location/location-entity";
-import { Circle, GoogleMap, Marker } from "@react-google-maps/api";
+import { Circle, GoogleMap, InfoWindow, Marker } from "@react-google-maps/api";
 import { useState } from "react";
 import SchoolEntity from "@/lib/entities/datasets/school-entity";
 import SupermarketEntity from "@/lib/entities/datasets/supermarket-entity";
@@ -14,12 +14,15 @@ interface LatLng {
     lng: number;
 }
 
-
+interface MarkerProps {
+    loc: LocationEntity;
+    name: string;
+}
 
 export default function ReportMap() {
 
 
-    const {masterController} = useMasterController();
+    const { masterController } = useMasterController();
     const reportController = masterController.getReportController();
 
     const combinedResults = [reportController.getInitialResult(), reportController.getOtherResult()];
@@ -38,6 +41,15 @@ export default function ReportMap() {
 
     const maxDistanceKilometres = 2;
 
+    // State for selected marker information
+    const [selectedMarker, setSelectedMarker] = useState<MarkerProps | null>(null);
+
+    function getNearerDistance(loc: LocationEntity) {
+        if (!selectedLocationOther)
+            return selectedLocation!.distanceToMetres(loc);
+        return Math.min(selectedLocation!.distanceToMetres(loc), selectedLocationOther.distanceToMetres(loc));
+
+    }
 
     // Fetch the url of the icon based on criteria type to show on the map
     function getMarkerIcon(type: CriteriaType) {
@@ -90,8 +102,8 @@ export default function ReportMap() {
                         {results.get(CriteriaType.proximityToHawkerCentres) && results.get(CriteriaType.proximityToHawkerCentres)?.getValidLocations().map((location: LocationEntity, i: number) => {
 
                             const hawkerEntity = location as HawkerCentreEntity;
-                            if(selectedLocation && location.distanceToKilometres(selectedLocation) > maxDistanceKilometres && !selectedLocationOther) return;
-                            if(selectedLocation && location.distanceToKilometres(selectedLocation) > maxDistanceKilometres && selectedLocationOther && location.distanceToKilometres(selectedLocationOther) > maxDistanceKilometres) return;
+                            if (selectedLocation && location.distanceToKilometres(selectedLocation) > maxDistanceKilometres && !selectedLocationOther) return;
+                            if (selectedLocation && location.distanceToKilometres(selectedLocation) > maxDistanceKilometres && selectedLocationOther && location.distanceToKilometres(selectedLocationOther) > maxDistanceKilometres) return;
 
                             return (
 
@@ -100,6 +112,7 @@ export default function ReportMap() {
                                     position={{ lat: hawkerEntity.latitude, lng: hawkerEntity.longitude }}
                                     title={hawkerEntity.getName()}
                                     icon={getMarkerIcon(CriteriaType.proximityToHawkerCentres)}
+                                    onClick={() => setSelectedMarker({ loc: hawkerEntity, name: hawkerEntity.getName() })}
                                     zIndex={10}
                                 />);
                         })}
@@ -108,8 +121,8 @@ export default function ReportMap() {
                         {results.get(CriteriaType.proximityToMRT) && results.get(CriteriaType.proximityToMRT)?.getValidLocations().map((location: LocationEntity, i: number) => {
 
                             const mrtEntity = location as MRTStationEntity;
-                            if(selectedLocation && location.distanceToKilometres(selectedLocation) > maxDistanceKilometres && !selectedLocationOther) return;
-                            if(selectedLocation && location.distanceToKilometres(selectedLocation) > maxDistanceKilometres && selectedLocationOther && location.distanceToKilometres(selectedLocationOther) > maxDistanceKilometres) return;
+                            if (selectedLocation && location.distanceToKilometres(selectedLocation) > maxDistanceKilometres && !selectedLocationOther) return;
+                            if (selectedLocation && location.distanceToKilometres(selectedLocation) > maxDistanceKilometres && selectedLocationOther && location.distanceToKilometres(selectedLocationOther) > maxDistanceKilometres) return;
 
                             return (
 
@@ -118,6 +131,7 @@ export default function ReportMap() {
                                     position={{ lat: mrtEntity.latitude, lng: mrtEntity.longitude }}
                                     title={mrtEntity.getName()}
                                     icon={getMarkerIcon(CriteriaType.proximityToMRT)}
+                                    onClick={() => setSelectedMarker({ loc: mrtEntity, name: mrtEntity.getName() })}
                                     zIndex={10}
                                 />);
                         })}
@@ -126,8 +140,8 @@ export default function ReportMap() {
                         {results.get(CriteriaType.proximityToClinic) && results.get(CriteriaType.proximityToClinic)?.getValidLocations().map((location: LocationEntity, i: number) => {
 
                             const clinicEntity = location as ClinicEntity;
-                            if(selectedLocation && location.distanceToKilometres(selectedLocation) > maxDistanceKilometres && !selectedLocationOther) return;
-                            if(selectedLocation && location.distanceToKilometres(selectedLocation) > maxDistanceKilometres && selectedLocationOther && location.distanceToKilometres(selectedLocationOther) > maxDistanceKilometres) return;
+                            if (selectedLocation && location.distanceToKilometres(selectedLocation) > maxDistanceKilometres && !selectedLocationOther) return;
+                            if (selectedLocation && location.distanceToKilometres(selectedLocation) > maxDistanceKilometres && selectedLocationOther && location.distanceToKilometres(selectedLocationOther) > maxDistanceKilometres) return;
 
                             return (
 
@@ -136,6 +150,8 @@ export default function ReportMap() {
                                     position={{ lat: clinicEntity.latitude, lng: clinicEntity.longitude }}
                                     title={clinicEntity.getName()}
                                     icon={getMarkerIcon(CriteriaType.proximityToClinic)}
+                                    onClick={() => setSelectedMarker({ loc: clinicEntity, name: clinicEntity.getName() })}
+
                                     zIndex={10}
                                 />);
                         })}
@@ -144,8 +160,8 @@ export default function ReportMap() {
                         {results.get(CriteriaType.proximityToSchool) && results.get(CriteriaType.proximityToSchool)?.getValidLocations().map((location: LocationEntity, i: number) => {
 
                             const schoolEntity = location as SchoolEntity;
-                            if(selectedLocation && location.distanceToKilometres(selectedLocation) > maxDistanceKilometres && !selectedLocationOther) return;
-                            if(selectedLocation && location.distanceToKilometres(selectedLocation) > maxDistanceKilometres && selectedLocationOther && location.distanceToKilometres(selectedLocationOther) > maxDistanceKilometres) return;
+                            if (selectedLocation && location.distanceToKilometres(selectedLocation) > maxDistanceKilometres && !selectedLocationOther) return;
+                            if (selectedLocation && location.distanceToKilometres(selectedLocation) > maxDistanceKilometres && selectedLocationOther && location.distanceToKilometres(selectedLocationOther) > maxDistanceKilometres) return;
 
                             return (
 
@@ -154,6 +170,8 @@ export default function ReportMap() {
                                     position={{ lat: schoolEntity.latitude, lng: schoolEntity.longitude }}
                                     title={schoolEntity.getName()}
                                     icon={getMarkerIcon(CriteriaType.proximityToSchool)}
+                                    onClick={() => setSelectedMarker({ loc: schoolEntity, name: schoolEntity.getName() })}
+
                                     zIndex={10}
                                 />);
                         })}
@@ -162,8 +180,8 @@ export default function ReportMap() {
                         {results.get(CriteriaType.proximityToSupermarket) && results.get(CriteriaType.proximityToSupermarket)?.getValidLocations().map((location: LocationEntity, i: number) => {
 
                             const supermarketEntity = location as SupermarketEntity;
-                            if(selectedLocation && location.distanceToKilometres(selectedLocation) > maxDistanceKilometres && !selectedLocationOther) return;
-                            if(selectedLocation && location.distanceToKilometres(selectedLocation) > maxDistanceKilometres && selectedLocationOther && location.distanceToKilometres(selectedLocationOther) > maxDistanceKilometres) return;
+                            if (selectedLocation && location.distanceToKilometres(selectedLocation) > maxDistanceKilometres && !selectedLocationOther) return;
+                            if (selectedLocation && location.distanceToKilometres(selectedLocation) > maxDistanceKilometres && selectedLocationOther && location.distanceToKilometres(selectedLocationOther) > maxDistanceKilometres) return;
 
                             return (
 
@@ -172,6 +190,7 @@ export default function ReportMap() {
                                     position={{ lat: supermarketEntity.latitude, lng: supermarketEntity.longitude }}
                                     title={supermarketEntity.getName()}
                                     icon={getMarkerIcon(CriteriaType.proximityToSupermarket)}
+                                    onClick={() => setSelectedMarker({ loc: supermarketEntity, name: supermarketEntity.getName() })}
                                     zIndex={10}
                                 />);
                         })}
@@ -223,6 +242,19 @@ export default function ReportMap() {
                             }}
                         />
                     </>)}
+
+                {/* InfoWindow for selected marker */}
+                {selectedMarker && (
+                    <InfoWindow
+                        position={{ lat: selectedMarker.loc.latitude, lng: selectedMarker.loc.longitude }}
+                        onCloseClick={() => setSelectedMarker(null)}
+                    >
+                        <p className="flex flex-wrap gap-1">
+                            <span>{selectedMarker.name}</span>
+                            <span>{getNearerDistance(selectedMarker.loc).toFixed()}m</span>
+                        </p>
+                    </InfoWindow>
+                )}
             </GoogleMap>
         </div>
     );
