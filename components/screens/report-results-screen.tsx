@@ -10,13 +10,16 @@ import { GoHeart, GoHeartFill } from "react-icons/go";
 import { useEffect, useState, useTransition } from "react";
 import Confetti from "react-confetti-boom";
 import ReportAddComparison from "../report/report-add-comparison";
+import { FaQuestion } from "react-icons/fa";
+import { BsFillQuestionCircleFill } from "react-icons/bs";
+import ReportGuide from "../report/report-guide";
 
 
 
 
 export default function ReportResultsScreen() {
 
-    const {masterController, currentUser} = useMasterController();
+    const { masterController, currentUser } = useMasterController();
 
     const reportController = masterController.getReportController();
     const criteriaController = masterController.getCriteriaController();
@@ -67,9 +70,7 @@ export default function ReportResultsScreen() {
                     <div className="group hidden md:flex flex-row justify-start items-center gap-1 cursor-pointer" onClick={handleRestart}>
                         <MdKeyboardArrowLeft size={32} color="gray" />
                     </div>
-                    <h1 className="font-bold text-2xl md:text-4xl relative text-center">Your Report Is Ready! 🎊🎊
-
-                    </h1>
+                    <h1 className="font-bold text-2xl md:text-4xl relative text-center">Your Report Is Ready! 🎊🎊</h1>
 
                 </div>
                 <div className="w-full p-4 grid grid-cols-6 gap-4 bg-white drop-shadow-md rounded-lg">
@@ -99,9 +100,12 @@ export default function ReportResultsScreen() {
                     <Card className="col-span-6">
                         <div className="flex flex-col gap-8">
 
-                            <div className="flex flex-col md:flex-row justify-between gap-2">
-                                <h3 className="font-semibold text-2xl">📑 Crib Report</h3>
-                                <ReportAddComparison />
+                            <div className="flex flex-col">
+                                <div className="flex flex-col md:flex-row justify-between gap-2">
+                                    <h3 className="font-semibold text-2xl">📑 Crib Report</h3>
+                                    <ReportAddComparison />
+                                </div>
+                                <ReportGuide/>
                             </div>
 
                             {reportController.getSelectedLocationOther() ? (
@@ -127,7 +131,7 @@ export default function ReportResultsScreen() {
                         </div>
                     </Card>
 
-                </div >
+                </div>
                 <div className="text-lg font-medium mx-auto underline cursor-pointer hover:opacity-60" onClick={handleRestart}>
                     Start Over
                 </div>
