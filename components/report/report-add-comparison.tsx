@@ -1,5 +1,5 @@
 import { useState } from "react";
-import ReportAddComparisonDialog from "../screens/report-add-comparison-dialog";
+import ReportAddComparisonDialog from "./report-add-comparison-dialog";
 import SearchLocation from "../searchlocation/search-location";
 import { ScreenState } from "@/lib/control/master-controller";
 import { useMasterController } from "@/context/master-controller-context";

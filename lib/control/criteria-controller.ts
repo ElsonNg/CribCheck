@@ -64,7 +64,7 @@ class CriteriaController {
      */
     public setDefaultNew() {
         this.currentCriteria.setCustom(true);
-        this.currentCriteria.setName("My Preset");
+        this.currentCriteria.setName("My Criteria");
         this.currentCriteria.selectCriterion(CriteriaType.proximityToHawkerCentres, 1);
         this.currentCriteria.selectCriterion(CriteriaType.proximityToMRT, 1);
         this.currentCriteria.selectCriterion(CriteriaType.proximityToClinic, 1);

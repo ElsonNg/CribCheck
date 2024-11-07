@@ -17,10 +17,10 @@ export const CriteriaLabels: { [key in CriteriaType]: string } = {
 };
 
 export const CriteriaVariety: { [key in CriteriaType]: number } = {
-    [CriteriaType.proximityToHawkerCentres]: 5,
-    [CriteriaType.proximityToMRT]: 3,
+    [CriteriaType.proximityToHawkerCentres]: 3,
+    [CriteriaType.proximityToMRT]: 2,
     [CriteriaType.proximityToSchool]: 2,
-    [CriteriaType.proximityToSupermarket]: 5,
+    [CriteriaType.proximityToSupermarket]: 3,
     [CriteriaType.proximityToClinic]: 2,
 };
 
