@@ -1,6 +1,4 @@
-import { useMasterController } from '@/context/master-controller-context';
-import LocationEntity from '@/lib/entities/location/location-entity';
-import React, { useState } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 
 
@@ -10,10 +8,6 @@ interface DialogProps {
 }
 
 export default function ReportGuideDialog({ onCancel, children }: DialogProps) {
-
-    const { masterController } = useMasterController();
-    const reportController = masterController.getReportController();
-
 
     return ReactDOM.createPortal(
         <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">

@@ -5,7 +5,6 @@ import { GoogleMap, Marker, } from "@react-google-maps/api";
 import LocationPredictionEntity from "@/lib/entities/location/location-prediction-entity";
 import { useMasterController } from "@/context/master-controller-context";
 import LocationEntity from "@/lib/entities/location/location-entity";
-import { ScreenState } from "@/lib/control/master-controller";
 import LocationService from "@/lib/boundary/location-service";
 import { IoMdAlert } from "react-icons/io";
 
@@ -23,7 +22,6 @@ export default function SearchLocation({ onChange }: LocationSearchProps) {
     const { masterController } = useMasterController();
     const authController = masterController.getAuthController();
     const locationController = masterController.getLocationController();
-    const reportController = masterController.getReportController();
     const profileController = masterController.getProfileController();
 
     const userProfile = profileController.getProfile();

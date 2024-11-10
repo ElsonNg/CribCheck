@@ -3,10 +3,10 @@ import { ScoringResult, ScoringStrategy } from "@/lib/strategy/scoring-strategy"
 
 export class DecayThresholdScoringStrategy implements ScoringStrategy {
 
-    private maxVariety: number; // Max number of centres that can contribute to the score
-    private thresholds: number[]; // Threshold distances (e.g., [0.3, 0.5, 1] for 300m, 500m, 1km)
-    private weights: number[]; // Corresponding weights for each threshold (e.g., [100, 50, 30])
-    private sameThresholdDecay: number[]; // Decay factors within the same threshold (e.g., [0.6, 0.3, 0.1])
+    private maxVariety: number; 
+    private thresholds: number[]; 
+    private weights: number[]; 
+    private sameThresholdDecay: number[]; 
 
     constructor(maxVariety: number, thresholds: number[], weights: number[], sameThresholdDecay: number[]) {
         this.maxVariety = maxVariety;

@@ -4,14 +4,11 @@ import { useMasterController } from "@/context/master-controller-context";
 import { ScreenState } from "@/lib/control/master-controller";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
 
 
 export default function NavBar() {
 
     const router = useRouter();
-    const [isPending, startTransition] = useTransition();
-
     const {masterController, currentUser} = useMasterController();
     const authController = masterController.getAuthController();
 

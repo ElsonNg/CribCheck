@@ -10,8 +10,6 @@ import { GoHeart, GoHeartFill } from "react-icons/go";
 import { useEffect, useState, useTransition } from "react";
 import Confetti from "react-confetti-boom";
 import ReportAddComparison from "../report/report-add-comparison";
-import { FaQuestion } from "react-icons/fa";
-import { BsFillQuestionCircleFill } from "react-icons/bs";
 import ReportGuide from "../report/report-guide";
 
 
