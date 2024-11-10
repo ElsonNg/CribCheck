@@ -1,6 +1,5 @@
 import { useMasterController } from '@/context/master-controller-context';
-import LocationEntity from '@/lib/entities/location/location-entity';
-import React, { useState } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 
 

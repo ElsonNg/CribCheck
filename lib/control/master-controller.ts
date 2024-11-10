@@ -59,8 +59,6 @@ class MasterController {
             new GovtDatasetService(supermarketTransportDatasetId),
             new GovtDatasetService(clinicTransportDatasetId));
 
-
-
         // Initialize the `LocationController` with the required location service.
         this.locationController = new LocationController(new GoogleLocationService());
 
@@ -73,6 +71,7 @@ class MasterController {
         // Set the initial state of the screen flow.
         this.currentState = ScreenState.SelectingLocation;
     }
+    
 
     /**
      * Retrieves the `AuthController` instance.

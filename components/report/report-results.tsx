@@ -1,16 +1,10 @@
 import { useMasterController } from "@/context/master-controller-context";
 import { useTransition } from "react";
-
 import { CriteriaType } from "@/lib/entities/criteria-entity";
 import { IoRestaurant } from "react-icons/io5";
 import { FaBasketShopping, } from "react-icons/fa6";
 import { FaClinicMedical, } from "react-icons/fa";
 import { MdSchool } from "react-icons/md";
-import MRTStationEntity from "@/lib/entities/datasets/mrt-station-entity";
-import ClinicEntity from "@/lib/entities/datasets/clinic-entity";
-import HawkerCentreEntity from "@/lib/entities/datasets/hawker-centre-entity";
-import SchoolEntity from "@/lib/entities/datasets/school-entity";
-import SupermarketEntity from "@/lib/entities/datasets/supermarket-entity";
 import { GoHeart, GoHeartFill } from "react-icons/go";
 import MRTLogo from "@/app/images/mrt-logo.png";
 import Image from "next/image";
@@ -40,11 +34,6 @@ export default function ReportResults({ queriedLocation, cribFitRating, results 
     const nearbyClinics = results ? results.get(CriteriaType.proximityToClinic)?.getValidLocations().filter((l) => queriedLocation!.distanceToKilometres(l) <= 2) : [];
     const nearbySchools = results ? results.get(CriteriaType.proximityToSchool)?.getValidLocations().filter((l) => queriedLocation!.distanceToKilometres(l) <= 2) : [];
     const nearbySupermarkets = results ? results.get(CriteriaType.proximityToSupermarket)?.getValidLocations().filter((l) => queriedLocation!.distanceToKilometres(l) <= 2) : [];
-    // const nearbyHawkers = results ? results.get(CriteriaType.proximityToHawkerCentres)?.getValidLocations().filter((l) => queriedLocation!.distanceToKilometres(l) <= 0.300) : [];
-    // const nearbyMRT = results ? results.get(CriteriaType.proximityToMRT)?.getValidLocations().filter((l) => queriedLocation!.distanceToKilometres(l) <= 1.0) : [];
-    // const nearbyClinics = results ? results.get(CriteriaType.proximityToClinic)?.getValidLocations().filter((l) => queriedLocation!.distanceToKilometres(l) <= 0.500) : [];
-    // const nearbySchools = results ? results.get(CriteriaType.proximityToSchool)?.getValidLocations().filter((l) => queriedLocation!.distanceToKilometres(l) <= 1.00) : [];
-    // const nearbySupermarkets = results ? results.get(CriteriaType.proximityToSupermarket)?.getValidLocations().filter((l) => queriedLocation!.distanceToKilometres(l) <= 1.00) : [];
 
     // Save location to user's profile
     async function handleSaveLocation() {

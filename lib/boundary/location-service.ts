@@ -21,10 +21,6 @@ abstract class LocationService<T, U> {
         south: 1.23,
         east: 104.035,
         west: 103.605,
-        // north: 1.56,
-        // south: 1.145,
-        // east: 104.2,
-        // west: 103.45,
     }
 
     /**

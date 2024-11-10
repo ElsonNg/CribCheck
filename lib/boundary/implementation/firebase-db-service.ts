@@ -17,7 +17,7 @@ class FirebaseDBService extends DBService<Record<string, unknown>> {
     private db: Firestore;
 
     /**
-     * Firebase configuration details loaded from environment varaibles.
+     * Firebase configuration details loaded from environment variables.
      * this configuration is used to initialise the Firebase App instance.
      */
     private static config = {
@@ -40,9 +40,9 @@ class FirebaseDBService extends DBService<Record<string, unknown>> {
 
     }
     /** 
-     * loads a user profile from Firestore by userID
+     * Loads a user profile from Firestore by userID
      * 
-     * this method fetches the user profile from the Firestore database using the userID
+     * This method fetches the user profile from the Firestore database using the userID
      * the profile is retrieved 
      * 
      * @param {string} userId - unique identifier of the user
@@ -67,9 +67,9 @@ class FirebaseDBService extends DBService<Record<string, unknown>> {
         }
     }
     /**
-     * save or updates a user profile in Firestore
+     * Save or updates a user profile in Firestore
      * 
-     * this method saves or updates the user profile data in Firestore database
+     * This method saves or updates the user profile data in Firestore database
      * 
      * @param {any} userProfileData - the user profile data to be saved or updated
      * @param {string} userId - the unique identifier of the user
