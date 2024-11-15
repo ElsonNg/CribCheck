@@ -27,7 +27,8 @@ export class DecayThresholdScoringStrategy implements ScoringStrategy {
         const sortedLocations = nearbyLocations.sort((a, b) => queryLocation.distanceToKilometres(a) - queryLocation.distanceToKilometres(b));
 
         // Step 2: Iterate over sorted nearby locations (hawker centres)
-        sortedLocations.forEach((location) => {
+        for(let j = 0; j < sortedLocations.length; j++) {
+            const location = sortedLocations[j];
             const distance = queryLocation.distanceToKilometres(location);
 
             // Step 3: Check which threshold the distance falls into and assign the corresponding weight
@@ -47,9 +48,9 @@ export class DecayThresholdScoringStrategy implements ScoringStrategy {
 
             // Stop counting if we reach the max variety cap
             if (centreCount >= this.maxVariety) {
-                return;
+                break;
             }
-        });
+        }
 
         const result = new ScoringResult();
 

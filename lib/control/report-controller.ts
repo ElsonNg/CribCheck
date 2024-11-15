@@ -99,7 +99,7 @@ class ReportController {
         try {
             if (!this.selectedCriteria) {
                 throw new Error("No criteria selected for report generation!");
-            }
+            }   
 
             if (this.selectedLocation) {
                 await this.generateResultForLocation(this.selectedLocation);
