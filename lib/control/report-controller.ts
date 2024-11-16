@@ -99,13 +99,16 @@ class ReportController {
         try {
             if (!this.selectedCriteria) {
                 throw new Error("No criteria selected for report generation!");
-            }   
+            }
 
             if (this.selectedLocation) {
                 await this.generateResultForLocation(this.selectedLocation);
                 this.cribFitRating = this.proximityScorer.calculateCompositeScore(this.selectedLocation);
                 this.reportResult = new Map(this.proximityScorer.getResults());
+            } else {
+                throw new Error("No location selected for report generation!");
             }
+            
             if (this.selectedLocationOther) {
                 await this.generateResultForLocation(this.selectedLocationOther);
                 this.cribFitRatingOther = this.proximityScorer.calculateCompositeScore(this.selectedLocationOther);
@@ -119,6 +122,44 @@ class ReportController {
         }
     }
 
+    private async fetchRequiredData(criteriaType: CriteriaType): Promise<LocationEntity[]> {
+        switch (criteriaType) {
+            case CriteriaType.proximityToHawkerCentres:
+                const hawkerData = await this.hawkerCentresDataset.fetchData();
+                if (!hawkerData) throw new Error("Hawker centres dataset is not available!");
+                const hawkerCentres = await this.getHawkerCentres(hawkerData);
+                return hawkerCentres;
+
+            case CriteriaType.proximityToMRT:
+                const transportData = await this.transportDataset.fetchData();
+                if (!transportData) throw new Error("Public transport dataset is not available.");
+                const mrtStations = await this.getMRTStations(transportData);
+                return mrtStations;
+
+            case CriteriaType.proximityToSchool:
+                const schoolData = await this.schoolDataset.fetchData();
+                if (!schoolData) throw new Error("School dataset is not available!");
+                const schools = await this.getSchools(schoolData);
+                return schools;
+
+            case CriteriaType.proximityToSupermarket:
+                const supermarketData = await this.supermarketDataset.fetchData();
+                if (!supermarketData) throw new Error("Supermarket dataset is not available!");
+                const supermarkets = await this.getSupermarkets(supermarketData);
+                return supermarkets;
+
+            case CriteriaType.proximityToClinic:
+                const clinicData = await this.clinicDataset.fetchData();
+                if (!clinicData) throw new Error("Clinic dataset is not available!");
+                const clinics = await this.getClinics(clinicData);
+                return clinics;
+            default:
+                return [];
+
+        }
+
+    }
+
     /**
      * Generates scoring results for a given location based on active criteria and datasets.
      * 
@@ -127,9 +168,7 @@ class ReportController {
      */
     private async generateResultForLocation(location: LocationEntity): Promise<boolean> {
         try {
-            if (!location) {
-                throw new Error("No location selected for report generation!");
-            }
+
 
             this.proximityScorer.disableAllStrategies();
             const criteriaRankings = this.selectedCriteria!.getCriteriaRankingMap();
@@ -138,45 +177,9 @@ class ReportController {
             const promises = Array.from(criteriaRankings.entries()).map(async ([criteriaType, ranking]) => {
                 const weightage = this.selectedCriteria!.getWeightage(criteriaType);
 
-                switch (criteriaType) {
-                    case CriteriaType.proximityToHawkerCentres:
-                        const hawkerData = await this.hawkerCentresDataset.fetchData();
-                        if (!hawkerData) throw new Error("Hawker centres dataset is not available!");
-                        const hawkerCentres = await this.getHawkerCentres(hawkerData);
-                        this.proximityScorer.enableStrategy(criteriaType, weightage, hawkerCentres);
-                        break;
+                const locations: LocationEntity[] = await this.fetchRequiredData(criteriaType);
+                this.proximityScorer.enableStrategy(criteriaType, weightage, locations);
 
-                    case CriteriaType.proximityToMRT:
-                        const transportData = await this.transportDataset.fetchData();
-                        if (!transportData) throw new Error("Public transport dataset is not available.");
-                        const mrtStations = await this.getMRTStations(transportData);
-                        this.proximityScorer.enableStrategy(criteriaType, weightage, mrtStations);
-                        break;
-
-                    case CriteriaType.proximityToSchool:
-                        const schoolData = await this.schoolDataset.fetchData();
-                        if (!schoolData) throw new Error("School dataset is not available!");
-                        const schools = await this.getSchools(schoolData);
-                        this.proximityScorer.enableStrategy(criteriaType, weightage, schools);
-                        break;
-
-                    case CriteriaType.proximityToSupermarket:
-                        const supermarketData = await this.supermarketDataset.fetchData();
-                        if (!supermarketData) throw new Error("Supermarket dataset is not available!");
-                        const supermarkets = await this.getSupermarkets(supermarketData);
-                        this.proximityScorer.enableStrategy(criteriaType, weightage, supermarkets);
-                        break;
-
-                    case CriteriaType.proximityToClinic:
-                        const clinicData = await this.clinicDataset.fetchData();
-                        if (!clinicData) throw new Error("Clinic dataset is not available!");
-                        const clinics = await this.getClinics(clinicData);
-                        this.proximityScorer.enableStrategy(criteriaType, weightage, clinics);
-                        break;
-
-                    default:
-                        break;
-                }
             });
 
             await Promise.all(promises);
