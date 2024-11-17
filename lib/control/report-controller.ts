@@ -108,7 +108,7 @@ class ReportController {
             } else {
                 throw new Error("No location selected for report generation!");
             }
-            
+
             if (this.selectedLocationOther) {
                 await this.generateResultForLocation(this.selectedLocationOther);
                 this.cribFitRatingOther = this.proximityScorer.calculateCompositeScore(this.selectedLocationOther);
@@ -122,6 +122,14 @@ class ReportController {
         }
     }
 
+    /**
+     * Fetches the required dataset based on the specified criteria type.
+     *
+     * @param criteriaType - The {@link CriteriaType} that determines the type of location data to fetch
+     * (e.g., hawker centres, MRT stations, schools).
+     * @returns A promise that resolves to an array of {@link LocationEntity} objects corresponding to the specified criteria.
+     * @throws An error if the dataset for the specified criteria type is unavailable or cannot be fetched.
+     */
     private async fetchRequiredData(criteriaType: CriteriaType): Promise<LocationEntity[]> {
         switch (criteriaType) {
             case CriteriaType.proximityToHawkerCentres:
