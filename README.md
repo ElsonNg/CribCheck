@@ -5,9 +5,8 @@ This is a project for the SC2006 Software Engineering course at Nanyang Technolo
 The project is a web application that allows users to generate a crib fit report based on their location and the proximity of various locations (e.g., hawker centres, MRT stations, schools, supermarkets, clinics).
 
 ## Links
-
-Video Link: [link](https://youtu.be/CQw1xYf6yow)
-Working Prototype: [link](https://cribcheck.vercel.app/)
+- Video Link: [link](https://youtu.be/CQw1xYf6yow)
+- Working Prototype: [link](https://cribcheck.vercel.app/)
 
 
 ## Tech Stack Used
