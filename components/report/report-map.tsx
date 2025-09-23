@@ -8,6 +8,7 @@ import { Circle, GoogleMap, InfoWindow, Marker } from "@react-google-maps/api";
 import { useState } from "react";
 import SchoolEntity from "@/lib/entities/datasets/school-entity";
 import SupermarketEntity from "@/lib/entities/datasets/supermarket-entity";
+import { useGoogleMapsReady } from "@/hooks/useGoogleMapsReady";
 
 interface LatLng {
     lat: number;
@@ -28,6 +29,7 @@ export default function ReportMap() {
     const combinedResults = [reportController.getInitialResult(), reportController.getOtherResult()];
     const selectedLocation = reportController.getSelectedLocation();
     const selectedLocationOther = reportController.getSelectedLocationOther();
+    const { ready: mapsReady, error: mapsError } = useGoogleMapsReady(); 
 
     const [mapCenter, setMapCenter] = useState<LatLng>(
         { lat: selectedLocation?.latitude ?? 0, lng: selectedLocation?.longitude ?? 0 }
@@ -82,7 +84,17 @@ export default function ReportMap() {
                 <h3 className="font-semibold text-2xl">📍 Map</h3>
                 <span className="font-medium text-md ">Showing amenities within a 2-kilometer radius.</span>
             </div>
-            <GoogleMap
+            {mapsError && (
+                  <div className="w-full h-full flex items-center justify-center text-red-600 text-sm">
+                    Failed to load Google Maps: {mapsError.message}
+                  </div>
+                )}
+                {!mapsError && !mapsReady && (
+                  <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm">
+                    Loading map...
+                  </div>
+                )}
+            {mapsReady && (<GoogleMap
                 center={mapCenter}
                 zoom={zoomLevel}
                 mapContainerStyle={{ width: "100%", height: "100%" }}
@@ -255,7 +267,7 @@ export default function ReportMap() {
                         </p>
                     </InfoWindow>
                 )}
-            </GoogleMap>
+            </GoogleMap>)}
         </div>
     );
 };
