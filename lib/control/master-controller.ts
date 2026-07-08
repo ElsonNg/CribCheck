@@ -2,6 +2,7 @@ import FirebaseAuthService from "@/lib/boundary/implementation/firebase-auth-ser
 import AuthController from "@/lib/control/auth-controller";
 import ReportController from "@/lib/control/report-controller";
 import GovtDatasetService from "@/lib/boundary/implementation/govt-dataset-service";
+import StaticDatasetService from "@/lib/boundary/implementation/static-dataset-service";
 import LocationController from "@/lib/control/location-controller";
 import GoogleLocationService from "@/lib/boundary/implementation/google-location-service";
 import CriteriaController from "./criteria-controller";
@@ -50,13 +51,15 @@ class MasterController {
         const hawkerCentresDatasetId = "d_4a086da0a5553be1d89383cd90d07ecd";
         const transportDatasetId = "d_b39d3a0871985372d7e1637193335da5";
         const schoolTransportDatasetId = "d_61eefab99958fd70e6aab17320a71f1c";
-        const supermarketTransportDatasetId = "d_cac2c32f01960a3ad7202a99c27268a0";
         const clinicTransportDatasetId = "d_548c33ea2d99e29ec63a7cc9edcccedc";
+        // Supermarkets only exist upstream as a CSV of postal codes, so a
+        // pregenerated GeoJSON is served instead (see scripts/refresh-supermarkets.mjs)
+        const supermarketGeoJsonPath = "/data/supermarkets.geojson";
 
         this.reportController = new ReportController(new GovtDatasetService(hawkerCentresDatasetId),
             new GovtDatasetService(transportDatasetId),
             new GovtDatasetService(schoolTransportDatasetId),
-            new GovtDatasetService(supermarketTransportDatasetId),
+            new StaticDatasetService(supermarketGeoJsonPath),
             new GovtDatasetService(clinicTransportDatasetId));
 
         // Initialize the `LocationController` with the required location service.

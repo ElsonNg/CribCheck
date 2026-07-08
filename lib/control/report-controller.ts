@@ -1,6 +1,6 @@
 import DatasetService from '@/lib/boundary/dataset-service';
 import CriteriaEntity, { CriteriaThresholds, CriteriaType, CriteriaVariety } from '@/lib/entities/criteria-entity';
-import { GeoJsonData } from '@/lib/boundary/implementation/govt-dataset-service';
+import { Feature, GeoJsonData } from '@/lib/boundary/implementation/govt-dataset-service';
 import HawkerCentreEntity from '@/lib/entities/datasets/hawker-centre-entity';
 import MRTStationEntity from '@/lib/entities/datasets/mrt-station-entity';
 import LocationEntity from '@/lib/entities/location/location-entity';
@@ -213,24 +213,45 @@ class ReportController {
     }
 
     /**
+     * Extracts the display name of a feature, handling both dataset shapes:
+     * newer exports carry the attribute directly in `properties`, while
+     * KML-style exports embed it in an HTML table inside `properties.Description`.
+     *
+     * @param feature - The GeoJSON feature to read.
+     * @param key - The attribute name (e.g. "NAME", "STATION_NA", "HCI_NAME").
+     * @returns The extracted name, or an empty string if not found.
+     */
+    private extractName(feature: Feature, key: string): string {
+        const flatValue = feature.properties?.[key];
+        if (typeof flatValue === 'string' && flatValue !== '') {
+            return flatValue;
+        }
+
+        const description = feature.properties?.Description;
+        if (!description) return '';
+
+        const doc = new DOMParser().parseFromString(description, 'text/html');
+        let name = '';
+        doc.querySelectorAll('th').forEach((th) => {
+            if (th.textContent === key) {
+                const nameElement = th.nextElementSibling;
+                name = nameElement ? nameElement.textContent || '' : '';
+            }
+        });
+        return name;
+    }
+
+    /**
      * Extracts hawker center entities from the GeoJSON dataset.
-     * 
+     *
      * @param data - The GeoJSON data representing hawker centers.
      * @returns An array of `HawkerCentreEntity` objects.
      */
     async getHawkerCentres(data: GeoJsonData): Promise<HawkerCentreEntity[]> {
         const hawkerCentres: HawkerCentreEntity[] = [];
-        const parser = new DOMParser();
 
         data?.features.forEach((feature) => {
-            const doc = parser.parseFromString(feature.properties.Description, 'text/html');
-            let name = '';
-            doc.querySelectorAll('th').forEach((th) => {
-                if (th.textContent === "NAME") {
-                    const nameElement = th.nextElementSibling;
-                    name = nameElement ? nameElement.textContent || '' : '';
-                }
-            });
+            const name = this.extractName(feature, "NAME");
 
             const coordinates = feature.geometry.coordinates;
             if (coordinates && coordinates.length >= 2) {
@@ -252,17 +273,9 @@ class ReportController {
      */
     async getMRTStations(data: GeoJsonData): Promise<MRTStationEntity[]> {
         const mrtStations: MRTStationEntity[] = [];
-        const parser = new DOMParser();
 
         data?.features.forEach((feature) => {
-            const doc = parser.parseFromString(feature.properties.Description, 'text/html');
-            let name = '';
-            doc.querySelectorAll('th').forEach((th) => {
-                if (th.textContent === "STATION_NA") {
-                    const nameElement = th.nextElementSibling;
-                    name = nameElement ? nameElement.textContent || '' : '';
-                }
-            });
+            const name = this.extractName(feature, "STATION_NA");
 
             const coordinates = feature.geometry.coordinates;
             if (coordinates && coordinates.length >= 2) {
@@ -283,17 +296,9 @@ class ReportController {
      */
     async getSchools(data: GeoJsonData): Promise<SchoolEntity[]> {
         const schools: SchoolEntity[] = [];
-        const parser = new DOMParser();
 
         data?.features.forEach((feature) => {
-            const doc = parser.parseFromString(feature.properties.Description, 'text/html');
-            let name = '';
-            doc.querySelectorAll('th').forEach((th) => {
-                if (th.textContent === "CENTRE_NAME") {
-                    const nameElement = th.nextElementSibling;
-                    name = nameElement ? nameElement.textContent || '' : '';
-                }
-            });
+            const name = this.extractName(feature, "CENTRE_NAME");
 
             const coordinates = feature.geometry.coordinates;
             if (coordinates && coordinates.length >= 2) {
@@ -315,17 +320,9 @@ class ReportController {
      */
     async getSupermarkets(data: GeoJsonData): Promise<SupermarketEntity[]> {
         const supermarkets: SupermarketEntity[] = [];
-        const parser = new DOMParser();
 
         data?.features.forEach((feature) => {
-            const doc = parser.parseFromString(feature.properties.Description, 'text/html');
-            let name = '';
-            doc.querySelectorAll('th').forEach((th) => {
-                if (th.textContent === "LIC_NAME") {
-                    const nameElement = th.nextElementSibling;
-                    name = nameElement ? nameElement.textContent || '' : '';
-                }
-            });
+            const name = this.extractName(feature, "LIC_NAME");
 
             const coordinates = feature.geometry.coordinates;
             if (coordinates && coordinates.length >= 2) {
@@ -347,17 +344,9 @@ class ReportController {
      */
     async getClinics(data: GeoJsonData): Promise<ClinicEntity[]> {
         const clinics: ClinicEntity[] = [];
-        const parser = new DOMParser();
 
         data?.features.forEach((feature) => {
-            const doc = parser.parseFromString(feature.properties.Description, 'text/html');
-            let name = '';
-            doc.querySelectorAll('th').forEach((th) => {
-                if (th.textContent === "HCI_NAME") {
-                    const nameElement = th.nextElementSibling;
-                    name = nameElement ? nameElement.textContent || '' : '';
-                }
-            });
+            const name = this.extractName(feature, "HCI_NAME");
 
             const coordinates = feature.geometry.coordinates;
             if (coordinates && coordinates.length >= 2) {

@@ -6,7 +6,8 @@
     "dev": "next dev --turbo",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "refresh-supermarkets": "node scripts/refresh-supermarkets.mjs"
   },
   "dependencies": {
     "@react-google-maps/api": "^2.20.3",

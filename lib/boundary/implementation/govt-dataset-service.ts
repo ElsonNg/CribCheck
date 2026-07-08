@@ -10,10 +10,13 @@
 
 import DatasetService from "@/lib/boundary/dataset-service";
 
-// Define the interfaces representing GeoJSON structure
+// Define the interfaces representing GeoJSON structure.
+// Datasets come in two shapes: KML-style exports carry an HTML table in
+// `Description`, newer exports expose flat attribute keys (e.g. NAME, STATION_NA).
 export interface Properties {
-    Name: string;
-    Description: string;
+    Name?: string;
+    Description?: string;
+    [key: string]: unknown;
 }
 
 export interface Geometry {
@@ -29,7 +32,7 @@ export interface Feature {
 
 export interface GeoJsonData {
     type: string;
-    crs: {
+    crs?: {
         type: string;
         properties: {
             name: string;
