@@ -5,7 +5,6 @@ import MRTStationEntity from "@/lib/entities/datasets/mrt-station-entity";
 import SchoolEntity from "@/lib/entities/datasets/school-entity";
 import SupermarketEntity from "@/lib/entities/datasets/supermarket-entity";
 import LocationEntity from "@/lib/entities/location/location-entity";
-import { useEffect, useState } from "react";
 
 
 interface ReportDataCardProps {
@@ -20,8 +19,6 @@ interface ReportDataCardProps {
 }
 
 export default function ReportDataCard({ className, children, criteriaType, title, queriedLocation, locations, componentScore }: ReportDataCardProps) {
-
-    const [firstIndex, setFirstIndex] = useState<number>(-1);
 
     // Function to get the rating symbol based on componentScore
     function getRating(score: number) {
@@ -52,17 +49,15 @@ export default function ReportDataCard({ className, children, criteriaType, titl
 
     const thresholds = CriteriaThresholds[criteriaType];
 
-    useEffect(() => {
-        let index = -1;
-        for (let i = 0; i < thresholds.length; i++) {
-            const loc = locations.filter((location) => location.distanceToKilometres(queriedLocation) <= thresholds[i]);
-            if (loc.length >= 1) {
-                index = i;
-                break;
-            }
+    // Derived from props, so computed directly during render
+    let firstIndex = -1;
+    for (let i = 0; i < thresholds.length; i++) {
+        const loc = locations.filter((location) => location.distanceToKilometres(queriedLocation) <= thresholds[i]);
+        if (loc.length >= 1) {
+            firstIndex = i;
+            break;
         }
-        setFirstIndex(index);
-    }, [locations, queriedLocation, thresholds]);
+    }
 
 
 

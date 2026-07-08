@@ -89,7 +89,7 @@ function getDataset(datasetId: string): Promise<GeoJsonData> {
     return entry.promise;
 }
 
-export async function GET(request: NextRequest, { params }: { params: { datasetId: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ datasetId: string }> }) {
 
     // Validate the origin to allow only the specified domain
     const origin = request.headers.get('origin');
@@ -101,7 +101,8 @@ export async function GET(request: NextRequest, { params }: { params: { datasetI
     }
 
     try {
-        const data = await getDataset(params.datasetId);
+        const { datasetId } = await params;
+        const data = await getDataset(datasetId);
 
         // Return the data with CORS headers
         return NextResponse.json(data, {
