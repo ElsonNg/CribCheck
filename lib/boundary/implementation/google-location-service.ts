@@ -1,4 +1,5 @@
 import LocationService from "@/lib/boundary/location-service";
+import { loadGoogleMapsLibraries } from "@/lib/google-maps-loader";
 
 /**
  * `GoogleLocationService` is an implementation of `LocationService` for interacting with
@@ -19,37 +20,37 @@ export interface GooglePrediction {
     description: string;
 }
 
-export default class GoogleLocationService extends LocationService<GoogleLocation, GooglePrediction> {
+export default class GoogleLocationService extends LocationService<
+    GoogleLocation,
+    GooglePrediction
+> {
     /**
      * Google Places Autocomplete service for providing location predictions.
      */
-    public autocompleteService: google.maps.places.AutocompleteService | null = null;
+    public autocompleteService: google.maps.places.AutocompleteService | null =
+        null;
 
     /**
      * Google Geocoding service for fetching location details based on coordinates.
      */
     public geocoder: google.maps.Geocoder | null = null;
 
-    constructor() {
-        super();
+    private librariesPromise: Promise<void> | null = null;
+
+    private async ensureLibraries(): Promise<void> {
+        if (this.librariesPromise) return this.librariesPromise;
+        this.librariesPromise = loadGoogleMapsLibraries();
+        await this.librariesPromise;
     }
 
-    /**
-     * Initializes the Google Maps services (Autocomplete and Geocoder) if they are not already initialized.
-     * Assumes that the Google Maps script is loaded in the layout file.
-     *
-     * @throws {Error} Throws an error if Google Maps API is not loaded.
-     */
-    private initializeServices() {
-        if (!window.google || !window.google.maps) {
-            throw new Error("Google Maps API is not loaded yet.");
+    private async ensureServices() {
+        await this.ensureLibraries();
+        if (!this.autocompleteService) {
+            this.autocompleteService =
+                new google.maps.places.AutocompleteService();
         }
-
-        try {
-            this.autocompleteService = new google.maps.places.AutocompleteService();
+        if (!this.geocoder) {
             this.geocoder = new google.maps.Geocoder();
-        } catch (error) {
-            throw new Error("Failed to initialize Google Maps services: " + error);
         }
     }
 
@@ -67,19 +68,42 @@ export default class GoogleLocationService extends LocationService<GoogleLocatio
                     navigator.geolocation.getCurrentPosition(
                         (position) => {
                             const { latitude, longitude } = position.coords;
-                            if (LocationService.isWithinSingaporeBounds(latitude, longitude)) {
-                                resolve({ latitude, longitude, address: "Current Location" });
+                            if (
+                                LocationService.isWithinSingaporeBounds(
+                                    latitude,
+                                    longitude
+                                )
+                            ) {
+                                resolve({
+                                    latitude,
+                                    longitude,
+                                    address: "Current Location",
+                                });
                             } else {
-                                reject(new Error("Current location is outside of Singapore."));
+                                reject(
+                                    new Error(
+                                        "Current location is outside of Singapore."
+                                    )
+                                );
                             }
                         },
                         (error) => {
-                            reject(new Error("Geolocation error: " + error.message));
+                            reject(
+                                new Error("Geolocation error: " + error.message)
+                            );
                         },
-                        { enableHighAccuracy: true, timeout: 5000, maximumAge: 60 * 1000 }
+                        {
+                            enableHighAccuracy: true,
+                            timeout: 5000,
+                            maximumAge: 60 * 1000,
+                        }
                     );
                 } else {
-                    reject(new Error("Geolocation is not supported by this browser."));
+                    reject(
+                        new Error(
+                            "Geolocation is not supported by this browser."
+                        )
+                    );
                 }
             });
         } catch (error) {
@@ -97,29 +121,43 @@ export default class GoogleLocationService extends LocationService<GoogleLocatio
      *                                          or `null` if the location details cannot be fetched.
      * @throws {Error} Throws an error if the coordinates are out of bounds or if geocoding fails.
      */
-    async getLocationByCoordinates(latitude: number, longitude: number): Promise<GoogleLocation | null> {
+    async getLocationByCoordinates(
+        latitude: number,
+        longitude: number
+    ): Promise<GoogleLocation | null> {
         try {
             if (!LocationService.isWithinSingaporeBounds(latitude, longitude)) {
                 throw new Error("Out of Bounds");
             }
 
-            if (!this.geocoder) {
-                this.initializeServices();
-            }
+            await this.ensureServices();
 
             return new Promise((resolve, reject) => {
-                this.geocoder?.geocode({ location: { lat: latitude, lng: longitude } }, (results, status) => {
-                    if (status === google.maps.GeocoderStatus.OK && results && results[0]) {
-                        const location: GoogleLocation = {
-                            latitude,
-                            longitude,
-                            address: results[0].formatted_address || "Unknown address"
-                        };
-                        resolve(location);
-                    } else {
-                        reject(new Error("Error fetching geocode data: " + status));
+                this.geocoder?.geocode(
+                    { location: { lat: latitude, lng: longitude } },
+                    (results, status) => {
+                        if (
+                            status === google.maps.GeocoderStatus.OK &&
+                            results &&
+                            results[0]
+                        ) {
+                            const location: GoogleLocation = {
+                                latitude,
+                                longitude,
+                                address:
+                                    results[0].formatted_address ||
+                                    "Unknown address",
+                            };
+                            resolve(location);
+                        } else {
+                            reject(
+                                new Error(
+                                    "Error fetching geocode data: " + status
+                                )
+                            );
+                        }
                     }
-                });
+                );
             });
         } catch (error) {
             throw new Error("Error getting location by coordinates: " + error);
@@ -134,11 +172,11 @@ export default class GoogleLocationService extends LocationService<GoogleLocatio
      *                                          or `null` if details cannot be fetched.
      * @throws {Error} Throws an error if the `placeId` is invalid or if fetching details fails.
      */
-    async getLocationByPrediction(prediction: GooglePrediction): Promise<GoogleLocation | null> {
+    async getLocationByPrediction(
+        prediction: GooglePrediction
+    ): Promise<GoogleLocation | null> {
         try {
-            if (!this.autocompleteService) {
-                this.initializeServices();
-            }
+            await this.ensureServices();
 
             const placeDetailsRequest = {
                 placeId: prediction.placeId,
@@ -146,29 +184,54 @@ export default class GoogleLocationService extends LocationService<GoogleLocatio
             };
 
             return new Promise((resolve, reject) => {
-                const placesService = new google.maps.places.PlacesService(document.createElement("div"));
+                const placesService = new google.maps.places.PlacesService(
+                    document.createElement("div")
+                );
 
-                placesService.getDetails(placeDetailsRequest, (place, status) => {
-                    if (status === google.maps.places.PlacesServiceStatus.OK && place && place.geometry && place.geometry.location) {
-                        const lat = place.geometry.location.lat();
-                        const lng = place.geometry.location.lng();
+                placesService.getDetails(
+                    placeDetailsRequest,
+                    (place, status) => {
+                        if (
+                            status ===
+                                google.maps.places.PlacesServiceStatus.OK &&
+                            place &&
+                            place.geometry &&
+                            place.geometry.location
+                        ) {
+                            const lat = place.geometry.location.lat();
+                            const lng = place.geometry.location.lng();
 
-                        if (LocationService.isWithinSingaporeBounds(lat, lng)) {
-                            const location: GoogleLocation = {
-                                latitude: lat,
-                                longitude: lng,
-                                address: place.formatted_address || "Unknown address"
-                            };
-                            resolve(location);
+                            if (
+                                LocationService.isWithinSingaporeBounds(
+                                    lat,
+                                    lng
+                                )
+                            ) {
+                                const location: GoogleLocation = {
+                                    latitude: lat,
+                                    longitude: lng,
+                                    address:
+                                        place.formatted_address ||
+                                        "Unknown address",
+                                };
+                                resolve(location);
+                            } else {
+                                reject(new Error("Out of Bounds"));
+                            }
+                        } else if (
+                            status ===
+                            google.maps.places.PlacesServiceStatus.ZERO_RESULTS
+                        ) {
+                            resolve(null);
                         } else {
-                            reject(new Error("Out of Bounds"));
+                            reject(
+                                new Error(
+                                    "Error fetching place details: " + status
+                                )
+                            );
                         }
-                    } else if (status === google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
-                        resolve(null);
-                    } else {
-                        reject(new Error("Error fetching place details: " + status));
                     }
-                });
+                );
             });
         } catch (error) {
             throw new Error("Error getting location by prediction: " + error);
@@ -184,38 +247,49 @@ export default class GoogleLocationService extends LocationService<GoogleLocatio
      *                                              objects or `null` if no suggestions are found.
      * @throws {Error} Throws an error if the autocomplete request fails.
      */
-    async queryLocationAutoComplete(query: string): Promise<GooglePrediction[] | null> {
+    async queryLocationAutoComplete(
+        query: string
+    ): Promise<GooglePrediction[] | null> {
         try {
-            if (!this.autocompleteService) {
-                this.initializeServices();
-            }
+            await this.ensureServices();
 
             return new Promise((resolve, reject) => {
-                this.autocompleteService?.getPlacePredictions({
-                    input: query,
-                    bounds: LocationService.SINGAPORE_BOUNDS_RECT, // Restrict predictions to Singapore's geographic bounds
-                    componentRestrictions: { country: "SG" }, // Restrict predictions to Singapore
-                }, (predictions, status) => {
-                    if (status === google.maps.places.PlacesServiceStatus.OK) {
-                        if (!predictions) {
-                            resolve([]);
-                            return;
-                        }
-                        const results = predictions.map(
-                            (p) => {
+                this.autocompleteService?.getPlacePredictions(
+                    {
+                        input: query,
+                        bounds: LocationService.SINGAPORE_BOUNDS_RECT, // Restrict predictions to Singapore's geographic bounds
+                        componentRestrictions: { country: "SG" }, // Restrict predictions to Singapore
+                    },
+                    (predictions, status) => {
+                        if (
+                            status === google.maps.places.PlacesServiceStatus.OK
+                        ) {
+                            if (!predictions) {
+                                resolve([]);
+                                return;
+                            }
+                            const results = predictions.map((p) => {
                                 return {
                                     placeId: p.place_id,
-                                    description: p.description
+                                    description: p.description,
                                 } as GooglePrediction;
-                            }
-                        );
-                        resolve(results);
-                    } else if (status === google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
-                        resolve([]);
-                    } else {
-                        reject(new Error("Error fetching place predictions: " + status));
+                            });
+                            resolve(results);
+                        } else if (
+                            status ===
+                            google.maps.places.PlacesServiceStatus.ZERO_RESULTS
+                        ) {
+                            resolve([]);
+                        } else {
+                            reject(
+                                new Error(
+                                    "Error fetching place predictions: " +
+                                        status
+                                )
+                            );
+                        }
                     }
-                });
+                );
             });
         } catch (error) {
             throw new Error("Error querying location autocomplete: " + error);

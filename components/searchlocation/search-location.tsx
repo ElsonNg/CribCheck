@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef, } from "react";
 import { GoogleMap, Marker, } from "@react-google-maps/api";
+import { useGoogleMapsReady } from "@/hooks/useGoogleMapsReady"; 
 import LocationPredictionEntity from "@/lib/entities/location/location-prediction-entity";
 import { useMasterController } from "@/context/master-controller-context";
 import LocationEntity from "@/lib/entities/location/location-entity";
@@ -42,6 +43,7 @@ export default function SearchLocation({ onChange }: LocationSearchProps) {
         useState<LocationPredictionEntity[] | null>(null);
     const [searchValue, setSearchValue] = useState<string>("");
     const mapRef = useRef<google.maps.Map | null>(null);
+    const { ready: mapsReady, error: mapsError } = useGoogleMapsReady(); 
 
 
 
@@ -231,24 +233,34 @@ export default function SearchLocation({ onChange }: LocationSearchProps) {
                 </ul>
             )}
 
-            {/* Google Map */}
             <div className="grow w-full aspect-[2]">
-                <GoogleMap
-                    center={mapCenter} // Keep map centered
-                    zoom={zoomLevel}
-                    onIdle={handleMapIdle} // Update marker when panning ends
-                    onCenterChanged={handleOnMapCentreChanged}
-                    onLoad={handleMapLoad} // Set mapRef on map load
-                    onZoomChanged={() => setZoomLevel(zoomLevel)} // Update zoom level
-                    mapContainerStyle={{ width: "100%", height: "100%" }}
-                    options={{
-                        streetViewControl: false,
-                        gestureHandling: isSearchDisabled() ? "none" : "auto",
-                    }}
-                >
-                    {/* Marker is fixed to the center of the map */}
-                    <Marker position={markerPosition} />
-                </GoogleMap>
+                {mapsError && (
+                    <div className="w-full h-full flex items-center justify-center text-red-600 text-sm">
+                        Failed to load Google Maps: {mapsError.message}
+                    </div>
+                )}
+                {!mapsError && !mapsReady && (
+                    <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm">
+                        Loading map...
+                    </div>
+                )}
+                {mapsReady && (
+                    <GoogleMap
+                        center={mapCenter}
+                        zoom={zoomLevel}
+                        onIdle={handleMapIdle}
+                        onCenterChanged={handleOnMapCentreChanged}
+                        onLoad={handleMapLoad}
+                        onZoomChanged={() => setZoomLevel(zoomLevel)}
+                        mapContainerStyle={{ width: "100%", height: "100%" }}
+                        options={{
+                            streetViewControl: false,
+                            gestureHandling: isSearchDisabled() ? "none" : "auto",
+                        }}
+                    >
+                        <Marker position={markerPosition} />
+                    </GoogleMap>
+                )}
             </div>
         </div>
     );
